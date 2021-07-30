@@ -1,0 +1,66 @@
+{% extends "via/projects/detail/base.html" %}
+{% load i18n %}
+{% load bootstrap %}
+{% load currency_filter %}
+
+{% block content %}
+<div class="row-fluid">
+    {% include "via/projects/accounting/_base.html" %}
+    <div class="span11">
+        {% if invoices %}
+        <div class="form-actions right">
+{#            <a href="{% url 'via_job_purchase_order_create' project.pk %}" class="btn btn-primary">New PO</a>#}
+            <a href="{% url 'via_job_invoice_create' project.pk %}" class="btn btn-primary">New Invoice</a>
+        </div>
+        {% endif %}
+        <div>
+            <div>
+                <h2>{% trans "Job Invoice History" %}</h2>
+            </div>
+            <div>
+                {% if invoices %}
+                <table class="table table-bordered table-hover">
+                    <thead>
+                    <tr>
+                        <th>{% trans "Date" %}</th>
+                        <th>{% blocktrans %}Order ${% endblocktrans %}</th>
+                        <th>{% blocktrans %}Invoice ${% endblocktrans %}</th>
+                        <th>{% trans "OK?" %}</th>
+                        <th>{% blocktrans %}Internal Notes{% endblocktrans %}</th>
+                        <th>{% blocktrans %}External Notes{% endblocktrans %}</th>
+                        <th>{% blocktrans %}Invoice #{% endblocktrans %}</th>
+                        <th>{% blocktrans %}Sent Date{% endblocktrans %}</th>
+                        <th>{% trans "Paid" %}</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        {% for invoice in invoices %}
+                        <tr>
+                            <td>{{ invoice.due_date }}</td>
+                            <td>{{ invoice.order_amount|currency }}</td>
+                            <td>{{ invoice.invoice_amount|currency }}</td>
+                            <td>
+                                <input type="checkbox" value="ok" id="inlineCheckbox2" disabled="true" {% if invoice.ok_to_invoice %}checked{% endif %}>
+                            </td>
+                            <td></td>
+                            <td></td>
+                            <td>{{ invoice.id }}</td>
+                            <td>{{ invoice.billing_due_date }}</td>
+                            <td>{{ invoice.billing_paid_date }}</td>
+                            <td>
+                                <a href="#"><span class="icon"><i class="fa fa-edit"></i></span></a>
+                                <a href="{% url 'via_job_invoice_delete' project.pk invoice.pk %}"><i class="fa fa-times"></i></a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                <div>Please go to the <a href="{% url 'via_job_accounting_summary' project.id %}">summary tab</a> to add the initial invoices.</div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

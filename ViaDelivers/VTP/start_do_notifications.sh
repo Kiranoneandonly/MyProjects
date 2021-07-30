@@ -1,0 +1,1 @@
+python ./src/circus/manage.py do_notifications

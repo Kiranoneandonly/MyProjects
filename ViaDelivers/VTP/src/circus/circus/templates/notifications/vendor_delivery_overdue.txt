@@ -1,0 +1,21 @@
+{% load humanize %}{% if for_vendor %}You have{% else %}A vendor has{% endif %} not completed delivery for a job.
+
+Vendor: {{ vendor|safe }}.
+Job: {{ project.job_number }}.
+Client: {{ project.client.name|safe }} ({{ project.client_poc.get_full_name|safe }})
+
+Overdue Tasks:
+=================================={% for task in tasks %}
+{% if for_vendor %}You have{% else %}A vendor has{% endif %} a late task which is not completed delivery. Task id is {{ task.id }}
+Task: {{ task.service.service_type }}.
+Source: {{ task.service.source }}, Target: {{ task.service.target }}.
+Scope: {{ task.quantity|floatformat:-2|intcomma }} {{ task.service.unit_of_measure }}.
+Due: {{ task.due|date:"r" }}.
+==================================
+
+{% endfor %}
+For more information, please visit {{ vtp_url }}.
+
+________________________________________
+
+{% include 'notifications/_email_footer.txt' %}

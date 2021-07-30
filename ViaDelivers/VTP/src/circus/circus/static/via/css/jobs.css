@@ -1,0 +1,101 @@
+.delivery-form {
+    background: none repeat scroll 0 0 #EEF2F7;
+    border: 1px solid #536376;
+    display: none;
+    padding: 14px 22px;
+    position: relative;
+    width: 400px;
+}
+
+.cancel-dialog, .reassign-dialog {
+    background: none repeat scroll 0 0 #EEF2F7;
+    border: 1px solid #536376;
+    display: none;
+    padding: 14px 22px;
+    position: relative;
+    width: 400px;
+}
+
+.list-box {
+    background: -moz-linear-gradient(left top, #FFFFFF, #EFEFEF) repeat scroll 0 0 transparent;
+    border-bottom: 1px solid #CCCCCC;
+    box-shadow: 0 1px 6px rgba(0, 0, 0, 0.15);
+    list-style: none outside none;
+    padding: 10px 20px;
+    margin-bottom: 6px;
+}
+
+hr {
+    margin: 10px 0;
+    border: 0;
+    border-top: 1px solid #eee;
+    border-bottom: 1px solid #fff;
+}
+
+.task-service-info {
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.task-service-info > a {
+    font-size: 18px;
+}
+
+.task-service-info-sub {
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.task-service-info-sub > a {
+    font-size: 16px;
+}
+
+
+.task-status-created { background-color: #c7e4f2; background: #c7e4f2;  }
+.task-status-active { background-color: #cff2d0; background: #cff2d0; }
+.task-status-completed { background-color: #cccccc; background: #cccccc;  }
+.task-status-canceled { background-color: #bbbbbb; background: #bbbbbb;  }
+.task-status-error { background-color: #f2deda; background: #f2deda;  }
+.task-status-pending { background-color: #e0d8ff; background: #e0d8ff;  }
+.task-status-upcoming { background-color: #c7e4f2; background: #c7e4f2;  }
+
+.task-billable-icon {
+    position: relative;
+    left: -5px;
+    top: 5px;
+    float:left;
+}
+
+.client-note-icon {
+    vertical-align: text-top;
+    font-size: 200%;
+}
+
+.client-note-icon .view-note {
+    color: #ffea4b;
+}
+
+#client-note-popover .popover-content {
+    white-space: pre-wrap;
+}
+
+.secondary-assignee-info { margin-top: 10px }
+.secondary-assignee-info a.btn { margin-left: 10px }
+
+.availableServices ul {
+    list-style-type: none;
+}
+
+.task-date .task-date-header > * {
+    min-height: 0;
+    font-size: 0.75em;
+    color: #666666;
+}
+
+.task-date-actual {
+    margin-top: 20px;
+}
+
+.job-description-value a {
+    color: white;
+}

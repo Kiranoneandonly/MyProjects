@@ -1,0 +1,15 @@
+{% load i18n %}
+
+<div class="row-fluid">
+    <div class="alert alert-danger">
+    <a class="close" data-dismiss="alert">&times;</a>
+        <i class="fa fa-star" title="{% trans "POs Approval" %}"></i>
+        {% if create_po_needed %}
+            <b>Task Completed, but no actual hours have been entered.  Need to enter hours and save and approve.</b>
+        {% elif actual_hours %}
+            <b>Task is completed, but the Actual Hours entered has not been approved.</b>
+        {% else %}
+            <b>Need to enter actual hours to approve creating PO.</b>
+        {% endif %}
+    </div>
+</div>

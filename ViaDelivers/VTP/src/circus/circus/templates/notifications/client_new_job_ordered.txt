@@ -1,0 +1,33 @@
+{% load humanize %}{% load currency_filter %}Hi {{ project.client_poc.first_name|safe }},
+
+This e-mail is to confirm that a new job {{ project.job_number }} has been ordered. Below are the details:
+
+•	Requested by {{ project.client_poc.get_full_name|safe }} of {{ project.client.name|safe }}
+•	Notification e-mail: {{ project.client_poc.email }}
+•	Phone: {{ project.client_poc.phone }}
+
+•	Due Date: {{ project.due|date:"SHORT_DATE_FORMAT" }}
+
+•	Total Cost (USD): {{ project.price|floatformat:2|intcomma }}
+
+{% if project.project_reference_name %}•	Customer Job Reference: {{ project.project_reference_name|safe }}{% endif %}
+{% if project.payment_details.ca_invoice_number %}•	Customer Purchase Order: {{ project.payment_details.ca_invoice_number|safe }}{% endif %}
+
+•	Source Language: {{ project.source_locale }}
+•	Target Language(s): {{ project.get_target_locale_name_list }}
+
+{% if project.instructions %}
+Notes:
+{{ project.instructions|striptags }}
+
+{% endif %}
+For more information, please visit {{ vtp_url }}.
+
+Thank you for your business.
+
+Sincerely,
+The VIA Team
+
+________________________________________
+
+{% include 'notifications/_email_footer.txt' %}

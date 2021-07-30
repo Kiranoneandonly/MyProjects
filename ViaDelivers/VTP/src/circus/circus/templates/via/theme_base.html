@@ -1,0 +1,318 @@
+{% load i18n %}
+{% load avatar_tags %}
+{% load new_messages_notification_check %}
+
+<!doctype html>
+<!-- paulirish.com/2008/conditional-stylesheets-vs-css-hacks-answer-neither/ -->
+<!--[if lt IE 7]> <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
+<!--[if IE 7]>    <html class="no-js lt-ie9 lt-ie8 ie7" lang="en"> <![endif]-->
+<!--[if IE 8]>    <html class="no-js lt-ie9 ie8" lang="en"> <![endif]-->
+<!--[if gt IE 8]><!--> <html lang="en"> <!--<![endif]-->
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block title %}{{ APP_FULL_NAME }}{% endblock %}</title>
+
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ STATIC_URL }}shared/img/via_favi_V-16.png" />
+
+    {% block css_base %}
+        <link rel="stylesheet" href="{{ STATIC_URL }}shared/css/normalize.css" type="text/css" media="all"/>
+        <link rel="stylesheet" href="{{ STATIC_URL }}shared/css/bootstrap.min.css" type="text/css" media="all" />
+        <link rel="stylesheet" href="{{ STATIC_URL }}shared/css/bootstrap-responsive.min.css" type="text/css" media="all" />
+        <link rel="stylesheet" href="{{ STATIC_URL }}shared/css/font-awesome.min.css" type="text/css" media="all" />
+        <link rel="stylesheet" href="{{ STATIC_URL }}shared/css/jquery-ui-1.12.1.min.css" type="text/css" media="all"/>
+        <link rel="stylesheet" href="{{ STATIC_URL }}shared/css/select2.min.css" type="text/css" media="all"/>
+        <link rel="stylesheet" href="{{ STATIC_URL }}via/css/styles.css" type="text/css" media="all" />
+        <link rel="stylesheet" href="{{ STATIC_URL }}via/css/via.css" type="text/css" media="all"  />
+        {% block css %}{% endblock %}
+    {% endblock %}
+
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+        <script type="text/javascript" src="{{ STATIC_URL }}shared/js/html5shiv.js"></script>
+    <![endif]-->
+
+    <script type="text/javascript" src="{{ STATIC_URL }}shared/js/prefixfree.min.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}shared/js/jquery-1.12.4.min.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}shared/js/jquery-migrate-1.4.1.min.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}shared/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}shared/js/jquery-ui-1.12.1.custom.min.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}shared/js/bootstrap-datetimepicker.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}shared/js/bootstrap-datepicker.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}shared/js/start_job_button.js" ></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}shared/js/tinymce/tinymce.min.js" ></script>
+
+    {% block extra_head %}{% endblock %}
+</head>
+<body>
+
+<div class="wrapper" id="wrap">
+
+    <!-- Top Heading Bar -->
+    <!-- Fixed navbar -->
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="content">
+          <div class="nav-img">
+              <a href="{% url 'via_dashboard' %}">
+                  <img src="{{ STATIC_URL }}shared/img/via.png" alt="{{ APP_FULL_NAME }}" title="{{ APP_FULL_NAME }}" class="brand powered">
+              </a>
+          </div>
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <i class="fa fa-bars"></i>
+          </a>
+          <div class="nav-collapse collapse">
+            <ul class="nav">
+
+               <!--Dashboard menu-->
+               <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">{% trans "Dashboard" %} <b class="caret"></b></a>
+                <ul class="dropdown-menu">
+                    <li><a href="{% url 'via_dashboard' %}">{% trans "Full Dashboard" %}</a></li>
+                    <li><a href="{% url 'team_dashboard' 'team' request.user.id %}">{% trans "Team Dashboard" %}</a></li>
+                    <li><a href="{% url 'my_dashboard' 'my' request.user.id %}">{% trans "My Dashboard" %}</a></li>
+                </ul>
+              </li>
+               
+              <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">{% trans "Jobs" %} <b class="caret"></b></a>
+                <ul class="dropdown-menu">
+{#                    <li><a href="{% url 'via_workflow_job_create' %}" class="start_job_button"><i class="fa fa-plus"></i> {% trans "New Workflow Job" %}</a></li>#}
+                    <li><a href="{% url 'via_jobs_status_list' 'myjobs' %}"><i class="fa fa-heart"></i> {% trans "My Jobs" %}</a></li>
+                    <li><a href="{% url 'via_jobs_status_list' 'inestimate' %}"><i class="fa fa-circle"></i> {% trans "In Estimate" %}</a></li>
+                    <li><a href="{% url 'via_jobs_status_list' 'estimated' %}"><i class="fa fa-check-circle"></i> {% trans "Estimated" %}</a></li>
+                    <li><a href="{% url 'via_jobs_status_list' 'unassigned' %}"><i class="fa fa-square-o"></i> {% trans "Unassigned" %}</a></li>
+                    <li><a href="{% url 'via_jobs_status_list' 'active' %}"><i class="fa fa-check-square-o"></i> {% trans "Active" %}</a></li>
+                    <li><a href="{% url 'via_jobs_status_list' 'hold' %}"><i class="fa fa-pause"></i> {% trans "Hold" %}</a></li>
+                    <li><a href="{% url 'via_jobs_status_list' 'warning' %}"><i class="fa fa-exclamation-triangle"></i> {% trans "Warning" %}</a></li>
+                    <li><a href="{% url 'via_jobs_status_list' 'overdue' %}"><i class="fa fa-exclamation-circle"></i> {% trans "Overdue" %}</a></li>
+                    <li><a href="{% url 'via_jobs_status_list' 'unapproved_pos' %}"><i class="fa fa-check-circle"></i> {% trans "PO Approvals" %}</a></li>
+                    <li><a href="{% url 'via_jobs_status_list' 'delivered' %}"><i class="fa fa-square"></i> {% trans "Delivered" %}</a></li>
+                    <li><a href="{% url 'via_jobs_status_list' 'completed' %}"><i class="fa fa-check-square"></i> {% trans "Completed" %}</a></li>
+                    <li><a href="{% url 'via_jobs_status_list' 'updatetm' %}"><i class="fa fa-language"></i> {% trans "TM" %}</a></li>
+                    <li><a href="{% url 'via_jobs_list' %}"><i class="fa fa-th"></i> {% trans "All" %}</a></li>
+                    <li><a href="{% url 'via_quality_defect_list' %}" ><i class="fa fa-flag"></i> {% trans "Quality Defects" %}</a></li>
+                </ul>
+              </li>
+
+              <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">{% trans "Estimates" %} <b class="caret"></b></a>
+                <ul class="dropdown-menu">
+                    <li><a href="{% url 'via_job_create' %}" class="start_job_button"><i class="fa fa-plus"></i> {% trans "New Manual" %}</a></li>
+                    <li><a href="{% url 'via_auto_job_create' %}" class="start_job_button"><i class="fa fa-magic"></i> {% trans "New Automatic" %}</a></li>
+                    <li><a href="{% url 'via_jobs_status_list' 'hotlist' %}"><i class="fa fa-fire"></i> {% trans "Hot List" %}</a></li>
+                    <li><a href="{% url 'via_jobs_status_list' 'myestimates' %}"><i class="fa fa-heartbeat"></i> {% trans "My Estimates" %}</a></li>
+                    <li><a href="{% url 'via_jobs_status_list' 'unassignedestimates' %}"><i class="fa fa-circle-o"></i> {% trans "Unassigned" %}</a></li>
+                    <li><a href="{% url 'via_jobs_status_list' 'inestimate' %}"><i class="fa fa-circle"></i> {% trans "In Estimate" %}</a></li>
+                </ul>
+              </li>
+
+              <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">{% trans "Tasks" %} <b class="caret"></b></a>
+                <ul class="dropdown-menu">
+                    <li><a href="{% url 'my_tasks_status' 'all' 'active' %}"><i class="fa fa-tasks"></i> {% trans "All Tasks" %}</a></li>
+                    <li><a href="{% url 'my_tasks_status' 'team' 'active' %}"><i class="fa fa-heart-o"></i> {% trans "Team Tasks" %}</a></li>
+                    <li><a href="{% url 'my_tasks_status' 'my' 'active' %}"><i class="fa fa-heart"></i> {% trans "My Tasks" %}</a></li>
+
+                    {% for status, status_detail in via_tasks.statuses.iteritems %}
+                        {% url 'my_tasks_status' status=status is_user_type=is_user_type as url %}
+                        {% if is_user_type == 'my' and status_detail.name != 'Unassigned' or is_user_type == 'all' or is_user_type == 'team' %}
+                        <li>
+                            <a href="{{ url }}">
+                                <i class="{{ status_detail.icon }}"></i>
+                                {{ status_detail.name }} {% trans "Tasks" %}
+                                ({{ status_detail.tasks.count }})
+                            </a>
+                        </li>
+                        {% endif %}
+                    {% endfor %}
+
+                </ul>
+              </li>
+              <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">{% trans "Reports" %} <b class="caret"></b></a>
+                <ul class="dropdown-menu">
+                    <li><a href="{% url 'background_tasks' %}">{% trans "VTP > Background Tasks" %}</a></li>
+                    <li><a href="{% url 'via_estimates_summary' %}">{% trans "VTP > Estimates Summary" %}</a></li>
+                    <li><a href="{% url 'jobs_per_pm' %}">{% trans "VIA > Jobs per PM" %}</a></li>
+                    <li><a href="{% url 'jobs_otd' %}">{% trans "VIA > Jobs On-time Delivery" %}</a></li>
+{#                  <li><a href="{% url 'clients_gross_margin_report' %}">{% trans "VIA > Gross Margin Analysis" %}</a></li>#}
+                    <li><a href="{% url 'eqd_report' %}">{% trans "VIA > EQD Reporting" %}</a></li>
+                    <li><a href="{% url 'estimation_completion_velocity' %}">{% trans "VIA > Estimation Completion Velocity" %}</a></li>
+                    <li><a href="{% url 'task_completion_velocity_via' %}">{% trans "VIA > Task Completion Velocity" %}</a></li>
+                    <li><a href="{% url 'task_completion_velocity_supplier' %}">{% trans "Supplier > Task Completion Velocity" %}</a></li>
+                    <li><a href="{% url 'supplier_ratings_by_task' %}">{% trans "Supplier > Ratings by Task" %}</a></li>
+
+                    <li><a href="{% url 'client_filter_form' '1' %}">{% trans "Customer > Job Activity" %}</a></li>
+                    <li><a href="{% url 'client_filter_form' '2' %}">{% trans "Customer > Pricing per Document" %}</a></li>
+                    <li><a href="{% url 'total_spend_by_customer' %}">{% trans "Customer > Total Spend" %}</a></li>
+                    <li><a href="{% url 'total_spend_by_manager' %}">{% trans "Customer > Total Spend by Manager" %}</a></li>
+                    <li><a href="{% url 'total_spend_by_tasks' %}">{% trans "Customer > Total Spend by Tasks" %}</a></li>
+                    <li><a href="{% url 'total_price_per_word' %}">{% trans "Customer > Total Price per Word" %}</a></li>
+                    <li><a href="{% url 'customer_tm_savings' %}">{% trans "Customer > TM Savings (MBD)" %}</a></li>
+
+                </ul>
+              </li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">{% trans "Customers" %} <b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        {% if request.user.is_superuser %}
+                            <li><a href="{% url 'clients_create' %}">{% trans "New Customer" %}</a></li>
+                        {% endif %}
+                        <li><a href="{% url 'clients_list' %}">{% trans "My Customers" %}</a></li>
+                        <li><a href="{% url 'clients_list' %}">{% trans "All Customers" %}</a></li>
+                    </ul>
+                    </li>
+                    <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">{% trans "Suppliers" %} <b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        {% if request.user.is_superuser %}
+                            <li><a href="{% url 'vendors_create' %}">{% trans "New Supplier" %}</a></li>
+                            <li><a href="{% url 'vendors_list' %}">{% trans "Staged Suppliers" %}</a></li>
+                        {% endif %}
+                        <li><a href="{% url 'vendors_list' %}">{% trans "Approved Suppliers" %}</a></li>
+                        <li><a href="{% url 'preferred_vendors_edit' %}">{% trans "Preferred Suppliers" %}</a></li>
+                    </ul>
+                </li>
+                {% if request.user.is_superuser %}
+                    <li>
+                        <a href="{% url 'admin:index' %}" target="_blank">{% trans "Admin" %}</a>
+                    </li>
+                {% endif %}
+              <li class="dropdown nav-right">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                    {% avatar request.user %}<span>{{ request.user.get_full_name }}</span>
+                    <b class="caret"></b>
+                </a>
+                <ul class="dropdown-menu">
+                    <li><a href="{% url 'edit_profile' %}">{% trans "My Profile" %}</a></li>
+                    <li><a href="{% url 'logout' %}">{% trans "Logout" %}</a></li>
+                </ul>
+              </li>
+            {# Bell icon for job comments #}
+            <li class="nav-right">
+                <div id="messages" class="nav-messages" style="padding: 5px 5px 5px 0px">
+                            <a id="message-bell" class="btn btn-inverse job-messages-button"  href="{% url 'job_messages_list_page' %}" title="{% trans "Job Messages" %}">
+                                <i class="fa fa-comment"></i></a>
+                            {% if client_message_unread_count_all %}
+                            <span class="badge badge-notify" style="position:relative;top: -10px;left: -15px;">{{ client_message_unread_count_all }}</span>
+                            {% endif %}
+                        </div>
+            </li>
+            <li class="nav-right">
+                <div id="notifications" class="nav-messages" style="padding: 5px 5px 5px 0px">
+                            <a id="notification-bell" class="btn btn-inverse job-notification-button" href="{% url 'job_notifications_list_page' %}" title="{% trans "Notifications" %}">
+                                <i class="fa fa-bell"></i></a>
+                            {% if client_notification_unread_count %}
+                            <span class="badge badge-notify" style="position:relative;top: -10px;left: -15px;">{{ client_notification_unread_count }}</span>
+                            {% endif %}
+                        </div>
+            </li>
+            {% if user.country %}
+             <li class="nav-right">
+                 <a href="#" title="Logged in from {{ user.country }}, TimeZone is {{ request.user.user_timezone }}"><i class="fa fa-map-marker"></i></a>
+             </li>
+            {% endif %}
+            {% if user.is_impersonate %}
+             <li class="nav-right">
+                <div id="messages" class="nav-messages">
+                    <a href="/impersonate/stop" class="btn btn-danger job-messages-button"  title="Impersonate: {{ request.user }} ({{ request.impersonator }})"><i class="fa fa-bug"></i></a>
+                </div>
+             </li>
+            {% endif %}
+             <li class="nav-right">
+                <div id="search" class="nav-search">
+                  <input type="text" class="search-query" value="{{ search_query }}" />
+                  <a class="btn btn-warning search-submit"><i class="fa fa-search"></i></a>
+                </div>
+             </li>
+            </ul>
+          </div><!-- /.nav-collapse -->
+        </div><!-- /.container -->
+      </div><!-- /.navbar-inner -->
+    {% include 'shared/components/notification_area.html' with portal='via' %}
+    </div><!-- /.navbar -->
+    {% block content_base %}
+    <div id="content">
+        {% if messages %}
+            {% for message in messages %}
+                <!-- alert-success alert-error -->
+                <div class="alert alert-{{ message.tags }}">
+                    <button class="close" data-dismiss="alert">&times;</button>
+                    {% if 'safe' in message.tags %}{{ message|safe }}{% else %}{{ message }}{% endif %}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <h2>{% block content_header %}{% endblock %}</h2>
+        {% block tab_section %}{% endblock %}
+        {% block tab_content %}
+            {% block content %}
+                {% block content_breadcrumb %}
+                    {% block timezone_info %}
+                        <span class="divider"></span>
+                        <span class="timezone-info"><i class="fa fa-globe fa-2x" title="{{ TIMEZONE_BLURB_TEXT }}"></i></span>
+                        <span class="divider"></span>
+                    {% endblock %}
+                {% endblock %}
+            {% endblock %}
+        {% endblock %}
+{#        <div id="push"></div>#}
+    </div><!-- content -->
+    {% endblock %}
+
+</div> <!-- #wrapper -->
+
+{% block footer %}
+    {% include "shared/_footer.html" %}
+{% endblock %}
+
+{# It's important that this template is not in a fixed-position div like the navbar. #}
+{% include "shared/components/notification_template.html" %}
+
+{% block script_base %}
+    <script type="text/javascript" src="{{ STATIC_URL }}shared/js/select2.min.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}shared/js/css3-mediaqueries.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}shared/js/search.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}shared/js/data-confirm.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}shared/js/alert-fadeout.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}shared/js/jquery.cookie.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}shared/js/underscore-min.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}shared/js/notifications.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}shared/js/google_analytics.js"></script>
+    <script type="text/javascript">
+        $(function() {
+            search_setup("{% url 'via_jobs_search' %}");
+
+            {% new_messages_notification_check request as new_messages_check %}
+            {% if client_message_unread_count_all %}
+                $('#message-bell').removeClass().addClass('btn btn-danger');
+            {% endif %}
+            {% if client_notification_unread_count %}
+                $('#notification-bell').removeClass().addClass('btn btn-danger');
+            {% endif %}
+
+        });
+        VTP_Notifications.analysis_status_url = "{% url 'via_check_analysis_status' %}";
+        VTP_Notifications.start();
+
+        $('button#delivery_kit').click(function () {
+            var analysis_code = $('input#analysis_code').val();
+            var del_kit = '';
+            $('input[name="file"]').each(function (index) {
+                if ($(this).val()) {
+                    del_kit = $(this).val();
+                }
+            });
+            var delivery_kit = del_kit.replace("C:\\fakepath\\", "");
+            if (del_kit == "") {
+                alert("Please select a file name.")
+                return false
+            }
+        });
+    </script>
+    {% block script %}{% endblock %}
+{% endblock %}
+
+</body>
+</html>

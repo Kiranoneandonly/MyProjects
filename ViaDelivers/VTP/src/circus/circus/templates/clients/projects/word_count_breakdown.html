@@ -1,0 +1,127 @@
+{% load i18n %}
+{% load bootstrap %}
+{% load currency_filter %}
+{% load get_item %}
+
+<div class="row-fluid">
+    <div class="span12">
+        {% if project.kit %}
+            <div class="accordion" id="analysis_accordion">
+                {% if not target_analyses %}
+                    <div>
+                        <span>{% blocktrans %}No Target Languages{% endblocktrans %}</span>
+                    </div>
+                {% else %}
+                    <div>
+                        <h2><i class="fa fa-language"></i> {% blocktrans %}Word Counts{% endblocktrans %}</h2>
+                    </div>
+                    {% for target, analyses in target_analyses.items %}
+                        <div class="accordion-group">
+                            <div class="accordion-heading word-count-heading">
+                                <h5>
+                                    <a data-parent="#analysis_accordion" data-toggle="collapse" href="#collapse{{ target.id }}" class="accordion-toggle  word_count_accordion">
+                                        <div class="row-fluid" >
+                                            <div class="span10">
+                                                <span class="accordion-icon"></span>
+                                                {{ project.source_locale }} {% blocktrans %}to{% endblocktrans %} {{ target }}
+                                            </div>
+                                            <div class="span1 text-right">
+                                                {% blocktrans %}Total:{% endblocktrans %} {{ analyses.total_words }}
+                                            </div>
+                                        </div>
+                                    </a>
+                                </h5>
+                            </div>
+                            <div id="collapse{{ target.id }}"
+                                 class="accordion-body collapse" >
+                                <div class="accordion-inner word_counts_container">
+                                    <table class="table table-bordered table-hover table-responsive">
+                                        <thead>
+                                        <tr>
+                                            <th>{% blocktrans %}File{% endblocktrans %}</th>
+                                            <th>{% blocktrans %}Total{% endblocktrans %}</th>
+                                            <th>{% blocktrans %}Guaranteed{% endblocktrans %}</th>
+                                            <th>{% blocktrans %}Exact{% endblocktrans %}</th>
+                                            <th>{% blocktrans %}Duplicate{% endblocktrans %}</th>
+                                            <th>{% blocktrans %}95-99{% endblocktrans %}</th>
+                                            <th>{% blocktrans %}85-94{% endblocktrans %}</th>
+                                            <th>{% blocktrans %}75-84{% endblocktrans %}</th>
+                                            <th>{% blocktrans %}50-74{% endblocktrans %}</th>
+                                            <th>{% blocktrans %}No Match{% endblocktrans %}</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        {% if not analyses.all|length %}
+                                            <tr>
+                                                <td colspan="100%">{% blocktrans %}No Analysis files{% endblocktrans %}</td>
+                                            </tr>
+                                        {% else %}
+                                            {% for analysis in analyses.all %}
+                                                <tr>
+                                                    <td>
+                                                        {% if analysis.asset.orig_file and analysis.asset.orig_file.url %}
+                                                            {% if analysis.asset.file_exists %}
+                                                                <a href="{% url 'download_asset' project.id analysis.asset.id %}">{{analysis.asset.orig_name }} <i class="fa fa-download"></i></a>
+                                                            {% else %}
+                                                                {{ analysis.asset.orig_name }}
+                                                            {% endif %}
+                                                        {% else %}
+                                                            {{ analysis.asset.orig_name }}
+                                                            <a data-toggle="popover" class="file_help">
+                                                                <i class="fa fa-question"></i>
+                                                            </a>
+                                                        {% endif %}
+                                                    </td>
+                                                    <td>{{ analysis.total_wordcount }}</td>
+                                                    <td>{{ analysis.guaranteed }}</td>
+                                                    <td>{{ analysis.exact }}</td>
+                                                    <td>{{ analysis.duplicate }}</td>
+                                                    <td>{{ analysis.fuzzy9599 }}</td>
+                                                    <td>{{ analysis.fuzzy8594 }}</td>
+                                                    <td>{{ analysis.fuzzy7584 }}</td>
+                                                    <td>{{ analysis.fuzzy5074 }}</td>
+                                                    <td>{{ analysis.no_match }}</td>
+                                                </tr>
+                                            {% endfor %}
+                                            <tr class="grand-total-row bg-gray">
+                                                <td>{% blocktrans %}Totals:{% endblocktrans %}</td>
+                                                <td>{{ analyses.total_words }}</td>
+                                                <td>{{ analyses.total_guaranteed }}</td>
+                                                <td>{{ analyses.total_exact }}</td>
+                                                <td>{{ analyses.total_duplicate }}</td>
+                                                <td>{{ analyses.total_fuzzy9599 }}</td>
+                                                <td>{{ analyses.total_fuzzy8594 }}</td>
+                                                <td>{{ analyses.total_fuzzy7584 }}</td>
+                                                <td>{{ analyses.total_fuzzy5074 }}</td>
+                                                <td>{{ analyses.total_no_match }}</td>
+                                            </tr>
+                                            {% if analyses.memory_bank_discount_exists %}
+                                                <tr class="grand-total-row bg-gray">
+                                                    <td>{% blocktrans %}Words %:{% endblocktrans %}</td>
+                                                    <td></td>
+                                                    <td>{{ analyses.word_percentage_guaranteed }}%</td>
+                                                    <td>{{ analyses.word_percentage_exact }}%</td>
+                                                    <td>{{ analyses.word_percentage_duplicate }}%</td>
+                                                    <td>{{ analyses.word_percentage_fuzzy9599 }}%</td>
+                                                    <td>{{ analyses.word_percentage_fuzzy8594 }}%</td>
+                                                    <td>{{ analyses.word_percentage_fuzzy7584 }}%</td>
+                                                    <td>{{ analyses.word_percentage_fuzzy5074 }}%</td>
+                                                    <td>{{ analyses.word_percentage_no_match }}%</td>
+                                                </tr>
+                                            {% endif %}
+                                        {% endif %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {%  endif %}
+            </div>
+        {% else %}
+            <p>{% blocktrans %}No localization kit{% endblocktrans %}</p>
+        {% endif %}
+    </div>
+
+</div>
+

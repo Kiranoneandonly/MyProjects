@@ -1,0 +1,16 @@
+{% load humanize %}{% load currency_filter %}VIA, Inc. has assigned {{ vendor }} a new task.
+
+Job: {{ task.project.job_number }}.
+Client: {{ task.project.client.name }} ({{ task.project.client_poc.get_full_name }})
+
+Task: {{ task.service.service_type }}.
+Source: {{ task.service.source }}, Target: {{ task.service.target }}.
+Scope: {{ task.quantity|floatformat:-2|intcomma }} {{ task.service.unit_of_measure }}.
+Total: {{ task.total_cost|currency }}.
+{% if not task.is_translation %}Word Count: {{ wordcount }}{% endif %}.
+
+Please accept or reject this assignment here: {{ vtp_url }}.
+
+________________________________________
+
+{% include 'notifications/_email_footer.txt' %}

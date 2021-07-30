@@ -1,0 +1,139 @@
+{% extends "via/theme_base.html" %}
+{% load i18n %}
+{% load bootstrap_pagination %}
+{#{% load url from future %}#}
+{% load bootstrap %}
+{% load widget_tweaks %}
+
+{% block title %}{% trans "Quality Defects" %}{% endblock %}
+{% block extra_head %}{% endblock %}
+{% block content_header %}{% endblock %}
+{% block css %}
+    <link rel="stylesheet" href="{{ STATIC_URL }}via/css/job-list.css" media="screen"/>
+{% endblock %}
+
+{% block content %}
+    <div class="job-active job-content">
+        {% block content_breadcrumb %}
+            <div class="breadcrumb">
+                <span><i class="fa fa-home"></i></span>
+                <span><a href="{% url 'via_dashboard' %}">{% trans "Home" %}</a></span>
+                <span class="divider"><i class="fa fa-chevron-right"></i></span>
+                <span class="active">{% trans "Quality Defects" %}</span>
+                {{ block.super }}
+                <a href="{% url 'via_quality_defect_create'  %}" class="btn btn-primary start_job_button pull-right"><i class="fa fa-plus-circle fa-white"></i> {% blocktrans %}New Defect{% endblocktrans %}</a>
+            </div>
+        {% endblock %}
+
+        <div class="table-wrapper">
+            <table class="table table-bordered table-hover">
+            <thead>
+                <tr>
+                    <th class="col ">{% trans "ID" %}</th>
+                    <th class="col ">{% trans "Type" %}</th>
+                    <th class="col ">{% trans "Title" %}</th>
+                    <th class="col ">{% trans "Priority" %}</th>
+                    <th class="col ">{% trans "Assigned" %}</th>
+                    <th class="col ">{% trans "Status" %}</th>
+                    <th class="col ">{% trans "Due" %}</th>
+                    <th class="col ">{% trans "Closed" %}</th>
+                    <th class="col ">{% trans "Vertical" %}</th>
+                    <th class="col ">{% trans "Client" %}</th>
+                    <th class="col ">{% trans "Job" %}</th>
+                    <th class="col ">{% trans "Cause" %}</th>
+                    <th class="col ">{% trans "Supplier" %}</th>
+                    <th class="col" ></th>
+                </tr>
+                </thead>
+                <tbody>
+                    {% for quality_defect in quality_defects %}
+
+                                <td class="col">
+                                    <a href="{% url 'via_quality_defect_edit' quality_defect.id %}">{{ quality_defect.id }}</a>
+                                </td>
+                                <td class="col">
+                                    {{ quality_defect.get_quality_defect_display|default_if_none:"" }}
+                                </td>
+                                <td class="col">
+                                    <div title="{{ quality_defect.title|default_if_none:"" }}">{{ quality_defect.title|truncatechars:25|default_if_none:"" }}</div>
+                                </td>
+                                <td class="col">
+                                    {{ quality_defect.get_priority_display|default_if_none:"" }}
+                                </td>
+                                <td class="col">
+                                    {{ quality_defect.assigned_to|default_if_none:"" }}
+                                </td>
+                                <td class="col">
+                                    {{ quality_defect.get_status_display|default_if_none:"" }}
+                                </td>
+                                <td class="col ">
+                                    {{ quality_defect.due_date|date:"SHORT_DATE_FORMAT" }}
+                                </td>
+                                <td class="col ">
+                                    {{ quality_defect.closed_date|date:"SHORT_DATE_FORMAT" }}
+                                </td>
+                                <td class="col ">
+                                    {{ quality_defect.vertical|default_if_none:"" }}
+                                </td>
+                                <td class="col ">
+                                    {{ quality_defect.client|default_if_none:"" }}
+                                </td>
+                                <td class="col ">
+                                    {{ quality_defect.project|default_if_none:"" }}
+                                </td>
+                                <td class="col ">
+                                    {{ quality_defect.root_cause|default_if_none:"" }}
+                                </td>
+                                <td class="col ">
+                                    {{ quality_defect.vendor|default_if_none:"" }}
+                                </td>
+                                <td>
+                                <a href="#modal{{quality_defect.id}}"  class="comments-modal-ref" style="display:inline-block" data-toggle="modal" data_id="{{quality_defect.id}}">
+                                    <h4 style="margin:0px" >
+                                    {% if quality_defect.comments %}
+                                    <i class="fa fa-comments" title="{% trans "Comments" %}"></i>
+                                    {% else %}
+                                    <i class="fa fa-comments-o" title="{% trans "No Comments" %}"></i>
+                                    {% endif %}
+                                    </h4>
+                                </a>
+                                    <div id="modal{{quality_defect.id}}" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                                      <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+                                        <h3 id="myModalLabel"><i class="fa fa-comments"></i> {% blocktrans %}Comments for{% endblocktrans %} <a href="{% url 'via_quality_defect_edit' quality_defect.id %}">{{ quality_defect.title }}</a></h3>
+                                      </div>
+                                      <div class="modal-body">
+                                          <div class="comment_bod">
+                                          {% for comment in quality_defect.comments %}
+                                              <div class=" well">
+                                                {{ comment.comment|safe }}
+                                                <span class=" sub-text">{% if comment.comment_by  %} {{ comment.comment_by }} -{% endif %} {{ comment.date_created }}</span>
+                                              </div>
+                                              <hr>
+                                          {% empty %}
+                                              <h3>{% trans "No Comments" %}</h3>
+                                          {% endfor %}
+                                          </div>
+                                      </div>
+                                      <div class="modal-footer">
+                                        <button class="btn" data-dismiss="modal" aria-hidden="true">{% trans "Close" %}</button>
+                                      </div>
+                                    </div>
+                                </td>
+                            </tr>
+
+                    {% empty %}
+                        <tr><td colspan="100%" style="text-align: left">{% trans "No Defects" %}</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <div class="pagination pagination-centered">
+            {% bootstrap_paginate page_obj range=10 centered="true" %}
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block script %}
+    {{ block.super }}
+{% endblock %}

@@ -1,0 +1,46 @@
+{% extends "shared/external/theme_base.html" %}
+{% load i18n %}
+{% load bootstrap %}
+
+{% block title %}{% trans "Select Organization" %}{% endblock %}
+
+{% block css %}{% endblock %}
+{% block search_menu %}{% endblock %}
+{% block login_menu %}{% endblock %}
+
+{% block content_breadcrumb %}{% endblock %}
+
+{% block content %}
+    <h1 class="select-organization">{% trans "Select an Organization" %}</h1>
+    <hr class="soften"/>
+    <div class="row">
+        <div class="span10 offset2">
+            <br/>
+            <p>
+                {% blocktrans %}Based on your email address we've identified the following existing accounts.
+                If you select one of these, the account owner will be notified and will be need to approve you as a user.{% endblocktrans %}
+            </p>
+            <p>
+                {% blocktrans %}Need assistance?{% endblocktrans %}  <a href="{{ contactus_form }}" target="_blank">{% blocktrans %}Contact VIA{% endblocktrans %}</a>
+            </p>
+            <hr class="soften"/>
+            <div class="row-fluid contact-via">
+                <div class="span12">
+                    <form novalidate class="inline-form" action="" method="post">
+                        {% csrf_token %}
+                        {{ form|bootstrap }}
+                        <div class="control-group">
+                            <div class="controls">
+                                <button name="select_account" type="submit" class="btn btn-primary">{% blocktrans %}Submit{% endblocktrans %}</button>
+                                <button name="new_department" type="submit" class="btn">{% blocktrans %}Create a New Department{% endblocktrans %}</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block script %}
+{% endblock %}

@@ -1,0 +1,228 @@
+{% extends "via/theme_base.html" %}
+{% load i18n %}
+{% load bootstrap_pagination %}
+{% load currency_filter %}
+
+{% block title %}{% trans "Job Search" %} | "{{ search_query }}" | VTP{% endblock %}
+{% block content_header %}{% endblock %}
+
+{% block css %}
+    <link rel="stylesheet" href="{{ STATIC_URL }}shared/css/table-cell-dropdown.css" media="screen"/>
+    <link rel="stylesheet" href="{{ STATIC_URL }}via/css/job-list.css" media="screen"/>
+{% endblock %}
+
+{% block script %}
+    <script src="{{ STATIC_URL }}shared/js/filters/table-cell-dropdown.js" type="text/javascript"></script>
+    <script src="{{ STATIC_URL }}shared/js/filters/job-list.js" type="text/javascript"></script>
+{% endblock %}
+
+{% block content %}
+    <div class="job-active job-content">
+
+    {% block content_breadcrumb %}
+        <div class="breadcrumb">
+            <span><i class="fa fa-home"></i></span>
+            <span><a href="{% url 'via_dashboard' %}">{% trans "Home" %}</a></span>
+            <span class="divider"><i class="fa fa-chevron-right"></i></span>
+            <span class="active">{% trans "Job Search" %}</span>
+            {{ block.super }}
+        </div>
+    {% endblock %}
+
+        <div class="job-active-table">
+            <div class="row-fluid list-header">
+                <div class="span6">
+                    <h2 class="heading">
+                        "{{ search_query }}"
+                    </h2>
+                </div>
+                <div class="span6 form-inline job-filters">
+                    <div class="row-fluid column-display-checkboxes">
+                        <span class="span2">
+                            <input id="display_price_columns_checkbox" type="checkbox" />
+                            <label for="display_price_columns_checkbox">{% trans "Price" %}</label>
+                        </span>
+                        <span class="span2">
+                            <input id="display_people_columns_checkbox" type="checkbox" />
+                            <label for="display_people_columns_checkbox">{% trans "People" %}</label>
+                        </span>
+                        <span class="span2">
+                            <input id="display_est_date_columns_checkbox" type="checkbox" />
+                            <label for="display_est_date_columns_checkbox">{% trans "Estimate Dates" %}</label>
+                        </span>
+                        <span class="span2">
+                            <input id="display_job_date_columns_checkbox" type="checkbox" />
+                            <label for="display_job_date_columns_checkbox">{% trans "Job Dates" %}</label>
+                        </span>
+                        <span class="span4">
+                            <a href="{% url 'via_job_create' %}"
+                               class="btn btn-primary start_job_button"><i
+                                    class="fa fa-plus-circle fa-white"></i> {% trans "Start Estimate" %}
+                            </a>
+                            <a href="{% url 'via_jobs_status_list_export' 'all' %}?q={{ search_query|urlencode }}"
+                               class="btn"><i class="fa fa-cloud-download fa-white"></i> {% trans "Export" %}
+                            </a>
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="table-wrapper">
+                <table class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th class="col col-warnings col-fa-only"><i class="fa fa-info-circle" title="{% trans "Information" %}"></i></th>
+                        <th class="col col-job-id"><span>{% trans "Job" %}</span></th>
+                        <th class="col col-workflow">{% trans "Workflow" %}</th>
+                        <th class="col col-via-instructions col-fa-only"><i class="fa fa-comments-o" title="{% trans "Via Instructions" %}"></i></th>
+                        <th class="col col-company">{% trans "Company" %}</th>
+                        <th class="col col-file">{% trans "File" %}</th>
+                        <th class="col col-source">{% trans "Source" %}</th>
+                        <th class="col col-target">{% trans "Target(s)" %}</th>
+                        <th class="col col-price col-optional">{% trans "Price" %}</th>
+                        <th class="col col-requester col-optional">{% trans "Requester" %}</th>
+                        <th class="col col-pm col-optional">{% trans "PM" %}</th>
+                        <th class="col col-ae col-optional">{% trans "AE" %}</th>
+                        <th class="col col-tsg col-optional">{% trans "TSG" %}</th>
+                        <th class="col col-estimate-number col-optional">{% trans "Estimate #" %}</th>
+                        <th class="col col-estimate-due col-optional">{% trans "Estimate" %}</th>
+                        <th class="col col-estimated col-optional">{% trans "Estimated" %}</th>
+                        <th class="col col-started col-optional">{% trans "Started" %}</th>
+                        <th class="col col-due col-optional">{% trans "Due" %}</th>
+                        <th class="col col-delivered col-optional">{% trans "Delivered" %}</th>
+                        <th class="col col-completed col-optional">{% trans "Completed" %}</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        {% for project in project_list %}
+                            {% with warnings=project.warnings %}
+                                <tr class="
+                                    {% if project.is_completed_status %}
+                                    info
+                                    {% elif project.is_canceled_status or project.is_hold_status %}
+                                    warning
+                                    {% elif project.is_created_status and warnings %}
+                                    error
+                                    {% elif project.is_queued_status or project.is_created_status or project.is_quoted_status %}
+
+                                    {% elif warnings %}
+                                    error
+                                    {% else %}
+                                    success
+                                    {% endif %}
+                                    ">
+                                    <td nowrap class="col col-warnings col-fa-only">
+                                        {% if warnings %}
+                                            <i class="{{ project.warnings_icon }}" title="{{ warnings }}"></i>
+                                        {% endif %}
+                                        {% if project.approved  %}
+                                            <i class="fa fa-check-circle" title="{% trans "Approved" %}"></i>
+                                        {% endif %}
+                                        {% if project.is_express_speed %}
+                                            <i class="fa fa-rocket" title="{% trans "Express" %}"></i>
+                                        {% endif %}
+                                        {% if project.is_auto_estimate %}
+                                            <i class="fa fa-cogs" title="{% trans "Automatic Estimate" %}"></i>
+                                        {% endif %}
+                                        {% if project.is_restricted_job  %}
+                                            <i class="fa fa-user-secret" title="{% trans "Restricted Access" %}"></i>
+                                        {% endif %}
+                                        {% if project.internal_via_project  %}
+                                            <i class="fa fa-ban" title="{% trans "No client view" %}"></i>
+                                        {% endif %}
+                                        {% for id, value in service.iteritems %}
+                                             {% if id == project.id %}
+                                                <i class="fa fa-cog" title="{% trans value %}"></i>
+                                             {% endif %}
+                                        {% endfor %}
+                                    </td>
+                                    <td class="col col-job-id">
+                                        <a href="{% url 'via_job_detail_overview' project.id %}"><span>{{ project.job_number }}</span></a>
+                                    </td>
+                                    <td class="col col-workflow">
+                                        <i class="{{ project.workflow.icon }}"></i>
+                                        {{ project.workflow.text }}
+                                    </td>
+                                    <td class="col col-via-instructions col-fa-only">
+                                        {% if project.instructions_via %}
+                                            <i class="fa fa-comments-o instructions" data-container="body" data-toggle="popover" data-placement="top" data-content="{{ project.instructions_via|striptags|truncatechars:200 }}"></i>
+                                        {% endif %}
+                                    </td>
+                                    <td class="col col-company" title="{{ project.client }}">{{ project.client|truncatechars:10 }}</td>
+                                    <td class="col col-file">
+                                        {% with source_files=project.kit.source_files %}
+                                        {% for asset in source_files %}
+                                            {% if source_files|length == 1 %}
+                                                <span>{{ asset.short_name  }}</span>
+                                            {% else %}
+                                                {% if forloop.first %}
+                                                <span class="table-cell-dropdown-toggle">
+                                                    {{ asset.short_name }}
+                                                    <i class="fa fa-caret-down"></i>
+                                                </span>
+                                                {% else %}
+                                                <span class="table-cell-additional-item">
+                                                    {{ asset.short_name }}
+                                                </span>
+                                                {% endif %}
+                                            {% endif %}
+                                        {% endfor %}
+                                        {% endwith %}
+                                    </td>
+                                    <td class="col col-source">{{ project.source_locale }}</td>
+                                    <td class="col col-target">
+                                        {% for target in project.target_locales.all %}
+                                        {% if project.target_locales.all|length == 1 %}
+                                            <span>{{ target }}</span>
+                                        {% else %}
+                                            {% if forloop.first %}
+                                            <span class="table-cell-dropdown-toggle">
+                                                {{target}}
+                                                <i class="fa fa-caret-down"></i>
+                                            </span>
+                                            {% else %}
+                                            <span class="table-cell-additional-item">
+                                                {{ target }}
+                                            </span>
+                                            {% endif %}
+                                        {% endif %}
+                                        {% endfor %}
+                                    </td>
+                                    <td class="col col-price col-optional">
+                                        {% with project_price=project.price %}
+                                            {% if project_price %}
+                                                {{ project_price|currency }}
+                                            {% else %}
+                                                {% trans "--" %}
+                                            {% endif %}
+                                        {% endwith %}
+                                    </td>
+                                    <td class="col col-requester col-optional" title="{{ project.client_poc }}">{{ project.client_poc|default_if_none:""|truncatechars:10 }}</td>
+                                    <td class="col col-pm col-optional" title="{{ project.primary_pm }}">{{ project.primary_pm|default_if_none:""|truncatechars:10 }}</td>
+                                    <td class="col col-ae col-optional" title="{{ project.account_executive }}">{{ project.account_executive|default_if_none:""|truncatechars:10 }}</td>
+                                    <td class="col col-tsg col-optional" title="{{ project.estimator }}">{{ project.estimator|default_if_none:""|truncatechars:10 }}</td>
+                                    <td class="col col-estimate-number col-optional" title="{{ project.jams_estimateid }}">{{ project.jams_estimateid|default_if_none:""|truncatechars:10 }}</td>
+                                    <td class="col col-estimate-due col-optional">{{ project.quote_due|date:"SHORT_DATE_FORMAT" }}</td>
+                                    <td class="col col-estimated col-optional">{{ project.quoted|date:"SHORT_DATE_FORMAT" }}</td>
+                                    <td class="col col-started col-optional">{{ project.started_timestamp|date:"SHORT_DATE_FORMAT" }}</td>
+                                    <td class="col col-due col-optional">{{ project.due|date:"SHORT_DATE_FORMAT" }}</td>
+                                    <td class="col col-delivered col-optional">{{ project.delivered|date:"SHORT_DATE_FORMAT" }}</td>
+                                    <td class="col col-completed col-optional">{{ project.completed|date:"SHORT_DATE_FORMAT" }}</td>
+                                </tr>
+                            {% endwith %}
+                        {% empty %}
+                            <tr><td colspan="100%" style="text-align: left">{% trans "No Jobs" %}</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <div class="pagination pagination-centered">
+                {% bootstrap_paginate page_obj range=10 centered="true" %}
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+    $(document).ready(function(){
+        $("i.instructions").popover({'trigger':'hover'});
+    });
+    </script>
+{% endblock %}

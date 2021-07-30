@@ -1,0 +1,43 @@
+{% load comments i18n %}
+{% load widget_tweaks %}
+<form novalidate action="{% comment_form_target %}" method="post">{% csrf_token %}
+<input type="hidden" name="project_manager_id" value="{{ project.project_manager_id }}"/>
+<input type="hidden" name="client_poc_id" value="{{ project.client_poc_id }}"/>
+<input type="hidden" name="comment_user_type" value="{{ comment_user_type }}"/>
+<input type="hidden" name="vendor_task" value="{{ task.id }}"/>
+<input type="hidden" name="redirect_url" value="{{ request.path_info }}"/>
+  {% if next %}
+    <div><input type="hidden" name="next" value="{{ next }}"/></div>{% endif %}
+  {% for field in form %}
+    {% if field.is_hidden %}
+      <div>{{ field }}</div>
+    {% else %}
+      {% if field.errors %}{{ field.errors }}{% endif %}
+      <p
+              {% if field.errors %} class="error"{% endif %}
+              {% ifequal field.name "honeypot" %} style="display:none;"{% endifequal %}>
+            {% ifequal comment_user_type "client" %}
+            {{ field.label_tag }} {{ field|attr:'class:client_comment' }}
+          {% else %}
+                {% ifequal comment_user_type "vendor" %}
+            {{ field.label_tag }} {{ field|attr:'class:vendor_comment' }}
+          {% else %}
+              {{ field.label_tag }} {{ field }}
+          {% endifequal %}
+          {% endifequal %}
+{#        {{ field.label_tag }} {{ field }}#}
+      </p>
+    {% endif %}
+  {% endfor %}
+
+{% if comment_user_type %}
+  <p class="{{ comment_user_type }}_submit" id="comment_submit">
+    <input type="submit" name="post" class="submit-post" value="{% trans "Post" %}"/>
+  </p>
+{% else %}
+    <p class="submit" id="comment_submit">
+    <input type="submit" name="post" class="submit-post" value="{% trans "Post" %}"/>
+  </p>
+{% endif %}
+</form>
+

@@ -1,0 +1,79 @@
+{% load i18n %}
+{% load bootstrap %}
+{#{% load url from future %}#}
+{% load widget_tweaks %}
+{% load currency_filter %}
+
+{% block content_header %}
+{% endblock %}
+
+{% block content %}
+    <div id="mbd-edit-{{ analyses.translation_task_client_price_id }}" class="delivery-form">
+    <div class="row-fluid">
+        <div class="span6 offset4">
+            <h3>{% blocktrans %}Edit MBD %:{% endblocktrans %}</h3>
+        </div>
+        <div class="span4 offset4">
+            <form novalidate action="" method="post" class="form-horizontal">
+                {% csrf_token %}
+                <input id="id_mbd" name="mbd_edit" type="hidden" value={{ analyses.translation_task_client_price_id }}>
+                <div class="form-group">
+                    <label class="control-label " for="id_guaranteed">{% blocktrans %}Perfect{% endblocktrans %}</label>
+                    <div class="">
+                        <input class=" form-control" id="id_guaranteed" name="guaranteed" type="number" min="0" max="1" step="any" value="{{ analyses.mbd_total_guaranteed }}" required >
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label " for="id_exact">{% blocktrans %}Exact{% endblocktrans %}</label>
+                    <div class="">
+                        <input class=" form-control" id="id_exact" name="exact" type="number" min="0" max="1" step="any" value="{{ analyses.mbd_total_exact }}" required >
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label " for="id_duplicate">{% blocktrans %}Reps{% endblocktrans %}</label>
+                    <div class="">
+                        <input class=" form-control" id="id_duplicate" name="duplicate" type="number" min="0" max="1" step="any" value="{{ analyses.mbd_total_duplicate }}" required >
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label " for="id_fuzzy9599">{% blocktrans %}95-99{% endblocktrans %}</label>
+                    <div class="">
+                        <input class=" form-control" id="id_fuzzy9599" name="fuzzy9599" type="number" min="0" max="1" step="any" value="{{ analyses.mbd_total_fuzzy9599 }}" required >
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label " for="id_fuzzy8594">{% blocktrans %}85-94{% endblocktrans %}</label>
+                    <div class="">
+                        <input class=" form-control" id="id_fuzzy8594" name="fuzzy8594" type="number" min="0" max="1" step="any" value="{{ analyses.mbd_total_fuzzy8594 }}" required >
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label " for="id_fuzzy7584">{% blocktrans %}75-84{% endblocktrans %}</label>
+                    <div class="">
+                        <input class=" form-control" id="id_fuzzy7584" name="fuzzy7584" type="number" min="0" max="1" step="any" value="{{ analyses.mbd_total_fuzzy7584 }}" required >
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label " for="id_fuzzy5074">{% blocktrans %}50-74{% endblocktrans %}</label>
+                    <div class="">
+                        <input class=" form-control" id="id_fuzzy5074" name="fuzzy5074" type="number" min="0" max="1" step="any" value="{{ analyses.mbd_total_fuzzy5074 }}" required >
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label " for="id_no_match">{% blocktrans %}No Match{% endblocktrans %}</label>
+                    <div class="">
+                        <input class=" form-control" id="id_no_match" name="no_match" type="number" min="0" max="1" step="any" value="{{ analyses.mbd_total_no_match }}" required >
+                    </div>
+                </div>
+                <span>&nbsp;</span>
+                <div>
+                    <button type="submit" class="btn btn-primary">{% blocktrans %}Save{% endblocktrans %}</button>
+                    <a href="{% url 'via_job_detail_estimate' project.id  %}?active_tab=analysis" class="btn">{% blocktrans %}Close{% endblocktrans %}</a>
+                </div>
+            </form>
+
+        </div>
+    </div>
+    <br/>
+    </div>
+{% endblock %}

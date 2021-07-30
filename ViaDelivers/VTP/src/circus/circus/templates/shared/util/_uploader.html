@@ -1,0 +1,23 @@
+{#{% load url from future %}#}
+<div>
+    <div id="fine-uploader" style="width: 100%;"></div>
+
+    {% for asset in files %}
+        {% if forloop.first %}
+            <ul class="qq-upload-list-selector qq-upload-list" style="text-align: center;">
+        {% endif %}
+                <li>
+                    <span class="qq-upload-file-selector qq-upload-file"><div><a href="{% url 'download_asset' project.id asset.id %}" class="filename">{{ asset }}</a></div></span>
+                    <span class="qq-upload-size-selector qq-upload-size">
+                        {% if asset.orig_file %}
+                            {{ asset.orig_file.size|filesizeformat }}
+                        {% endif %}
+                    </span>
+                    {# _uploader_script binds remote-asset-link to make this a POST, not GET. #}
+                    <span class="remove-button"><a class='remove-asset-link' href="{% url 'client_delete_asset' asset.id %}"><i class="fa fa-times"></i></a></span>
+                </li>
+        {% if forloop.last %}
+            </ul>
+        {% endif %}
+    {% endfor %}
+</div>

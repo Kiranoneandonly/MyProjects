@@ -1,0 +1,36 @@
+{% extends "via/projects/detail/base.html" %}
+{% load bootstrap %}
+{% load i18n %}
+
+{% block content %}
+    {% if can_edit_job and project.show_transitions_header_task %}
+        {% include 'via/projects/detail/_transitions_header.html' %}
+    {% endif %}
+    <div class="tabbable tabs-left"> <!-- Only required for left/right tabs -->
+            <ul class="nav nav-tabs">
+                <li class="active"><a href="#tasks" data-toggle="tab"><i class="fa fa-tasks"></i> <b>{{ service }}</b></a></li>
+            </ul>
+        <div class="tab-content">
+            <div class="tab-pane active" id="tasks">
+                <div class="row-fluid widget-row">
+                    <div class="span12">
+                        <div class="row-fluid">
+                            <div class="dashWidget noPadding">
+                                {% for task in service_tasks %}
+                                    <h4><i class="fa fa-bolt"></i>{{ task.service.target }}</h4>
+                                    {% include "via/projects/tasks/_task_block.html" %}
+                                {% empty %}
+                                    <li class="list-box">
+                                        <p>{% trans "No Tasks" %}</p>
+                                    </li>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br/><br/>
+{% endblock %}
+

@@ -1,0 +1,137 @@
+form.no-layout { margin: 0 }
+.payment-info h4 { display:inline; margin-right: 70px }
+.payment-info input[type=radio] { margin-right: 3px; margin-bottom: 9px }
+.payment-info .card-fields { margin-top: 20px }
+
+.expirydatefield > select { width: 110px }
+
+.uploadContentWidget + .phi-warning {
+    margin-top: 4ex;
+    margin-bottom: 0;
+}
+
+/* ESTIMATE TABLE
+ * *************/
+
+table.estimate-table td { padding: 4px }
+table.estimate-table tr.totals > td { padding-top: 8px; font-weight: bold }
+
+.task-group-toggle, .task-asset-toggle {
+    margin-left: 10px;
+    color: #00AADD;
+}
+
+.task-summary-row {
+    background: #F5F5F5;
+}
+
+.task-asset-row {
+    background: #CDCDCD;
+}
+
+.breadcrumb .estimate-type {
+    font-weight: bold;
+    font-size: 18px;
+    float: right;
+}
+
+.table-fixed {
+    table-layout: fixed;
+}
+
+.order-approval-container .order-approval-header {
+    margin-bottom: 10px;
+    clear: both;
+}
+.order-approval-container .order-approval-header > span {
+    margin-right: 20px;
+}
+.order-approval-container .task-asset-row td:first-child span {
+    margin-left: 40px;
+}
+.target-total-row {
+    font-weight: bold;
+}
+
+/* OTHER STUFF
+ * **************/
+
+.order-approval-container .sub {
+    color: gray;
+    font-weight: normal;
+}
+.order-approval-container .separator,.order-approval-container .separator td {
+    border-right: none !important;
+    border-left: none !important;
+}
+
+.dashHead .modal-toggle, .dashHead .file_help  {
+    float: right;
+    margin-right: -5px;
+}
+
+.popover{
+    max-width: 425px;
+}
+
+.popover-title {
+    font-weight: bold;
+}
+
+.popover-content {
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-weight: normal;
+    font-size: 14px;
+    line-height: 18px;
+}
+.dashHead .fa-question {
+    margin: 0;
+}
+.chooseServiceWidget ul {
+    margin: 0;
+    list-style-type: none;
+}
+.reviewEstimateWidget .btn {
+    float: right;
+}
+
+
+/* CC Payment form */
+
+.cc_form .price-label {
+    font-weight: bolder;
+}
+
+.cc_form .price {
+    display: block;
+    font-weight: bolder;
+    font-size: larger;
+    padding-top: 1ex;
+    margin-top: 1ex;
+    border-top: thin solid black;
+}
+
+code.pnref {
+    background: inherit;
+    border: none;
+    color: inherit;
+    font-family: monospace;
+    font-size: large;
+}
+
+
+
+@media (max-width: 979px) {
+
+    .footer {
+        height: 60px;
+    }
+
+    body {
+        padding-bottom: 65px;
+    }
+}
+
+.restrict_access_help, .secure_job_help{
+    position: relative;
+}

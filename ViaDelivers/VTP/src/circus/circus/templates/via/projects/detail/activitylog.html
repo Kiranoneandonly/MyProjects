@@ -1,0 +1,56 @@
+{% extends "via/projects/detail/base.html" %}
+{% load i18n %}
+
+{% block content %}
+{% if can_access_secure_job %}
+    <div class="row-fluid">
+        <div class="tabbable tabs-left span12">
+          <ul class="nav nav-tabs">
+            <li{% if active_tab == 'job_activity' %} class="active"{% endif %}><a href="#tabJob" data-toggle="tab">{% trans "Jobs" %}</a></li>
+            <li{% if active_tab == 'large_job_approvals' %} class="active"{% endif %}><a href="#tabApprovals" data-toggle="tab">{% trans "Job Approvals" %}</a></li>
+            <li{% if active_tab == 'tasks_activity' %} class="active"{% endif %}><a href="#tabTasks" data-toggle="tab">{% trans "Tasks" %}</a></li>
+            <li{% if active_tab == 'po_activity' %} class="active"{% endif %}><a href="#tabPO" data-toggle="tab">{% trans "POs" %}</a></li>
+            <li{% if active_tab == 'files_activity' %} class="active"{% endif %}><a href="#tabFiles" data-toggle="tab">{% trans "Translation Task Files" %}</a></li>
+            <li{% if active_tab == 'ntt_files_activity' %} class="active"{% endif %}><a href="#tabNttFiles" data-toggle="tab">{% trans "Non-Translation Task Files" %}</a></li>
+            <li{% if active_tab == 'reference_files_activity' %} class="active"{% endif %}><a href="#tabReference" data-toggle="tab">{% trans "Supplier Reference Files" %}</a></li>
+            <li{% if active_tab == 'background_tasks' %} class="active"{% endif %}><a href="#tabbgtask" data-toggle="tab">{% trans "Background Tasks" %}</a></li>
+          </ul>
+          <div class="tab-content">
+            {# moving this to separate URL will drop loading times by ~1 second #}
+            <div class="tab-pane{% if active_tab == 'job_activity' %} active{% endif %}" id="tabJob">
+                {% include 'via/projects/detail/activitylog_job.html' %}
+            </div>
+            <div class="tab-pane{% if active_tab == 'large_job_approvals' %} active{% endif %}" id="tabApprovals">
+                {% include 'via/projects/detail/activitylog_large_job_approvals.html' %}
+            </div>
+            <div class="tab-pane{% if active_tab == 'tasks_activity' %} active{% endif %}" id="tabTasks">
+                {% include 'via/projects/detail/activitylog_tasks.html' %}
+            </div>
+            <div class="tab-pane{% if active_tab == 'po_activity' %} active{% endif %}" id="tabPO">
+                {% include 'via/projects/detail/activitylog_po.html' %}
+            </div>
+            <div class="tab-pane{% if active_tab == 'files_activity' %} active{% endif %}" id="tabFiles">
+                {% include 'via/projects/detail/activitylog_files.html' %}
+            </div>
+            <div class="tab-pane{% if active_tab == 'ntt_files_activity' %} active{% endif %}" id="tabNttFiles">
+                {% include 'via/projects/detail/activitylog_ntt_files.html' %}
+            </div>
+            <div class="tab-pane{% if active_tab == 'reference_files_activity' %} active{% endif %}" id="tabReference">
+                {% include 'via/projects/detail/activitylog_reference_files.html' %}
+            </div>
+            <div class="tab-pane{% if active_tab == 'background_tasks' %} active{% endif %}" id="tabbgtask">
+                {% include 'via/projects/detail/activitylog_bgtasks.html' %}
+            </div>
+          </div>
+        </div>
+    </div>
+{% endif %}
+{% endblock %}
+
+{% block script %}
+    {{ block.super }}
+    <script type="text/javascript" src="{{ STATIC_URL }}shared/js/filters/accordion-icon-switch.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}via/js/estimate.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}via/js/transitions_header.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}shared/js/disable_after_click.js"></script>
+{% endblock %}

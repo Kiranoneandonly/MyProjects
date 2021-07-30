@@ -1,0 +1,61 @@
+{% extends "via/projects/detail/base.html" %}
+{% load i18n %}
+
+{% block content %}
+{% if can_access_secure_job %}
+    <div class="row-fluid">
+        <div class="tabbable tabs-left span12">
+          <ul class="nav nav-tabs">
+            <li{% if active_tab == 'source' %} class="active"{% endif %}><a href="#tabSource" data-toggle="tab">{% trans "Source" %}
+                {% if project.kit.source_files  %}
+                ({{ project.kit.source_files.count }})
+                {% endif %}
+            </a></li>
+            <li{% if active_tab == 'job_options' %} class="active"{% endif %}><a href="#tabJobOptions" data-toggle="tab">{% blocktrans %}File Options{% endblocktrans %}</a></li>
+            <li{% if active_tab == 'reference' %} class="active"{% endif %}><a href="#tabReference" data-toggle="tab">{% trans "Job Reference" %}
+                {% if project.kit.reference_files  %}
+                ({{ project.kit.reference_files.count }})
+                {% endif %}
+            </a></li>
+            <li{% if active_tab == 'loc_kit' %} class="active"{% endif %}><a href="#tabLocKit" data-toggle="tab">{% blocktrans %}Loc Kit{% endblocktrans %}</a></li>
+            <li{% if active_tab == 'glossary' %} class="active"{% endif %}><a href="#tabGlossary" data-toggle="tab">{% trans "Glossary / Style" %}</a></li>
+            {% if project.is_completed_status %}
+            <li{% if active_tab == 'post_delivery' %} class="active"{% endif %}><a href="#tabPostDelivery" data-toggle="tab">{% trans "Post-Delivery" %}</a></li>
+            {% endif %}
+          </ul>
+          <div class="tab-content">
+            <div class="tab-pane{% if active_tab == 'post_delivery' %} active{% endif %}" id="tabPostDelivery">
+                {% include 'via/projects/kits/_post_delivery_files.html' %}
+            </div>
+
+            <div class="tab-pane{% if active_tab == 'job_options' %} active{% endif %}" id="tabJobOptions">
+                {% include 'via/projects/kits/job_options_list.html' %}
+            </div>
+
+            <div class="tab-pane{% if active_tab == 'loc_kit' %} active{% endif %}" id="tabLocKit">
+                {% include 'via/projects/kits/_loc_kit_list.html' %}
+            </div>
+            <div class="tab-pane{% if active_tab == 'glossary' %} active{% endif %}" id="tabGlossary">
+                {% include 'via/projects/kits/_client_reference_files.html' %}
+            </div>
+            {# moving this to separate URL will drop loading times by ~1 second #}
+            <div class="tab-pane{% if active_tab == 'reference' %} active{% endif %}" id="tabReference">
+                {% include 'via/projects/kits/_reference_list.html' %}
+            </div>
+            <div class="tab-pane{% if active_tab == 'source' %} active{% endif %}" id="tabSource">
+                {% include 'via/projects/kits/_source_list.html' %}
+            </div>
+          </div>
+        </div>
+    </div>
+{% endif %}
+{% endblock %}
+
+{% block script %}
+    <script type="text/javascript" src="{{ STATIC_URL }}shared/js/jquery.lightbox_me.js"></script>
+    {{ block.super }}
+    <script type="text/javascript" src="{{ STATIC_URL }}shared/js/filters/accordion-icon-switch.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}via/js/estimate.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}via/js/transitions_header.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}shared/js/disable_after_click.js"></script>
+{% endblock %}

@@ -1,0 +1,144 @@
+{% extends "via/theme_base.html" %}
+{% load i18n %}
+{#{% load url from future %}#}
+{% load widget_tweaks %}
+
+{% block title %}{{ vendor.name }} {% trans "Rates" %}{% endblock %}
+
+{% block css %}
+{% endblock %}
+
+{% block content_header %}
+    <h1>{{ vendor.name }} - {% trans "Rates" %}</h1>
+{% endblock %}
+
+{% block content %}
+    <div class="row-fluid">
+        <div class="span12">
+            <form novalidate action="" method="get">
+                {{ form.non_field_errors }}
+                <div class="row-fluid">
+                    <div class="span4">
+                        {{ form.vertical.errors }}
+                        {{ form.vertical.label_tag }} {% trans "Leave blank to set default rates." %}
+                    </div>
+                    <div class="span4">
+
+                    </div>
+                </div>
+                <div class="row-fluid">
+                    <div class="span4">
+                        {{ form.vertical }}
+                    </div>
+                    <div class="span4">
+
+                    </div>
+                </div>
+                <div class="row-fluid">
+                    <div class="span4">
+
+                    </div>
+                </div>
+                <div class="row-fluid">
+                    <div class="span4">
+                        {{ form.service_type.errors }}
+                        {{ form.service_type.label_tag }}
+                        {{ form.service_type }}
+                    </div>
+                    <div class="span4">
+                        {{ form.unit_of_measure.errors }}
+                        {{ form.unit_of_measure.label_tag }}
+                        {{ form.unit_of_measure }}
+                    </div>
+                </div>
+                <div class="row-fluid">
+                    <div class="span4">
+                        {{ form.source.errors }}
+                        {{ form.source.label_tag }}
+                        {{ form.source }}
+                    </div>
+                    <div class="span4">
+                        {{ form.target.errors }}
+                        {{ form.target.label_tag }}
+                        {{ form.target }}
+                    </div>
+                    <div class="span4">
+                    </div>
+                </div>
+                <div class="row-fluid">
+                    <div class="span4">
+
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary">{% trans "Show Rates For Filters" %}</button>
+            </form>
+            <div class="widget-box">
+                <div class="widget-title">
+                    <span class="icon"><i class="fa fa-th"></i></span>
+                    <h5>{% trans "Rate sheet for selected attributes" %}</h5>
+                </div>
+
+                <div class="widget-content nopadding">
+                    <table class="table table-bordered table-striped">
+                        <thead>
+                        <tr>
+                            <th>{% trans "Vertical" %}</th>
+                            <th>{% trans "Service" %}</th>
+                            <th>{% trans "Unit of Measure" %}</th>
+                            <th>{% trans "Source" %}</th>
+                            <th>{% trans "Target" %}</th>
+                            <th>{% trans "Rate" %}</th>
+                            <th>{% trans "If Not Set" %}</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for service in services %}
+                            <tr>
+                                <td>{{ service.vertical }}</td>
+                                <td>{{ service.service_type }}</td>
+                                <td>{{ service.unit_of_measure }}</td>
+                                <td>{{ service.source }}</td>
+                                <td>{{ service.target }}</td>
+                                <td>
+                                    <div class="control-group">
+                                        <input class="price-field" type="text" {% for key,value in service.price.items %}{{ key }}="{{ value }}"{% endfor %}>
+                                    </div>
+                                </td>
+                                <td>
+                                    {% if service.default_price %}
+                                        {{ service.default_price }}
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block script %}
+    <script>
+        $(document).ready(function(){
+{#            $('.price-field').change(function(e) {#}
+{#                var that = this;#}
+{#                $.ajax({#}
+{#                    type: 'POST',#}
+{#                    url: '{% url 'vendors_rate_update' %}',#}
+{#                    data: {#}
+{#                        service: $(this).attr('name'),#}
+{#                        rate: $(this).val(),#}
+{#                        vendor: {{ vendor.id }}#}
+{#                    }#}
+{#                }).success( function(data){#}
+{#                            $(that).parent().removeClass('error');#}
+{#                            $(that).val(data);#}
+{#                        }).error( function(jqXHR, textStatus, errorThrown){#}
+{#                            $(that).parent().addClass('error');#}
+{#                        });#}
+{#            });#}
+        });
+    </script>
+{% endblock %}

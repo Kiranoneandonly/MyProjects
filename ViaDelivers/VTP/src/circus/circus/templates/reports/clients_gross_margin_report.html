@@ -1,0 +1,119 @@
+{% extends template %}
+{% load i18n %}
+{% load bootstrap %}
+{% load static %}
+
+{% block title %}{% blocktrans %}Reporting Dashboard{% endblocktrans %}{% endblock title %}
+{% block content %}
+
+    <div class="breadcrumb">
+        <span><i class="fa fa-home"></i></span>
+        <span><a href="{% url dash_board %}">{% trans "Home" %}</a></span>
+        <span class="divider"><i class="fa fa-chevron-right"></i></span>
+        <span class="active">{% trans "Reports" %}</span>
+        <span class="divider"><i class="fa fa-chevron-right"></i></span>
+        <span class="active">{% trans "Gross Margin Analysis - Clients" %}</span>
+        {{ block.super }}
+    </div>
+    <div class="row-fluid">
+        <div class="span12">
+        {% for key,value in jobs_dict.items %}
+            <div class="row-fluid">
+                <div class="span12 pagination-centered">
+                    <div id="costs{{ key }}" class="hc_report_chart"> </div>
+                </div>
+            </div>
+             <div class="row-fluid">
+                <row class="span12 pagination-centered">
+                    <h4>
+                        {% if request.user.is_client %}
+                            <a href="{% url 'jobs_gross_margin_report' key %}">{% trans "Jobs Breakdown" %}</a>
+                        {% else %}
+                            <a href="{% url 'jobs_gross_margin_report' key %}">{% trans "Jobs Breakdown" %}</a>
+                        {% endif %}
+                    </h4>
+                </row>
+            </div>
+            {% if not forloop.last %}
+                <hr/>
+            {% endif %}
+        {% endfor %}
+        </div>
+    </div>
+
+    <br/>
+
+<script type="text/javascript" src='{% static 'js/highcharts.js' %}'></script>
+<script>
+ $(function () {
+     {% for key,value in jobs_dict.items %}
+        $('#costs{{ key }}').highcharts({
+            chart: {
+                borderColor: '#CCCCCC',
+                borderWidth: 1,
+                type: 'line',
+                marginRight: 75,
+                marginBottom: 25
+            },
+            colors: [
+               '#492970',
+               '#f28f43',
+               '#77a1e5',
+               '#c42525',
+               '#a6c96a',
+               '#2f7ed8',
+               '#0d233a',
+               '#8bbc21',
+               '#910000',
+               '#1aadce'
+            ],
+            credits: {
+                enabled: false
+            },
+            title: {
+                text: '{{ value.name.0|safe }}: Total Gross Margin',
+                x: -20 //center
+            },
+            subtitle: {
+                text: '',
+                x: -20
+            },
+            xAxis: {
+                categories: {{ value.month|safe }}
+            },
+            yAxis: {
+                title: {
+                    text: ''
+                },
+                plotLines: [{
+                    value: 0,
+                    width: 1,
+                    color: '#808080'
+                }]
+            },
+            tooltip: {
+                valueSuffix: ''
+            },
+            legend: {
+                layout: 'vertical',
+                align: 'right',
+                verticalAlign: 'top',
+                x: -10,
+                y: 100,
+                borderWidth: 0
+            },
+            series: [{
+                name: 'Total Gross Margin',
+                data: {{ value.total_gross_margin|safe }}
+            }]
+        });
+
+
+
+         {% endfor %}
+
+    });
+
+    </script>
+
+{% endblock content %}

@@ -1,0 +1,258 @@
+{% extends "via/theme_base.html" %}
+{% load i18n %}
+{% load humanize %}
+{% load currency_filter %}
+{#{% load url from future %}#}
+{% load widget_tweaks %}
+
+{% block title %}{% trans "Supplier" %} - {{ vendor.name }}{% endblock %}
+
+{% block css %}
+{% endblock %}
+
+{% block content_header %}
+{% endblock %}
+
+{% block content %}
+    <ul class="breadcrumb">
+        <li><i class="fa fa-home"></i> <a href="{% url 'via_dashboard' %}">{% trans "Home" %}</a> <span class="divider"><i class="fa fa-chevron-right"></i></span></li>
+        <li><a href="{% url 'vendors_list' %}">{% trans "Suppliers" %}</a> <span class="divider"><i class="fa fa-chevron-right"></i></span></li>
+        <li class="active">{{ vendor.name }}</li>
+    </ul>
+    <div class="row-fluid">
+        <div class="span6">
+            <p>{% trans "Name:" %} <b>{{ vendor.name }}</b></p>
+        </div>
+        <div class="span6">
+            <p>{% trans "Description:" %} {{ vendor.description }}</p>
+        </div>
+    </div>
+    <hr/>
+    <div class="row-fluid">
+        <div class="span12">
+            <div class="widget-box">
+                <div class="tabbable"> <!-- Only required for left/right tabs -->
+                  <ul class="nav nav-tabs">
+                    <li class="active"><a href="#tab_over" data-toggle="tab">{% trans "Overview" %}</a></li>
+                    <li><a href="#tab_cont" data-toggle="tab">{% trans "Contacts" %}</a></li>
+                    <li><a href="#tab_trans" data-toggle="tab">{% blocktrans %}Translation Rates{% endblocktrans %}</a></li>
+                    <li><a href="#tab_serv" data-toggle="tab">{% blocktrans %}Service Rates{% endblocktrans %}</a></li>
+                    <li><a href="#tab_po" data-toggle="tab">{% blocktrans %}Purchase Orders{% endblocktrans %}</a></li>
+                  </ul>
+                  <div class="tab-content">
+                    <div class="tab-pane active" id="tab_over">
+                        <div class="row-fluid">
+                            <div class="span6">
+                                <p>{% trans "Website:" %} {{ vendor.website }}</p>
+                            </div>
+                            <div class="span6">
+                                <p>{% trans "Phone:" %} {{ vendor.phone }}</p>
+                                <p>{% trans "City:" %} {{ vendor.billing_city }}</p>
+                                <p>{% trans "Country:" %} {{ vendor.billing_country }}</p>
+                            </div>
+                        </div>
+                        <div class="row-fluid">
+                            <div class="span12">
+                                <a class="btn" href="{% url 'vendors_edit' vendor.id %}">{% trans "Edit Supplier Data" %}</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="tab_cont">
+                       <table class="table table-bordered table-hover">
+                            <thead>
+                            <tr>
+                                <th></th>
+                                <th>{% trans "Title" %}</th>
+                                <th>{% trans "First Name" %}</th>
+                                <th>{% trans "Last Name" %}</th>
+                                <th>{% trans "E-mail" %}</th>
+                                <th>{% trans "Phone" %}</th>
+                                <th>{% trans "Mobile" %}</th>
+                                <th>{% trans "Skype" %}</th>
+                                <th>{% trans "IM" %}</th>
+                                <th></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for contact in object.contacts.all %}
+                                <tr>
+                                    <td>
+                                        {% if contact.id %}
+                                            <a href="#"><i class="fa fa-edit"></i></a>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ contact.title }}</td>
+                                    <td>{{ contact.first_name }}</td>
+                                    <td>{{ contact.last_name }}</td>
+                                    <td>{{ contact.email }}</td>
+                                    <td>{{ contact.phone }}</td>
+                                    <td>{{ contact.mobile_phone }}</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td>
+                                        {% if contact.id %}
+                                            <a href="#"><i class="fa fa-times"></i></a>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% empty %}
+                                <tr>
+                                    <td colspan="100%">{% blocktrans %}No Contacts{% endblocktrans %}</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                        <a class="btn" href="#">{% trans "Add Contact" %}</a>
+                    </div>
+                    <div class="tab-pane" id="tab_trans">
+                        <table class="table table-bordered table-hover">
+                            <thead>
+                            <tr>
+                                <th></th>
+                                <th>{% trans "Service" %}</th>
+                                <th>{% trans "Vertical" %}</th>
+                                <th>{% trans "Customer" %}</th>
+                                <th>{% trans "Basis" %}</th>
+                                <th>{% trans "Rate" %}</th>
+                                <th>{% trans "New" %}</th>
+                                <th>{% trans "Reps" %}</th>
+                                <th>{% trans "50-74" %}</th>
+                                <th>{% trans "75-84" %}</th>
+                                <th>{% trans "85-94" %}</th>
+                                <th>{% trans "95-99" %}</th>
+                                <th>{% trans "Exact" %}</th>
+                                <th>{% trans "Guarantee" %}</th>
+                                <th>{% trans "Min Fee" %}</th>
+                                <th></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for trans_rate in object.vendortranslationrate_set.all %}
+                                <tr>
+                                    <td>
+                                        {% if trans_rate.id %}
+                                            <a href="#"><i class="fa fa-edit"></i></a>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ trans_rate.service|default_if_none:"" }}</td>
+                                    <td>{{ trans_rate.vertical|default_if_none:"" }}</td>
+                                    <td>{{ trans_rate.client|default_if_none:"" }}</td>
+                                    <td>{{ trans_rate.basis|default_if_none:"" }}</td>
+                                    <td>{{ trans_rate.word_rate }}</td>
+                                    <td>{{ trans_rate.no_match }}</td>
+                                    <td>{{ trans_rate.duplicate }}</td>
+                                    <td>{{ trans_rate.fuzzy5074 }}</td>
+                                    <td>{{ trans_rate.fuzzy7584 }}</td>
+                                    <td>{{ trans_rate.fuzzy8594 }}</td>
+                                    <td>{{ trans_rate.fuzzy9599 }}</td>
+                                    <td>{{ trans_rate.exact }}</td>
+                                    <td>{{ trans_rate.guaranteed }}</td>
+                                    <td>{{ trans_rate.minimum }}</td>
+                                    <td>
+                                        {% if trans_rate.id %}
+                                            <a href="#" data-confirm="{% trans 'Are you sure you want to delete?' %}">
+                                                <i class="fa fa-times"></i>
+                                            </a>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% empty %}
+                                <tr>
+                                    <td colspan="100%">{% blocktrans %}No Rates{% endblocktrans %}</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                        <a class="btn" href="{% url 'vendors_edit_trans_rates' vendor.id %}">{% trans "Add Translation Rate" %}</a>
+                    </div>
+
+                    <div class="tab-pane" id="tab_serv">
+                        <table class="table table-bordered table-hover">
+                            <thead>
+                            <tr>
+                                <th></th>
+                                <th>{% trans "Service" %}</th>
+                                <th>{% trans "Vertical" %}</th>
+                                <th>{% trans "Customer" %}</th>
+                                <th>{% trans "Rate" %}</th>
+                                <th>{% trans "Minimum" %}</th>
+                                <th></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for service in object.vendornontranslationrate_set.all %}
+                                <tr>
+                                    <td>
+                                        {% if service.id %}
+                                            <a href="#"><i class="fa fa-edit"></i></a>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ service.service|default_if_none:"" }}</td>
+                                    <td>{{ service.vertical|default_if_none:"" }}</td>
+                                    <td>{{ service.client|default_if_none:"" }}</td>
+                                    <td>{{ service.unit_cost }}</td>
+                                    <td>{{ service.minimum }}</td>
+                                    <td>
+                                        {% if service.id %}
+                                            <a href="#" data-confirm="{% trans "Are you sure you want to delete?" %}"><i class="fa fa-remove"></i></a>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% empty %}
+                                <tr>
+                                    <td colspan="100%">{% blocktrans %}No Services{% endblocktrans %}</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                        <a class="btn" href="{% url 'vendors_edit_service_rates' vendor.id %}">{% trans "Add Service Rate" %}</a>
+                    </div>
+                    <div class="tab-pane" id="tab_po">
+                       <table class="table table-bordered table-hover">
+                            <thead>
+                            <tr>
+                                <th>{% trans "PO #" %}</th>
+                                <th>{% trans "Task Name" %}</th>
+                                <th>{% trans "Task Status" %}</th>
+                                <th>{% trans "Task Accepted" %}</th>
+                                <th>{% trans "Task Start" %}</th>
+                                <th>{% trans "Task Due" %}</th>
+                                <th>{% trans "Task Complete" %}</th>
+                                <th>{% trans "Total" %}</th>
+{#                                <th>{% trans "Status" %}</th>#}
+{#                                <th>{% trans "Paid" %}</th>#}
+{#                                <th>{% trans "Paid Date" %}</th>#}
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for po in object.vendorpurchaseorder_set.all %}
+                                <tr>
+                                    <td>{{ po.number|default_if_none:"" }}</td>
+                                    <td>{{ po.task|default_if_none:"" }}</td>
+                                    <td>{{ po.task.status|capfirst }}</td>
+                                    <td>{{ po.task.is_accepted }}</td>
+                                    <td>{{ po.task.started_timestamp|default_if_none:"" }}</td>
+                                    <td>{{ po.task.due|default_if_none:"" }}</td>
+                                    <td>{{ po.task.completed_timestamp|default_if_none:"" }}</td>
+                                    <td>{{ po.task.total_cost|currency }}</td>
+{#                                    <td>#}
+{#                                        ##Status###}
+{#                                        {% if po.id %}#}
+{#                                            <a href="#" alt="Download PO"><i class="fa fa-download"></i></a>#}
+{#                                        {% endif %}#}
+{#                                    </td>#}
+                                </tr>
+                            {% empty %}
+                                <tr>
+                                    <td colspan="100%">{% blocktrans %}No Purchase Orders{% endblocktrans %}</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                  </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

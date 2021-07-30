@@ -1,0 +1,45 @@
+{% extends "shared/external/theme_base.html" %}
+{% load i18n %}
+{% load bootstrap %}
+
+{% block title %}{% blocktrans with client_type=client.client_type|capfirst %}New {{ client_type }}{% endblocktrans %}{% endblock %}
+
+{% block css %}{% endblock %}
+{% block search_menu %}{% endblock %}
+{% block login_menu %}{% endblock %}
+
+{% block content_breadcrumb %}{% endblock %}
+
+{% block content_header %}
+    <h1>{% blocktrans with client_type=client.client_type|capfirst %}New {{ client_type }}{% endblocktrans %}</h1>
+{% endblock %}
+
+{% block content %}
+    <br/>
+    <p>
+        {% blocktrans with client_type=client.client_type %}We did not match your email address to any existing record in our VTP system.
+            Please create your {{ client_type }}.{% endblocktrans %}
+    </p>
+    <p>{% blocktrans with client_type=client.client_type %}
+        If your {{ client_type }} already has an account setup on the VTP system, please contact <a href="{{ contactus_form }}" target="_blank">VIA</a>.{% endblocktrans %}
+    </p>
+
+{#    <a class="btn" href="{% url "contact_via" %}">{% blocktrans %}Contact VIA{% endblocktrans %}</a>#}
+
+    <hr class="soften"/>
+
+    <form novalidate class="form-horizontal" method="post" target="">
+        {% csrf_token %}
+        <fieldset>
+            {{ form|bootstrap }}
+        </fieldset>
+        <div class="control-group">
+            <div class="controls">
+                <button type="submit" class="btn btn-primary">{% blocktrans %}Finish Registration{% endblocktrans %}</button>
+            </div>
+        </div>
+    </form>
+{% endblock %}
+
+{% block script %}
+{% endblock %}

@@ -1,0 +1,88 @@
+{% load i18n %}
+{% load bootstrap %}
+{% load circus_loc_kit %}
+
+{% if not project.can_edit_kit %}
+<div class="row-fluid">
+    <p>{% trans "Current project state doesn't allow editing the localization kit" %}</p>
+</div>
+<br/>
+{% endif %}
+
+<div class="row-fluid">
+    <div class="span12">
+        <table class="table table-bordered table-hover">
+        <thead>
+        <tr>
+            <th>{% blocktrans %}Client Reference(s){% endblocktrans %}</th>
+            <th>{% blocktrans %}Reference File Type {% endblocktrans %}</th>
+            <th>{% blocktrans %}Source {% endblocktrans %}</th>
+            <th>{% blocktrans %}Target {% endblocktrans %}</th>
+            {% if project.can_edit_kit %}
+                <th></th>
+            {% endif %}
+        </tr>
+        </thead>
+        <tbody>
+        {% for asset in client_reference_files %}
+            <tr>
+                <td>
+                    {% if asset.file_exists %}
+                        <a href="{% url 'download_client_reference_file' project.id asset.id %}">
+                            {{ asset.orig_name }} <i class="fa fa-download"></i></a>
+{#                            <span class="filesize">({{ asset.orig_file.size | filesizeformat }})</span>#}
+                    {% else %}
+                        {{ asset.orig_name }}
+                    {% endif %}
+                </td>
+                <td>
+                    {{ asset.reference_file_type }}
+                </td>
+                <td>
+                    {{ asset.source.description }}
+                </td>
+                <td>
+                    {{ asset.target.description }}
+                </td>
+                {% if asset.file_exists and project.can_edit_kit %}
+                <td>
+                    <form novalidate name="DELETE_ASSET{{ asset.id }}" action="" method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="asset_id"
+                               value="{{ asset.id }}">
+                        <input type="hidden"
+                               name="delete_glossary_styleguide_ref_file"
+                               value="{{ asset.id }}">
+                        <a type="submit"
+                           class="btn btn-danger pull-right"
+                           href="javascript:document.DELETE_ASSET{{ asset.id }}.submit()"
+                           data-confirm="{% trans "Are you sure you want to Delete File?" %}"
+                                ><i
+                                class="fa fa-times"></i>&nbsp;{% trans "Delete" %}
+                        </a>
+                    </form>
+                </td>
+                {% endif %}
+            </tr>
+        {% empty %}
+            <tr>
+                <td colspan="100%">
+                    <p>{% blocktrans %}No Client Reference files{% endblocktrans %}</p>
+                </td>
+            </tr>
+        {% endfor %}
+{#        {% if client_reference_files.all|length > 1 %}#}
+{#            <tr>#}
+{#                <td colspan="100%">#}
+{#                    <a class="btn btn-primary"#}
+{#                       href="{% url 'glossary_styleguide_files_zip' project.id %}">#}
+{#                        <i class="fa fa-download"></i>#}
+{#                        {% blocktrans %}Download All{% endblocktrans %}#}
+{#                    </a>#}
+{#                </td>#}
+{#            </tr>#}
+{#        {% endif %}#}
+        </tbody>
+        </table>
+    </div>
+</div>

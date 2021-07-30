@@ -1,0 +1,75 @@
+{% load humanize %}{% load currency_filter %}
+
+{% include 'notifications/_email_base_top.html' %}
+
+<table style="font-family: Helvetica, Verdana, Tahoma, Arial, sans-serif; font-size: 100%; line-height: 1.5; width: 100%; margin: 0; padding: 1px;">
+    <tr style="font-family: Helvetica, Verdana, Tahoma, Arial, sans-serif; font-size: 100%; line-height: 1.5; margin: 0; padding: 1px;">
+        <td style="font-family: Helvetica, Verdana, Tahoma, Arial, sans-serif; font-size: 100%; line-height: 1.5; margin: 0; padding: 1px;">
+            <p style="font-family: Helvetica, Verdana, Tahoma, Arial, sans-serif; font-size: 14px; line-height: 1.5; font-weight: normal; margin: 0 0 10px; padding: 1px;">
+                Hi {{ project.client_poc.first_name|safe }},
+            </p>
+            <p style="font-family: Helvetica, Verdana, Tahoma, Arial, sans-serif; font-size: 14px; line-height: 1.5; font-weight: normal; margin: 0 0 10px; padding: 1px;">
+                Your estimate request for Job {{ project.job_number }} is ready.
+            </p>
+            <ul style="font-family: Helvetica, Verdana, Tahoma, Arial, sans-serif; font-size: 12px; line-height: 1.5; font-weight: normal; margin: 0 20px 10px; padding: 1px;">
+                <li style="list-style-type:none;">Requested by {{ project.client_poc.get_full_name|safe }} of {{ project.client.name|safe }}</li>
+                <li style="list-style-type:none;">Notification e-mail: {{ project.client_poc.email }}</li>
+                <li style="list-style-type:none;">Phone: {{ project.client_poc.phone }}</li>
+            </ul>
+            {% if project.project_reference_name %}
+            <ul style="font-family: Helvetica, Verdana, Tahoma, Arial, sans-serif; font-size: 12px; line-height: 1.5; font-weight: normal; margin: 0 20px 10px; padding: 1px;">
+                <li style="list-style-type:none;">Customer Job Reference: {{ project.project_reference_name|safe }}</li>
+            </ul>
+            {% endif %}
+            {% if project.payment_details.ca_invoice_number %}
+            <ul style="font-family: Helvetica, Verdana, Tahoma, Arial, sans-serif; font-size: 12px; line-height: 1.5; font-weight: normal; margin: 0 20px 10px; padding: 1px;">
+                <li style="list-style-type:none;">Customer Purchase Order: {{ project.payment_details.ca_invoice_number|safe }}</li>
+            </ul>
+            {% endif %}
+            <ul style="font-family: Helvetica, Verdana, Tahoma, Arial, sans-serif; font-size: 12px; line-height: 1.5; font-weight: normal; margin: 0 20px 10px; padding: 1px;">
+                <li style="list-style-type:none;">Files included:</li>
+                {% for asset in project.kit.source_files %}
+                    {% if forloop.first %}
+                        <ul style="font-family: Helvetica, Verdana, Tahoma, Arial, sans-serif; font-size: 12px; line-height: 1.5; font-weight: normal; margin: 0 20px 10px; padding: 1px;">
+                    {% endif %}
+                            <li style="list-style-type: square;">{{ asset.orig_name }}</li>
+                    {% if forloop.last %}
+                        </ul>
+                    {% endif %}
+                {% endfor %}
+            </ul>
+            <ul style="font-family: Helvetica, Verdana, Tahoma, Arial, sans-serif; font-size: 12px; line-height: 1.5; font-weight: normal; margin: 0 20px 10px; padding: 1px;">
+                <li style="list-style-type:none;">Source Language: {{ project.source_locale }}</li>
+            </ul>
+            <ul style="font-family: Helvetica, Verdana, Tahoma, Arial, sans-serif; font-size: 12px; line-height: 1.5; font-weight: normal; margin: 0 20px 10px; padding: 1px;">
+                <li style="list-style-type:none;">Target Language Pricing:</li>
+            </ul>
+            {% include 'notifications/_email_itemized_estimate.html' %}
+
+            {% if project.instructions %}
+            <ul style="font-family: Helvetica, Verdana, Tahoma, Arial, sans-serif; font-size: 12px; line-height: 1.5; font-weight: normal; margin: 0 20px 10px; padding: 1px;">
+                <li style="list-style-type:none;">Special Instructions:</li>
+                <ul>
+                    <li style="list-style-type:square;">{{ project.instructions|striptags }}</li>
+                </ul>
+            </ul>
+            {% endif %}
+
+            <br/>
+
+            <p style="font-family: Helvetica, Verdana, Tahoma, Arial, sans-serif; font-size: 14px; line-height: 1.5; font-weight: normal; margin: 0 0 10px; padding: 1px;">
+                To place or cancel this order, please visit the <a href="{{ vtp_url }}">VIA Translation Platform</a>.
+            </p>
+
+            <p style="font-family: Helvetica, Verdana, Tahoma, Arial, sans-serif; font-size: 14px; line-height: 1.5; font-weight: normal; margin: 0 0 10px; padding: 1px;">
+                <br/>
+                Thank you for your business.
+                <br/><br/>
+                Sincerely,<br/>
+                The VIA Team
+            </p>
+        </td>
+    </tr>
+</table>
+
+{% include 'notifications/_email_base_bottom.html' %}

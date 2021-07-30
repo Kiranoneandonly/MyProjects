@@ -1,0 +1,52 @@
+{% extends "via/theme_base.html" %}
+{% load i18n %}
+{#{% load url from future %}#}
+{% load bootstrap %}
+{% load widget_tweaks %}
+
+{% block title %}{% trans "New Task" %}{% endblock %}
+
+{% block css %}
+{% endblock %}
+
+{% block content_header %}
+{% endblock %}
+
+{% block content %}
+    <div class="row-fluid">
+         <div class="span4 offset4">
+            <h3>{% trans "New Task" %}</h3>
+            <div class="widget-box">
+                <div class="widget-content nopadding">
+                    <form novalidate action="" method="post" class="form-horizontal">
+                        {% csrf_token %}
+                        {{ form|bootstrap }}
+                        <div class="form-actions">
+                            {% if project.is_created_status or project.is_quoted_status %}
+                                <a href="{% url 'via_job_detail_estimate' project.id %}" class="btn">{% trans "Cancel" %}</a>
+                            {% else %}
+                                <a href="{% url 'via_job_detail_tasks' project.id %}" class="btn">{% trans "Cancel" %}</a>
+                            {% endif %}
+                            <button type="submit" class="btn btn-primary">{% trans "Save" %}</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br/>
+{% endblock %}
+
+{% block script %}
+    {{ block.super }}
+    <script>
+        $(document).ready(function(){
+            $('#id_service_type').select2();
+            $('#id_predecessor').select2();
+            $('#id_unit_of_measure').select2();
+            $('#id_source').select2();
+            $('#id_target').select2();
+            $('#id_assignee_content_type').select2();
+        });
+    </script>
+{% endblock %}

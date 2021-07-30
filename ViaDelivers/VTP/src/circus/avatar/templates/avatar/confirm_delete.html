@@ -1,0 +1,30 @@
+{% extends template %}
+{% load i18n %}
+{#{% load url from future %}#}
+{% load bootstrap %}
+
+{% block title %}{% trans "My Avatar" %}{% endblock %}
+
+{% block content_breadcrumb %}
+    <ul class="breadcrumb">
+        <li><i class="fa fa-home"></i> <a href="/">{% trans "Home" %}</a> <span class="divider"><i class="fa fa-chevron-right"></i></span></li>
+        <li><a href="{% url profile_url %}">{% trans "My Profile" %}</a> <span class="divider"><i class="fa fa-chevron-right"></i></span></li>
+        <li class="active">{% trans "Delete Avatar" %}</li>
+    </ul>
+{% endblock %}
+
+{% block content %}
+    <p>{% trans "Please select the Avatar(s) that you would like to delete." %}</p>
+    {% if not avatars %}
+        {% url 'avatar_change' as avatar_change_url %}
+        <p>{% blocktrans %}You have no avatars to delete. Please <a href="{{ avatar_change_url }}">upload one</a> now.{% endblocktrans %}</p>
+    {% else %}
+        <form novalidate method="POST" action="{% url 'avatar_delete' %}">
+            <ul>
+                {{ delete_avatar_form.choices|bootstrap }}
+            </ul>
+            <p>{% csrf_token %}<input type="submit" value="{% trans "Delete" %}" /></p>
+        </form>
+    {% endif %}
+    {% block content_header %}{% endblock %}
+{% endblock %}

@@ -1,0 +1,1 @@
+web: env PYTHONPATH=src/circus bin/start-pgbouncer-stunnel newrelic-admin run-program waitress-serve --port=$PORT --threads=$WAITRESS_THREADS circus.wsgi:application

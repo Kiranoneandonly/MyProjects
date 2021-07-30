@@ -1,0 +1,17 @@
+{% extends "via/theme_base.html" %}
+{% load currency_filter %}
+{% load i18n %}
+{% load tz %}
+
+{% block title %}{% trans "Customer Job Activity" %}{% endblock %}
+
+{% block content %}
+
+    <H3>Customer Activity</H3>
+    <hr/>
+    <H5>Example for Client specific:</H5>
+    <p><i>[VTP URL]/via/reports/customer/customers_activity_report_csv_export/[Customer ID]?from=[DateStart]&to=[DateEnd]</i></p>
+    <p>Date format: 1/1/2015</p>
+    <hr/>
+
+{% endblock %}

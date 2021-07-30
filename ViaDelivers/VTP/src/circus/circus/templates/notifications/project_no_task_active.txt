@@ -1,0 +1,10 @@
+{% load humanize %}{% load currency_filter %} Tasks are not Active{{ project.job_number }}.
+
+Job: {{ project.job_number }}.
+Client: {{ project.client.name }} ({{ project.client_poc.get_full_name }})
+
+Please accept or reject this assignment here: {{ vtp_url }}.
+
+________________________________________
+
+{% include 'notifications/_email_footer.txt' %}

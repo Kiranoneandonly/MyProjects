@@ -1,0 +1,45 @@
+{% load i18n %}
+<div class="span2 well" style="margin-right: 100px; padding-bottom: 0px">
+    <form action="" method="get">
+        <select class="span2" name="group_filter">
+            <option  value="">Select a Group...</option>
+            {% for group in group_filter_list %}
+                <option  value="{{ group.grp_id }}" {% if group.grp_id == group_select_option %}selected {% endif %} >
+                    {{ group.grp_name }}
+                </option>
+            {% endfor %}
+        </select>
+        <select class="span2" name="permission_filter">
+            <option  value="">Select a Permission...</option>
+            {% for permission in permission_filter_list %}
+                <option  value="{{ permission.perm_id }}" {% if permission.perm_id == permission_select_option %}selected {% endif %} >
+                    {{ permission.perm_name }}
+                </option>
+            {% endfor %}
+        </select>
+        <select class="span2" name="department_filter">
+            <option  value="">Select a Department...</option>
+            {% for department in department_filter_list %}
+                <option  value="{{ department.id }}" {% if department.id == department_select_option %}selected {% endif %} >
+                    {{ department.name }}
+                </option>
+            {% endfor %}
+        </select>
+        <select class="span2" name="status_filter">
+            <option  value="" default>Select Status...</option>
+            <option  value="True" {% if request.GET.status_filter == 'True' %}selected {% endif %} >Active</option>
+            <option  value="False" {% if request.GET.status_filter == 'False' %}selected {% endif %} >Inactive</option>
+        </select>
+
+        <input type="text" name="user_filter" class="span2" value="{{ request.GET.user_filter }}" placeholder="User name">
+        <input type="submit" value="Filter"  />
+        <button type="button" class="clear-button">Clear</button>
+    </form>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $(".clear-button").click(function() {
+            $(this).closest('form').find("input[type=text], select").val("");
+        });
+    });
+</script>

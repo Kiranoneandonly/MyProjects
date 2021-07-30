@@ -1,0 +1,82 @@
+
+
+{
+  "Id": "Policy1446597555830",
+  "Statement": [
+    {
+      "Sid": "Stmt1446597476215",
+      "Action": [
+        "s3:GetObject"
+      ],
+      "Effect": "Allow",
+      "Resource": "arn:aws-cn:s3:::vtp-walmart-cn/static/*",
+      "Principal": "*"
+    },
+    {
+      "Sid": "Stmt1446597526742",
+      "Action": [
+        "s3:GetObject",
+        "s3:PutObject"
+      ],
+      "Effect": "Allow",
+      "Resource": "arn:aws-cn:s3:::vtp-walmart-cn/media/projects/*",
+      "Principal": {
+        "AWS": [
+          "arn:aws-cn:iam::472805002250:root"
+        ]
+      }
+    },
+    {
+      "Sid": "Stmt1335892150622",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws-cn:iam::472805002250:root"
+      },
+      "Action": [
+        "s3:GetBucketAcl",
+        "s3:GetBucketPolicy"
+      ],
+      "Resource": "arn:aws-cn:s3:::vtp-walmart-cn"
+    },
+    {
+      "Sid": "Stmt1335892526596",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws-cn:iam::472805002250:root"
+      },
+      "Action": "s3:PutObject",
+      "Resource": "arn:aws-cn:s3:::vtp-walmart-cn/*"
+    }    
+  ]
+}
+
+
+
+{
+	"Version": "2008-10-17",
+	"Id": "VTP Walmart cn Bucket Policy",
+	"Statement": [
+		{
+			"Sid": "Allow access to Static Files",
+			"Effect": "Allow",
+			"Principal": {
+				"AWS": "*"
+			},
+			"Action": "s3:GetObject",
+			"Resource": "arn:aws-cn:s3:::vtp-walmart-cn/static/*"
+		},
+		{
+			"Sid": "Allow Signed Downloads for Private Files",
+			"Effect": "Allow",
+			"Principal": {
+				"AWS": "arn:aws-cn:iam::472805002250:user/RealFond"
+			},
+			"Action": [
+				"s3:GetObject",
+				"s3:PutObject"
+			],
+			"Resource": "arn:aws-cn:s3:::vtp-walmart-cn/media/projects/*"
+		}
+	]
+}
+

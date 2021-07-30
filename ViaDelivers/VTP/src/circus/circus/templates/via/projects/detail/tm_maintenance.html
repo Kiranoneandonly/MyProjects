@@ -1,0 +1,185 @@
+{% extends "via/projects/detail/base.html" %}
+{% load i18n %}
+{% load bootstrap %}
+{% block content %}
+{% if can_access_secure_job %}
+    <h4><i class="fa fa-language"></i> {% trans "TM Management" %}</h4>
+    <form novalidate action="" method="post" class="form-horizontal">
+    {% csrf_token %}
+    <input type="hidden" name="lk_id" value="{{ project.kit.id }}">
+    <div class="table-wrapper">
+        <table class="table table-bordered table-hover">
+            <thead>
+            <tr>
+                <th>{% trans "Analysis Code" %}</th>
+                <th>{% trans "Analysis Start" %}</th>
+                <th>{% trans "Analysis Complete" %}</th>
+                {% if can_edit_job %}
+                    <th>{% trans "TM Maintenance" %}</th>
+                {% endif %}
+                <th>{% trans "TM Update Start" %}</th>
+                <th>{% trans "TM Update Completed" %}</th>
+                {% if project.kit.is_manually_updated %}
+                <th>{% trans "TM Offline Update" %}</th>
+                {% endif %}
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td><code class="analysis_code">{{ project.kit.analysis_code }}</code></td>
+                <td>{{ project.kit.analysis_started|default_if_none:"" }}</td>
+                <td>{{ project.kit.analysis_completed|default_if_none:"" }}</td>
+                {% if can_edit_job %}
+                    <td>
+                        {% csrf_token %}
+                        <button type="button" class="btn btn-primary" id="updatetm"
+                                {% if not project.is_completed_status %}disabled{% endif %}>Add to Translation Memory
+                        </button>
+                    </td>
+                {% endif %}
+                <td>
+                    {{ project.kit.tm_update_started|default_if_none:"" }}
+                </td>
+
+                <td>
+                    {{ project.kit.tm_update_completed|default_if_none:"" }}
+                </td>
+
+                {% if project.kit.is_manually_updated %}
+                <td>
+                    {{ project.kit.is_manually_updated|default_if_none:"" }}
+                </td>
+                {% endif %}
+
+                <td class="manual_edit_submit ">
+                    <button type="submit" class="btn btn-inverse">Completed Offline</button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    </form>
+
+    <div class="row-fluid">
+        <div class="accordion" id="accordionNotes">
+            <div class="accordion-group">
+                <div class="accordion-heading">
+                    <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordionNotes" href="#collapseNotesOne">
+                        <i class="fa fa-language"></i> <b>{% blocktrans %}TM Files{% endblocktrans %}</b>
+                    </a>
+                </div>
+                <div id="collapseNotesOne" class="accordion-body collapse">
+                    <div class="accordion-inner">
+                        <table class="table table-bordered table-striped table-condensed asset-table">
+                            <tr>
+                                <th>Target locale</th>
+                                <th>File</th>
+
+                            </tr>
+                            {% for target in project_target_locales.targets %}
+                            <tr>
+                            <td>
+                                {{ target }}
+                            </td>
+                            <td>
+                                {% for task in target.tasks %}
+                                    {% if task.is_translation and not task.parent_id %}
+                                        {% with trans_kit=task.trans_kit %}
+                                            {% if trans_kit.tm_update_file %}
+                                                <table>
+                                                    <tr>
+                                                        <td>
+                                                            <a href="{% url 'download_tasklocaletranslationkit_tm_file' task.id trans_kit.id %}"
+                                                               title="{{ trans_kit.tm_update_file_name }}">{{ trans_kit.tm_update_file_name|truncatechars:75 }}
+                                                                <i class="fa fa-download"></i></a>
+                                                            <p>Updated: {{ trans_kit.tm_file_updated_at }}</p>
+                                                        </td>
+                                                        <td>
+                                                            <form novalidate name="DELETE_TM_FILE_{{ trans_kit.id }}" action="" method="post">
+                                                                {% csrf_token %}
+                                                                <input type="hidden" name="tm_delete" value="{{ trans_kit.id }}">
+                                                                <a type="submit" class="btn btn-danger pull-right"
+                                                                   href="javascript:document.DELETE_TM_FILE_{{ trans_kit.id }}.submit()"
+                                                                   data-confirm="{% trans "Are you sure you want to delete this file?" %}">
+                                                                    <i class="fa fa-times"></i>&nbsp;{% trans "Delete" %}
+                                                                </a>
+                                                            </form>
+                                                        </td>
+                                                        <td>
+                                                            <a id="tm-upload-btn-{{ trans_kit.id }}"
+                                                               class="btn small-btn btn-inverse tm-upload-btn pull-right" href="#"><i
+                                                                    class="fa fa-upload fa-white"></i> {% blocktrans %}Replace{% endblocktrans %}</a>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            {% elif trans_kit.output_file %}
+                                                <table>
+                                                    <tr>
+                                                        <td>
+                                                            <a href="{% url 'download_tasklocaletranslationkit_out_file' task.id trans_kit.id %}"
+                                                               title="{{ trans_kit.output_file_name }}">{{ trans_kit.output_file_name|truncatechars:75 }}
+                                                                <i class="fa fa-download"></i></a>
+                                                        </td>
+                                                        <td>
+                                                            <a id="tm-upload-btn-{{ trans_kit.id }}"
+                                                               class="btn small-btn btn-inverse tm-upload-btn pull-right" href="#"><i
+                                                                    class="fa fa-upload fa-white"></i> {% blocktrans %}Replace{% endblocktrans %}</a>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            {% else %}
+                                                <table>
+                                                    <tr>
+                                                        <td>
+                                                            <a id="tm-upload-btn-{{ trans_kit.id }}"
+                                                               class="btn small-btn btn-warning tm-upload-btn pull-right" href="#"><i
+                                                                    class="fa fa-upload fa-white"></i> {% blocktrans %}Upload File{% endblocktrans %}</a>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            {% endif %}
+                                            {% include "via/projects/tm/_upload_form_tm_file.html" %}
+                                        {% endwith %}
+                                    {% endif %}
+                                {% endfor %}
+                            </td>
+                        </tr>
+                            {% endfor %}
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endif %}
+{% endblock %}
+
+{% block script %}
+    <script src="{{ STATIC_URL }}shared/js/jquery.lightbox_me.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#updatetm').click(function () {
+                $.post('{{ request.path }}', {
+                    updateTM: 1,
+                    csrfmiddlewaretoken: $('input[name="csrfmiddlewaretoken"]').val()
+                }, function (data) {
+                    // Show a message on the console so devs know we're active
+                    if (window.console && window.console.log) {
+                        window.console.log(data);
+                    }
+                });
+            });
+            $('.tm-upload-btn').click(function (e) {
+                var task_id = $(this).attr('id').split('-').pop();
+                $('#tm-upload-' + task_id).lightbox_me({
+                    centered: true,
+                    onLoad: function () {
+                        //
+                    }
+                });
+                e.preventDefault();
+            });
+        });
+    </script>
+{% endblock %}

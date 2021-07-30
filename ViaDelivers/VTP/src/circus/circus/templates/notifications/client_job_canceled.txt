@@ -1,0 +1,20 @@
+{% load humanize %}{% load currency_filter %}Hi {{ project.client_poc.first_name|safe }},
+
+Our records show that you recently canceled a job through the VIA Translation Platform (VTP). We’ve included the details below for your reference. We hope you found the system easy to use and look forward to working with you again soon.
+
+With VTP you have secure access to hand-picked content translation services professionals in over 125 languages 24/7. So you can upload and retrieve your translation jobs, anywhere, anytime.
+
+Have questions or feedback? We’d love to hear them. Please email us at info@viadelivers.com.
+
+Sincerely,
+The VIA Team
+
+
+•	Job Number: {{ project.job_number }}
+•	User ID: {{ project.client_poc.get_full_name|safe }} ({{ project.client_poc.email }})
+
+For more information or to restart the job, please visit {{ vtp_url }}.
+
+________________________________________
+
+{% include 'notifications/_email_footer.txt' %}

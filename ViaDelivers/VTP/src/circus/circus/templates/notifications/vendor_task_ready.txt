@@ -1,0 +1,15 @@
+{% load humanize %}{% load currency_filter %}A task from VIA, Inc. for {{ vendor }} is ready to start.
+
+Job: {{ task.project.job_number }}.
+Client: {{ task.project.client.name }} ({{ task.project.client_poc.get_full_name }})
+
+Task: {{ task.service.service_type }}.
+Source: {{ task.service.source }}, Target: {{ task.service.target }}.
+Scope: {{ task.quantity|floatformat:-2|intcomma }} {{ task.service.unit_of_measure }}.
+Total: {{ task.total_cost|currency }}.
+
+Please download the files for this task here: {{ vtp_url }}.
+
+________________________________________
+
+{% include 'notifications/_email_footer.txt' %}

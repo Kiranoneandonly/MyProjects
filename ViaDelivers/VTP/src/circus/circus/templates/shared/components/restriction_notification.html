@@ -1,0 +1,11 @@
+{% load i18n %}
+
+<div class="row-fluid">
+    <div class="alert alert-danger">
+    <i class="fa fa-user-secret" title="{% trans "Restricted Access" %}"></i>
+    Restricted Access
+    {% if restricted_locations %}
+     : Job editable only from within restricted region :  {% for rs in restricted_locations %} {{ rs }} {% endfor %}
+    {% endif %}
+    </div>
+</div>

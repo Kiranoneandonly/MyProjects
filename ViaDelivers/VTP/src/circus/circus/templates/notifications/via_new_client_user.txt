@@ -1,0 +1,17 @@
+A new user has signed up.
+
+{% if user.account %}Account: {{ user.account.name }}
+{% else %}Account: This user is not yet associated with any client account.
+{% endif %}
+Name:   {{ user.get_full_name }}
+Title:  {{ user.title }}
+E-mail: {{ user.email }}
+Phone:  {{ user.phone }}
+Address:
+    {{ user.mailing_street }}
+    {{ user.mailing_city }} {{ user.mailing_state }} {{ user.mailing_postal_code }}
+    {{ user.mailing_country }}
+
+For more information, please visit {{ vtp_url }}
+
+{% include 'notifications/_email_footer.txt' %}

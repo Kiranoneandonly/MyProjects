@@ -1,0 +1,30 @@
+{% load i18n %}
+{% load bootstrap %}
+
+<div class="row-fluid">
+    <div class="span12">
+        <form method="post" action="" class="no-layout">
+        {% csrf_token %}
+            <div class="dashWidget chooseLanguageWidget noPadding">
+                <div class="row-fluid">
+                    <ul class="nav nav-tabs">
+                          <li class="active"><a href="#job_options" data-toggle="tab"><h4>{% trans "File Options" %}</h4></a></li>
+                    </ul>
+                    <div class="well">
+                    <div class="control-group">
+                        <div class="controls availableServices">
+                            {{ form.editable_source|bootstrap }}
+                            {{ form.recreation_source|bootstrap }}
+                            {{ form.translation_unformatted|bootstrap }}
+                            {{ form.translation_billingual|bootstrap }}
+                        </div>
+                    </div>
+                    </div>
+                </div>
+                {% if project.can_edit_source_files %}
+                <button name="save_job_options" type="submit" class="btn btn-primary"  title="{% trans "Save" %}"><i class="fa fa-arrow-circle-o-down"></i> {% trans "Save" %}</button>
+                {% endif %}
+            </div>
+        </form>
+    </div>
+</div>

@@ -1,0 +1,35 @@
+{% load i18n %}
+{% load bootstrap %}
+{% load currency_filter %}
+{% load get_item %}
+
+{% block content %}
+    <div class="row-fluid">
+        <div class="span12">
+            {% if project_actions %}
+                <table class="table table-bordered table-hover table-responsive">
+                <thead>
+                <tr>
+                    <th width="20%">{% blocktrans %}Date{% endblocktrans %}</th>
+                    <th width="50%">{% blocktrans %}Log Entry{% endblocktrans %}</th>
+                    <th width="20%">{% blocktrans %}Job Price{% endblocktrans %}</th>
+                    <th width="10%">{% blocktrans %}Job Status{% endblocktrans %}</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for action in project_actions %}
+                    <tr>
+                        <td>{{ action.timestamp }}</td>
+                        <td>{% trans "User:" %} '{{ action.actor }}' {% trans "saved" %} / {{ action.verb }} {% trans "Job" %} '{{ action.action_object_name }}'</td>
+                        <td>{{ action.task_price|currency }}</td>
+                        <td>{{ action.status }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+                </table>
+            {% else %}
+                {% blocktrans %}No History Log for this Job{% endblocktrans %}
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

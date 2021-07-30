@@ -1,0 +1,17 @@
+{% load humanize %}{% load currency_filter %}A vendor has rejected a task assignment.
+
+Vendor: {{ vendor|safe }}.
+Job: {{ project.job_number }}.
+
+Task: {{ task.service.service_type }}.
+Source: {{ task.service.source }}, Target: {{ task.service.target }}.
+Scope: {{ task.quantity|floatformat:-2|intcomma }} {{ task.service.unit_of_measure }}.
+Client: {{ project.client.name|safe }} ({{ project.client_poc.get_full_name|safe }})
+
+Project Due Date: {{ project.due|date:"r" }}.
+
+Reassign this task here: {{ vtp_url }}.
+
+________________________________________
+
+{% include 'notifications/_email_footer.txt' %}

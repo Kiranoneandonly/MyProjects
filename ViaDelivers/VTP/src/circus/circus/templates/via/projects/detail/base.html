@@ -1,0 +1,280 @@
+{% extends "via/theme_base.html" %}
+{% load i18n %}
+{% load bootstrap %}
+{% load humanize %}
+{% load currency_filter %}
+
+{% block title %}
+    {% blocktrans with job_number=project.job_number %}Job: {{ job_number }}{% endblocktrans %}
+{% endblock %}
+
+{% block css %}
+    <link rel="stylesheet" href="{{ STATIC_URL }}via/css/jobs.css" media="screen"/>
+    <link rel="stylesheet" href="{{ STATIC_URL }}shared/css/datetimepicker.css" media="screen"/>
+{% endblock %}
+
+{% block tab_section %}
+{% if can_access_secure_job %}
+    <div class="job-content">
+        {% if project.is_restricted_job %}
+            {% include 'shared/components/restriction_notification.html' %}
+        {% endif %}
+        {% if project.is_inestimate_status and not project.can_be_large_quote_completed %}
+            {% include 'shared/components/large_job_approval_notification.html' %}
+        {% endif %}
+        {% if project.is_completed_status and not project.all_billable_tasks_rated %}
+            {% include 'shared/components/unrated_tasks_notification.html' %}
+        {% endif %}
+        {% if project.is_completed_status_tm_update_not_updated %}
+            {% include 'shared/components/tm_update_notification.html' %}
+        {% endif %}
+        {% if not project.manual_tm_file_imported %}
+            {% include 'shared/components/manual_tm_update_notification.html' %}
+        {% endif %}
+        {% if project.is_phi_secure_job %}
+            {% include 'shared/components/phi_secure_client_job_notification.html' %}
+        {% endif %}
+{#        {% if project.delay_job_po and project.is_approved_job_status and project.check_po_approved %}#}
+{#            {% include 'shared/components/approval_needed_for_po.html' %}#}
+{#        {% endif %}#}
+        <div class="row-fluid">
+            <div class="span9">
+                <h2>
+                    {{ project.job_number }}
+                    {% if project.is_express_speed %}
+                        <i class="fa fa-rocket" title="{% trans "Express" %}"></i>
+                    {% endif %}
+                    {% if holidays_during_job %}
+                        {% if project.client.manifest.ignore_holiday_flag or project.ignore_holiday_flag %}
+                            <i class="fa fa-calendar-times-o" title="{% trans "Holiday Ignored" %}"></i>
+                        {% else %}
+                            <i class="fa fa-tree" title="{% trans "Holiday Observed" %}"></i>
+                        {% endif %}
+                    {% endif %}
+                    <small>
+                        <span title="{{ project.name|safe|striptags }}">{{ project.job_name_display_name|safe|striptags }}</span>
+                    </small>
+                </h2>
+            </div>
+            <div class="span3">
+                <div class="pull-right">
+                    <h3>
+                        <i class="{{ project.workflow.icon }}"></i> {{ project.workflow.text }}
+                    </h3>
+                </div>
+            </div>
+        </div>
+        <div class="job-description">
+            <div class="row-fluid">
+                <div class="span12">
+                    <div class="span3">
+                        <span class="job-description-label">{% trans "Client" %}: </span>
+                        <span class="job-description-value"
+                              title="{{ project.client }}">{{ project.client|truncatechars:50 }}</span>
+                        <span class="client-note-icon">
+                        {% if client_note %}
+                            <a href="{% url 'clients_note' project.client.id %}" class="view-note"
+                               data-content="{{ client_note|striptags|truncatechars:200 }}" data-html="true" data-placement="bottom"
+                               data-title="Client Note">
+                                <i class="fa fa-file-text"></i>
+                            </a>
+                        {% else %}
+                            <a href="{% url 'clients_note' project.client.id %}" class="add-note"
+                               data-content="{% trans "Click to add client notes." %}">
+                                <i class="fa fa-file-text-o"></i>
+                            </a>
+                        {% endif %}
+                        </span>
+                    </div>
+                    <div class="span2">
+                        <div class="row">
+                            <span class="job-description-label">{% trans "Contact" %}: </span>
+                            <span class="job-description-value"><a href="mailto:{{ project.client_poc.email }}"
+                                                                   target="_blank">{{ project.client_poc|default_if_none:""|truncatechars:30 }}</a></span>
+                        </div>
+                        <div class="row">
+                            <span class="job-description-label">{% trans "Phone:" %}</span>
+                            <span class="job-description-value">{{ project.client_poc.phone|default_if_none:""|truncatechars:30 }}</span>
+                        </div>
+                    </div>
+                    <div class="span2">
+                        <div class="row">
+                            <span class="job-description-label">{% trans "PM:" %}</span>
+                            <span class="job-description-value"><a href="mailto:{{ project.primary_pm.email }}"
+                                                                   target="_blank">{{ project.primary_pm|default_if_none:""|truncatechars:20 }}</a></span>
+                        </div>
+                        <div class="row">
+                            <span class="job-description-label">{% trans "AE:" %}</span>
+                            <span class="job-description-value"><a href="mailto:{{ project.account_executive.email }}"
+                                                                   target="_blank">{{ project.account_executive|default_if_none:""|truncatechars:20 }}</a></span>
+                        </div>
+                    </div>
+                    <div class="span2">
+                        <div class="row">
+                            <span class="job-description-label">{% blocktrans %}Estimate: {% endblocktrans %}</span>
+                            <span class="job-description-value">{{ project.get_estimate_type_display }}
+                                {% if project.is_auto_estimate %}
+                                    <i class="fa fa-cogs fa-white"></i>
+                                {% else %}
+                                    <i class="fa fa-wrench fa-white"></i>
+                                {% endif %}
+                                {% if project.jams_estimateid %}
+                                    {{ project.jams_estimateid }}                            
+                                {% endif %}
+                            </span>
+                        </div>
+                        <div class="row">
+                            <span class="job-description-label">
+                                {% trans "Total Price:" %}</span>
+                            <span class="job-description-value">
+                                {% with project_price=project.price %}
+                                    {% if project_price %}
+                                        {{ project_price|currency }}
+                                    {% endif %}
+                                {% endwith %}
+
+                                {% if project.approved %}
+                                    <i class="fa fa-check-circle" title="{% trans "Approved" %}"></i>
+                                {% else %}
+                                    <i class="fa fa-times-circle" title="{% trans "Not Approved" %}"></i>
+                                {% endif %}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="span2">
+                        <div class="row">
+                            <span class="job-description-label">{% blocktrans %}Payment: {% endblocktrans %}</span>
+                            <span class="job-description-value">{{ project.payment_details.get_payment_method_display }}
+                                {% if project.is_credit_card_payment %}
+                                    <i class="fa fa-credit-card fa-white"></i>
+                                {% else %}
+                                    <i class="fa fa-money fa-white"></i>
+                                {% endif %}
+                            </span>
+                        </div>
+                        <div class="row">
+                            {% if project.is_credit_card_payment %}
+                                <span class="job-description-label">{% blocktrans %}Auth&nbsp;
+                                    Code: {% endblocktrans %}</span>
+                                <span class="job-description-value">{{ project.payment_details.cc_response_auth_code|truncatechars:30 }}</span>
+                            {% else %}
+                                <span class="job-description-label">{% blocktrans %}PO #: {% endblocktrans %}</span>
+                                <span class="job-description-value">{{ project.payment_details.ca_invoice_number|truncatechars:30 }}</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="span1">
+                        <div class="row-fluid">
+                            <div class="span6"><i class="fa fa-globe fa-2x" title="{{ TIMEZONE_BLURB_TEXT }}"></i></div>
+                            <div class="span6">
+                                <form novalidate action="{% url 'mute' project.id %}" method="post">
+                                    {% csrf_token %}
+                                    {% if muted %}
+                                        <button valign="center" type="submit" name="unmute"
+                                                title="{% blocktrans with muted_expires_at=muted.expires_at %}Notifications Muted until {{ muted_expires_at }}  Click to make Notifications Active.{% endblocktrans %}"
+                                                class="btn btn-danger btn-small pull-right">
+                                                <i class="fa fa-envelope"></i>
+                                        </button>
+                                    {% else %}
+                                        <button type="submit" name="mute"
+                                                title="{% trans "Notifications Active. Click to Notifications Muted." %}"
+                                                class="btn btn-success btn-small pull-right">
+                                                <i class="fa fa-envelope"></i>
+                                        </button>
+                                    {% endif %}
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <ul class="nav nav-tabs">
+            {% url 'via_job_detail_overview' project.id as url %}
+            <li {% if request.path == url %} class="active"{% endif %}><a href="{{ url }}" title="{% trans "Overview" %}">
+                <i class="{{ project.workflow.icon }}"></i> {% trans "Overview" %}</a>
+            </li>
+            {% if project.approved or project.internal_via_project%}
+                {% url 'via_job_detail_tasks' project.id as url %}
+                <li {% if request.path == url %} class="active"{% endif %}><a href="{{ url }}" title="{% trans "Tasks" %}">
+                    <i class="fa fa-tasks"></i> {% trans "Tasks" %}</a>
+                </li>
+
+                {% url 'project_comments' project.id as comments_url %}
+                <li {% if request.path == comments_url %} class="active"{% endif %}><a href="{{ comments_url }}" title="{% trans "Messenger" %}">
+                    <i class="fa fa-comments"></i> {% trans "Messenger" %}</a>
+                    {% if client_message_unread_count  %}
+                    <span class="badge badge-notify" style="position:relative;top: -50px;left: 100px;">{{ client_message_unread_count }}</span>
+                    {% endif %}
+                </li>
+            {% endif %}
+
+            {% url 'via_job_detail_estimate' project.id as url %}
+            <li {% if request.path == url %} class="active"{% endif %}><a href="{{ url }}" title="{% trans "Estimate" %}">
+                <i class="fa fa-calculator"></i> {% trans "Estimate" %}</a>
+            </li>
+
+            {% if can_edit_job %}
+            {% url 'via_job_detail_files' project.id as url %}
+            <li {% if request.path == url %} class="active"{% endif %}><a href="{{ url }}" title="{% trans "Files" %}">
+                <i class="fa fa-file-text"></i> {% trans "Files" %}</a>
+            </li>
+            {% endif %}
+
+            {% if project.approved %}
+                {% if project.kit.analysis_code %}
+                    {% url 'via_job_detail_dvx' project.id as url %}
+                    <li {% if request.path == url %} class="active"{% endif %}><a href="{{ url }}" title="{% trans "TM Management" %}">
+                        <i class="fa fa-language"></i> {% trans "TM" %}</a>
+                    </li>
+                {% endif %}
+                {# todo when JAMS replacement is ready #}
+                {# {% url 'via_job_accounting_summary' project.id as url %}#}
+                {# <li {% if request.path == url %} class="active"{% endif %}><a href="{{ url }}" title="{% trans "Accounting" %}"><i class="fa fa-usd"></i> {% trans "Accounting" %}</a></li>#}
+            {% endif %}
+
+            {% url 'via_job_detail_team' project.id as url %}
+            <li {% if request.path == url %} class="active"{% endif %}><a href="{{ url }}" title="{% trans "Team" %}">
+                <i class="fa fa-users"></i> {% trans "Team" %}</a>
+            </li>
+
+            {% url 'via_job_detail_activelog' project.id as url %}
+            <li {% if request.path == url %} class="active"{% endif %}><a href="{{ url }}" title="{% trans "History" %}">
+                <i class="fa fa-history"></i> {% trans "History" %}</a>
+            </li>
+        </ul>
+    </div>
+    <div id="client-note-popover"></div>
+{% else %}
+    <div class="row-fluid">
+        <div class="span12">
+            <h3><span class="icon-lock" title="{% trans "You need permissions to access this Secure Job" %}"></span> {% blocktrans %}You do not have permission to access this Secure Job. Please contact the admin.{% endblocktrans %}</h3>
+        </div>
+    </div>
+    {% if via_user_phi_group_enabled %}
+    <div class="row-fluid">
+        <div class="span12">
+        {% url 'via_job_detail_overview' project.id as url %}
+        <form novalidate action="{{ url }}" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="project_id" value="{{ project.id }}">
+            <button name="join_secure_job_phi_team" type="submit" class="btn btn-danger"><i class="fa fa-user-md"></i>&nbsp;{% trans "Join PHI Secure Job Team Member" %}</button>
+        </form>
+        </div>
+    </div>
+    {% endif %}
+{% endif %}
+{% endblock %}
+
+
+{% block script %}
+    <script src="{{ STATIC_URL }}shared/js/jquery.lightbox_me.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            $(".view-note, .add-note").popover({
+                trigger: 'hover focus',
+                container: '#client-note-popover'
+            });
+        });
+    </script>
+{% endblock %}

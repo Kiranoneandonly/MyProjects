@@ -1,0 +1,18 @@
+{% load humanize %}
+<body bgcolor="#FFFFFF" style="font-family: Helvetica, Verdana, Tahoma, Arial, sans-serif; font-size: 100%; line-height: 1.5; -webkit-font-smoothing: antialiased; -webkit-text-size-adjust: none; width: 100% !important; height: 100%; margin: 0; padding: 0;">
+<p align="left"><img src="{{ via_logo_image_url }}" height="43" width="43"></p>
+<p>A job is ready for final approval.</p>
+<p>Assigned to: {{ approver }}.</p>
+<p>Job: {{ task.project.job_number }}.</p>
+<p>Client: {{ task.project.client.name }} ({{ task.project.client_poc.get_full_name }}).</p>
+<p/>
+<p>Task: {{ task.service.service_type }}.</p>
+<p/>
+<p>Source: {{ task.service.source }}, Target: {{ task.service.target }}.</p>
+<p>Scope: {{ task.quantity|floatformat:-2|intcomma }} {{ task.service.unit_of_measure }}.</p>
+<p>For more information, please visit {{ vtp_url }}.</p>
+<hr/>
+<p align="left" style="font-family: Helvetica, Verdana, Tahoma, Arial, sans-serif; font-size: 8px; line-height: 1.15; color: #666; font-weight: normal; margin: 0 0 10px; padding: 0;">
+    {% include 'notifications/_email_footer.txt' %}
+</p>
+</body>

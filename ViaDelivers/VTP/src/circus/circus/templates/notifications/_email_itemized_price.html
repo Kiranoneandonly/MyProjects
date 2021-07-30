@@ -1,0 +1,75 @@
+{% load currency_filter %}
+{% load get_item %}
+<table style="width:100%; border-collapse: collapse; border: thin solid #666666;">
+
+{% if project.is_express_speed %}
+
+    {% for target, target_quote in quote.express_targets.items %}
+        <tr>
+            <th colspan="3" style="background-color: #cccccc; text-align: left; font-family: Verdana, Tahoma, Arial, sans-serif; font-size: 12px; line-height: 1.5;">{{ target.description }}</th>
+            <th colspan="1" style="background-color: #cccccc; text-align: right; font-family: monospace; font-size: 12px; font-weight: bold; padding-left: 1em; padding-right: 1ex;">
+                {% if show_subtotals %}
+                    {{ target_quote.price|currency }}
+                {% else %}
+                    &nbsp;
+                {% endif %}
+            </th>
+        </tr>
+        {% for task_quote in quote.express_target_details|get_item:target %}
+            {% if task_quote.task.billable %}<tr>
+                <td>&nbsp;</td>
+                <td style="font-family: Helvetica, Verdana, Tahoma, Arial, sans-serif; font-size: 12px; line-height: 1.5;">{{ task_quote.task.service.service_type.description }}</td>
+                <td>&nbsp;</td>
+                <td style="text-align: right; font-family: monospace; font-size: 12px; font-weight: bold; padding-left: 1em; padding-right: 1ex;">{{ task_quote.price|currency }}</td>
+            </tr>{% endif %}
+        {% endfor %}
+    {% endfor %}
+    <tr style="background-color: #a8a8a8; border-top: solid thin #222222">
+        <th colspan="3" style="text-align: right; font-family: Verdana, Tahoma, Arial, sans-serif; font-size: 12px;">Total Price</th>
+        <td style="text-align: right; font-size: 12px; font-family: monospace; font-weight: bold; padding-right: 1ex;">{{ project.project_pricequote.express_price|currency }}</td>
+    </tr>
+
+    {% if client_discount_flag %}
+     <tr style="background-color: #a8a8a8; border-top: solid thin #222222">
+        <th colspan="3" style="text-align: right; font-family: Verdana, Tahoma, Arial, sans-serif; font-size: 12px; font-style: italic; color: #888888">Original Price</th>
+        <td style="text-align: right; font-size: 12px; font-family: monospace; font-weight: bold; font-style: italic; padding-right: 1ex; color: #888888">{{ original_price_express|currency }}</td>
+    </tr>
+    {% endif %}
+
+{% else %}
+
+    {% for target, target_quote in quote.targets.items %}
+        <tr>
+            <th colspan="3" style="background-color: #cccccc; text-align: left; font-family: Verdana, Tahoma, Arial, sans-serif; font-size: 12px; line-height: 1.5;">{{ target.description }}</th>
+            <th colspan="1" style="background-color: #cccccc; text-align: right; font-family: monospace; font-size: 12px; font-weight: bold; padding-left: 1em; padding-right: 1ex;">
+                {% if show_subtotals %}
+                    {{ target_quote.price|currency }}
+                {% else %}
+                    &nbsp;
+                {% endif %}
+            </th>
+        </tr>
+        {% for task_quote in quote.target_details|get_item:target %}
+            {% if task_quote.task.billable %}<tr>
+                <td>&nbsp;</td>
+                <td style="font-family: Helvetica, Verdana, Tahoma, Arial, sans-serif; font-size: 12px; line-height: 1.5;">{{ task_quote.task.service.service_type.description }}</td>
+                <td>&nbsp;</td>
+                <td style="text-align: right; font-family: monospace; font-size: 12px; font-weight: bold; padding-left: 1em; padding-right: 1ex;">{{ task_quote.price|currency }}</td>
+            </tr>{% endif %}
+        {% endfor %}
+    {% endfor %}
+    <tr style="background-color: #a8a8a8; border-top: solid thin #222222">
+        <th colspan="3" style="text-align: right; font-family: Verdana, Tahoma, Arial, sans-serif; font-size: 12px;">Total Price</th>
+        <td style="text-align: right; font-size: 12px; font-family: monospace; font-weight: bold; padding-right: 1ex;">{{ project.project_pricequote.price|currency }}</td>
+    </tr>
+
+    {% if client_discount_flag %}
+     <tr style="background-color: #a8a8a8; border-top: solid thin #222222">
+        <th colspan="3" style="text-align: right; font-family: Verdana, Tahoma, Arial, sans-serif; font-size: 12px; font-style: italic; color: #888888">Original Price</th>
+        <td style="text-align: right; font-size: 12px; font-family: monospace; font-weight: bold; font-style: italic; padding-right: 1ex; color: #888888">{{ original_price_standard|currency }}</td>
+    </tr>
+    {% endif %}
+
+{% endif %}
+
+</table>

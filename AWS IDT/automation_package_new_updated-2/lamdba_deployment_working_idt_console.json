@@ -1,0 +1,111 @@
+{
+  "Description": "IDT automated lamp 6 lowpan",
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Parameters": {
+    "ModelAndCodeBucket": {
+      "Description": "Name of the Bucket containing DeepLearning bundle as a ZIP object",
+      "Type": "String",
+      "Default": "kbilgund-test-code",
+      "MinLength": "1",
+      "MaxLength": "80"
+    },
+    "staticWebsite": {
+      "Description": "Name of the Bucket containing static website content",
+      "Type": "String",
+      "Default": "idt3",
+      "MinLength": "1",
+      "MaxLength": "80"
+    },
+    "WeatherBundleObjectKey": {
+      "Description": "The ZIP object prefix for the code bundle",
+      "Type": "String",
+      "Default": "weather-bundle.zip",
+      "MinLength": "1",
+      "MaxLength": "80"
+    },
+    "DLTestBucketName": {
+      "Description": "Bucket where the test images will be located",
+      "Type": "String",
+      "Default": "deeplearning-test-bucket",
+      "MinLength": "1",
+      "MaxLength": "80"
+    },
+    "iotEndPoint": {
+      "Description": "account specific endpoint",
+      "Type": "String",
+      "Default": "a2aoegwed86tb9-ats.iot.ap-south-1.amazonaws.com",
+      "MinLength": "1",
+      "MaxLength": "120"
+    },
+    "sunrise": {
+      "Description": "sunrise time",
+      "Type": "String",
+      "Default": "11 30",
+      "MinLength": "1",
+      "MaxLength": "10"
+    },
+    "sunset": {
+      "Description": "sunset time",
+      "Type": "String",
+      "Default": "23 30",
+      "MinLength": "1",
+      "MaxLength": "10"
+    }
+  },
+  "Resources": {
+    "RootRole": {
+     "Type": "AWS::IAM::Role",
+     "Properties": {
+      "AssumeRolePolicyDocument": {
+       "Version" : "2012-10-17",
+       "Statement": [ {
+        "Effect": "Allow",
+        "Principal": {
+         "Service": [ "lambda.amazonaws.com" ]
+       },
+       "Action": [ "sts:AssumeRole" ]
+     } ]
+     },
+     "Path": "/",
+     "Policies": [ {
+       "PolicyName": "root",
+       "PolicyDocument": {
+        "Version" : "2012-10-17",
+        "Statement": [ {
+         "Effect": "Allow",
+         "Action": "*",
+         "Resource": "*"
+       } ]
+      }
+    } ]
+   }
+   },
+
+   "RootInstanceProfile": {
+     "Type": "AWS::IAM::InstanceProfile",
+     "Properties": {
+      "Path": "/",
+      "Roles": [ {
+       "Ref": "RootRole"
+     } ]
+    }
+  },
+
+    "idtlcm1groupgetcf": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Handler": "getGroups.get_groups",
+        "FunctionName": "idt-groupv2-get",
+        "Role": { "Fn::GetAtt": ["RootRole", "Arn"] },
+        "Description": "needs to be fixed",
+        "MemorySize": 200,
+        "Code": {
+          "S3Bucket": {"Ref": "ModelAndCodeBucket"},
+          "S3Key": "idt_groupV2_get.zip"
+        },
+        "Runtime": "python3.7",
+        "Timeout": "300"
+      }
+    }
+  }
+}

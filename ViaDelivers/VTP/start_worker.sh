@@ -1,0 +1,1 @@
+python ./src/circus/manage.py celery worker --loglevel=info

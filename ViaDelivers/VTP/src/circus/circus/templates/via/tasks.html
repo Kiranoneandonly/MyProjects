@@ -1,0 +1,168 @@
+{% extends "via/theme_base.html" %}
+{% load i18n %}
+{% load humanize %}
+{% load currency_filter %}
+
+{% block content_header %}{% endblock %}
+
+{% block content_breadcrumb %}{% endblock %}
+
+{% block content %}
+     <div class="breadcrumb">
+        <span>
+            <i class="fa fa-home"></i>
+            <a href="{{ home_url }}">
+                {% trans "Home" %}
+            </a>
+        </span>
+        <span class="divider"><i class="fa fa-chevron-right"></i></span>
+        <span class="active">
+            {% trans "Tasks" %}
+        </span>
+        <span class="divider"><i class="fa fa-chevron-right"></i></span>
+        <span class="active">
+            {{ current_status_name }}
+        </span>
+        {% if client and is_user_type == 'all' %}
+            <span class="divider"><i class="fa fa-chevron-right"></i></span>
+            <span class="active">{{ client.name }} <a href="{% url 'my_tasks_status' 'all' current_status_status %}?client=all"><i class="fa fa-times-circle-o" title="Remove Company Filter"></i></a></span>
+        {% endif %}            
+        {{ block.super }}
+    </div>
+    <ul class="vendor-nav clearfix">
+        {% include 'via/_task_status_links.html' %}
+    </ul>
+    
+    <div class="table-list unit-border">
+        <div class="row-fluid table-list-header table-list-item">
+            <div class="span1 task-header">
+                <i class="fa fa-tasks"></i>
+                {% trans "Job" %}
+            </div>
+            <div class="span2 task-header">
+                <i class="fa fa-briefcase"></i>
+                {% if is_user_type in 'my' and current_status_name not in 'Pending' or is_user_type in 'team' and current_status_name not in 'Pending, Unassigned' or is_user_type in 'all' and current_status_name not in 'Pending, Unassigned' %}
+                    {% trans "Assigned To" %}
+                {% else %}
+                    {% trans "Accept/Reject" %}
+                {% endif %}
+            </div>
+            <div class="span2 task-header">
+                <i class="fa fa-cog"></i>
+                {% trans "Service" %}
+            </div>
+            <div class="span1 task-header">
+                <i class="fa fa-flask"></i>
+                {% trans "Qty" %}
+            </div>
+            <div class="span2 task-header">
+                <i class="fa fa-globe"></i>
+                {% trans "Source" %}
+            </div>
+            <div class="span2 task-header">
+                <i class="fa fa-crosshairs"></i>
+                {% trans "Target" %}
+            </div>
+            <div class="span2 task-header">
+                <i class="fa fa-clock-o"></i>
+                {% trans "Due" %}
+            </div>
+        </div>
+        {% for task in tasks_status %}
+            {% url 'via_approve_task' task.id as approval_url %}
+            {% url 'projects_tasks_edit' task.id as task_url %}
+            
+            <div class="row-fluid task table-list-item" id="task{{task.id}}">
+                <div class="span1">
+                    <i class="fa fa-tasks"></i>
+                    <a href="{% if current_status_is_status_final_approval %}{{ approval_url }}{% else %} {{ task_url }} {% endif %}"
+                            {% if task.project.project_manager %} title="{% trans "PM: " %} {{ task.project.project_manager }}" {% endif %}
+                            >{{ task.project.job_number }}</a>
+                </div>
+                <div class="span2">
+                    {% if is_user_type in 'my' and current_status_name not in 'Pending' or is_user_type in 'team' and current_status_name not in 'Pending, Unassigned' or is_user_type in 'all' and current_status_name not in 'Pending, Unassigned' %}
+                        <i class="fa fa-briefcase"></i> {{ task.assigned_to|default_if_none:"" }}
+                    {% else %}
+                        {% if not task.is_assigned or task.assigned_to.id == user.id %}
+                            <form action="" method="post" class="form-horizontal">
+                                {% csrf_token %}
+                                <input type="hidden" name="status_check" value="{{ current_status_name }}">
+                                <div class="btn-group"  style="width:90px">
+                                    <button name="accept_pending_task" type="submit" class="btn btn-success" value="{{task.id}}"><i class="fa fa-check fa-white"></i>{% trans "Accept" %}</button>\
+                                    {% if task.is_assigned %}
+                                    <button name="reject_active_task" type="submit" class="btn btn-danger" value="{{task.id}}"><i class="fa fa-times fa-white"></i>{% trans "Reject" %}</button>
+                                    {% endif %}
+                                </div>
+                                <br class="clear"/>
+                                <span class="label">{% trans "Respond by:" %} {{ task.respond_by }}</span>
+                            </form>
+                        {% else %}
+                            <i class="fa fa-briefcase"></i> {{ task.assigned_to|default_if_none:"" }}
+                        {% endif %}
+                    {% endif %}
+                </div>
+
+                <div class="span2">
+                    <i class="fa fa-cog"></i>
+                    {{ task.service.service_type }}
+                </div>
+                <div class="span1">
+                    <i class="fa fa-flask"></i>
+                    {{ task.quantity|floatformat:-2|intcomma }}
+                    {{ task.service.unit_of_measure }}
+                </div>
+                <div class="span2">
+                    <i class="fa fa-globe"></i>
+                    {{ task.service.source }}
+                </div>
+                <div class="span2">
+                    <i class="fa fa-crosshairs"></i>
+                    {{ task.service.target }}
+                </div>
+                <div class="span2">
+                    <i class="fa fa-clock-o"></i>
+                    {% if task.is_complete %}
+                        <span class="label label-completed">{{ task.completed_timestamp }}</span>
+                    {% else %}
+                        <span class="label label-{{ task.time_left_status }}">{{ task.due|naturaltime }}</span>
+                    {% endif %}
+                </div>
+            </div>
+        {% empty %}
+            <div class="row-fluid">
+                <div class="span10">
+                    {% trans "No Tasks" %}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+    {% if tasks_status.paginator.num_pages > 1 %}
+    <div class="row-fluid">
+        <nav>
+          <ul class="pager">
+            {% if tasks_status.has_previous %}
+                <li><a href="?page={{ tasks_status.previous_page_number }}">{% trans "Previous" %}</a></li>
+            {% endif %}
+            <li>
+                {% blocktrans with page_number=tasks_status.number page_total=tasks_status.paginator.num_pages %}
+                Page {{ page_number }} of {{ page_total }}
+                {% endblocktrans %}
+            </li>
+            {% if tasks_status.has_next %}
+                <li><a href="?page={{ tasks_status.next_page_number }}">{% trans "Next" %}</a></li>
+            {% endif %}
+          </ul>
+        </nav>
+    </div>
+    {% endif %}
+
+{% endblock %}
+
+{% block script %}
+<script>
+     $(document).ready(function(){
+            $('.form-horizontal span.label').css('font-size', '9px');
+     });
+</script>
+{% endblock %}

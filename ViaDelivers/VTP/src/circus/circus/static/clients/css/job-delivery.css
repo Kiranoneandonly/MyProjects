@@ -1,0 +1,60 @@
+#content {
+    position: relative;
+}
+
+.job-delivery-header {
+    margin: 20px 0;
+}
+.job-delivery-header .row-fluid {
+    margin-left: 15px;
+}
+
+.job-delivery-header .row-fluid:first-child {
+    margin-top: 10px;
+    margin-left: 0;
+    margin-bottom: 10px;
+}
+
+.job-delivery-container i {
+    margin-right: 5px;
+}
+
+.job-delivery-payload-header {
+    margin-bottom: 20px;
+}
+
+.job-delivery-payload-all {
+    margin-bottom: 10px;
+}
+
+.job-delivery-payload-individual .well {
+    margin-bottom: 10px;
+}
+
+.job-delivery-divider {
+    height: 20px;
+}
+
+.job-delivery-divider-text {
+    font-weight: bold;
+    font-size: 0.9em;
+    padding: 10px 15px;
+    position: relative;
+    left: 40px;
+    bottom: 20px;
+    z-index: 20;
+    color: #888888;
+    background: #ffffff;
+}
+
+.job-delivery-divider div:first-child {
+    background: #cccccc;
+    height: 2px;
+    width: 100%;
+    position: relative;
+    z-index: 10;
+}
+
+.job-delivery-payload-header {
+    background: #bbbbbb;
+}

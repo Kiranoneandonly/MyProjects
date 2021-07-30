@@ -1,0 +1,477 @@
+{% extends "shared/external/theme_base.html" %}
+{% load i18n %}
+{% load humanize %}
+{% load currency_filter %}
+{% load get_item %}
+{% load bootstrap %}
+
+{% block css %}
+    <link rel="stylesheet" href="{{ STATIC_URL }}shared/css/table-cell-dropdown.css" media="screen"/>
+    <link rel="stylesheet" href="{{ STATIC_URL }}clients/css/job-detail.css" type="text/css" media="all"/>
+    <link rel="stylesheet" href="{{ STATIC_URL }}shared/css/fine-uploader.min.css" type="text/css" media="all"/>
+    <link rel="stylesheet" href="{{ STATIC_URL }}shared/css/fine-uploader-custom.css" type="text/css" media="all"/>
+{% endblock %}
+
+{% block script %}
+    {% with "reference" as asset_type %}
+        {% include 'shared/util/_uploader_script.html' %}
+    {% endwith %}
+
+    {{ block.super }}
+    <script type="text/javascript" src="{{ STATIC_URL }}shared/js/disable_after_click.js"></script>
+    <script src="{{ STATIC_URL }}shared/js/filters/table-cell-dropdown.js" type="text/javascript"></script>
+    <script src="{{ STATIC_URL }}clients/js/locale-estimate-table.js" type="text/javascript"></script>
+    <script src="{{ STATIC_URL }}shared/js/data-confirm.js" type="text/javascript"></script>
+
+    <script>
+        $(document).ready(function () {
+            $('#comment_submit').click(function () {
+                if (!$('#id_comment').val()) {
+                    alert("{% blocktrans %}Please enter message{% endblocktrans %}");
+                    return false;
+                }
+            });
+
+            $("input[name='comment_reply_vendor']").click(function () {
+                $('#id_comment').val('@' + $(this).attr('data') + ', ');
+                $('#id_comment').focus();
+            });
+        });
+
+    </script>
+{% endblock %}
+
+{% block content_breadcrumb %}
+    {% include "clients/projects/_project_breadcrumb.html" %}
+{% endblock %}
+
+{% block content_header %}
+    {% include "clients/projects/_project_header.html" %}
+{% endblock %}
+
+{% block content %}
+    {% if can_access_job %}
+        <div class="tabbable"> <!-- Only required for left/right tabs -->
+            <ul class="nav nav-tabs">
+                <li{% if active_tab == 'details' %} class="active"{% endif %}><a href="#tabDetails" data-toggle="tab"><i
+                        class="fa fa-cog"></i> Details</a></li>
+                {% if project.instructions %}
+                    <li{% if active_tab == 'instructions' %} class="active"{% endif %}><a href="#tabInstructions"
+                                                                                          data-toggle="tab"><i
+                            class="fa fa-comment"></i> Instructions</a></li>
+                {% endif %}
+                <li{% if active_tab == 'estimate' %} class="active"{% endif %}><a href="#tabEstimate" data-toggle="tab"><i
+                        class="fa fa-th"></i> Estimate</a></li>
+                {% if show_client_messenger %}
+                    <li{% if active_tab == 'job_messages' %} class="active"{% endif %}><a href="#tabMessenger"
+                                                                                          data-toggle="tab">
+                        <i class="fa fa-comments-o"></i> {% blocktrans %}Messages{% endblocktrans %}</a>
+                        {% if client_message_unread_count %}
+                            <span class="badge badge-notify"
+                                  style="position:relative;top: -40px;left: 90px;">{{ client_message_unread_count }}</span>
+                        {% endif %}
+                    </li>
+                {% endif %}
+                {% if project.is_secure_job or project.is_phi_secure_job  and project.client_poc == request.user %}
+                    <li{% if active_tab == 'secure_job_team' %} class="active"{% endif %}><a href="#tabSecureJobTeam"
+                                                                                             data-toggle="tab"><i
+                            class="fa fa-lock"></i> {% blocktrans %}Team{% endblocktrans %}</a></li>
+                {% endif %}
+            </ul>
+            <div class="tab-content">
+                <div class="tab-pane{% if active_tab == 'details' %} active{% endif %}" id="tabDetails">
+                    <div class="job-detail-container">
+                        <div class="row-fluid job-detail-general">
+                            <div class="span6">
+                                <div class="widget-title">
+                                    <h2><i class="{{ status.icon }}"></i> {{ status.text }}</h2>
+                                </div>
+                                <div class="well">
+                                    {% if project.payment_details.ca_invoice_number %}
+                                        <div class="row-fluid">
+                                            <div class="span4">{% blocktrans %}Purchase Order:{% endblocktrans %}</div>
+                                            <div class="span8">{{ project.payment_details.ca_invoice_number }}</div>
+                                        </div>
+                                    {% endif %}
+                                    {% if project.project_reference_name %}
+                                        <div class="row-fluid">
+                                            <div class="span4">{% blocktrans %}Job Reference:{% endblocktrans %}</div>
+                                            <div class="span8">{{ project.project_reference_name }}</div>
+                                        </div>
+                                    {% endif %}
+                                    <div class="row-fluid">
+                                        <div class="span4">{% trans "Client POC:" %}</div>
+                                        <div class="span8">{{ project.client_poc }}</div>
+                                    </div>
+                                    {% if project.primary_pm %}
+                                        <div class="row-fluid">
+                                            <div class="span4">{% blocktrans %}Project Manager:{% endblocktrans %}</div>
+                                            <div class="span8">{{ project.primary_pm.mail_link|safe }}</div>
+                                        </div>
+                                    {% endif %}
+                                    {% if project.account_executive %}
+                                        <div class="row-fluid">
+                                            <div class="span4">{% blocktrans %}Account
+                                                Executive:{% endblocktrans %}</div>
+                                            <div class="span8">{{ project.account_executive.mail_link|safe }}</div>
+                                        </div>
+                                    {% endif %}
+                                    <div class="row-fluid">
+                                        <div class="span4">{% trans "Industry:" %} </div>
+                                        <div class="span8">{{ project.industry }} </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span6">
+                                <div class="widget-title">
+                                    <div class="row-fluid">
+                                        <div class="span8">
+                                            <h2><i class="fa fa-calendar"></i> {% trans "Dates" %}</h2>
+                                        </div>
+                                        <div class="span4">
+                                            <a class="btn btn-primary pull-right"
+                                               href="{% url 'client_clone_new_job' project.id %}"
+                                               data-confirm="{% trans "Are you sure you want to Clone Job?" %}"
+                                               title="{% trans "Clone Job" %}">
+                                                <i class="fa fa-files-o"></i> {% blocktrans %}Clone
+                                                Job{% endblocktrans %}
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="well">
+                                    <div class="row-fluid">
+                                        <div class="span4">{% trans "Started:" %}</div>
+                                        <div class="span5">{{ project.started_timestamp|date:"M d Y" }}</div>
+                                        <div class="span3">
+                                            {% if project.is_restricted_job %}
+                                                <span class="alert alert-error pull-right"><i class="fa fa-cloud"
+                                                                                              title="{% trans "Restricted Access" %}"></i>
+                                                    {% blocktrans %} Restricted Access{% endblocktrans %}</span>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    <div class="row-fluid">
+                                        <div class="span4">{% trans "Due:" %}</div>
+                                        <div class="span5">{{ project.due|date:"M d Y" }}</div>
+                                        <div class="span3"></div>
+                                    </div>
+                                    <div class="row-fluid">
+                                        <div class="span4">{% trans "Delivered:" %}</div>
+                                        <div class="span5">{{ project.delivered|date:"M d Y" }}</div>
+                                        <div class="span3"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% if  show_files %}
+                            <div class="row-fluid">
+                                <div class="span6">
+                                    <div class="widget-box">
+                                        <div class="widget-title">
+                                            <h2><i class="fa fa-upload"></i> {% trans "Source Files" %}</h2>
+                                        </div>
+                                        <div class="widget-content well">
+                                            {% if project.kit %}
+                                                <div class="row-fluid">
+                                                {% for asset in project.kit.source_files %}
+                                                    <div class="file">
+                                                        <i class="fa fa-file"></i>
+                                                        <a href="{% url 'download_asset' project.id  asset.id %}">{{ asset.orig_name }}</a>
+                                                    </div>
+                                                {% empty %}
+                                                    <div>
+                                                        {% trans "No source files" %}
+                                                    </div>
+                                                {% endfor %}
+                                            {% else %}
+                                                <div>{% trans "No localization kit" %}</div>
+                                            {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="span6 delivery">
+                                    <div class="widget-box">
+                                        <div class="widget-title">
+                                            <h2><i class="fa fa-truck"></i> {% trans "Delivery" %}</h2>
+                                        </div>
+                                        <div class="widget-content well">
+                                            {% for target in project_target_locales.targets %}
+                                                <div class="row-fluid delivery-row">
+                                                    <div class="span6">
+                                                        {{ target }}
+                                                        {% if target.has_delivery %}
+                                                            {% for task in target.target.nbtask %}
+                                                                {% if task.via_notes %}
+                                                                    <a href="#modal-{{ task.id }}" class=""
+                                                                       data-toggle="modal"><i class="fa fa-comments-o"
+                                                                                              title="{% trans "Delivery Notes" %}"></i></a>
+                                                                    <div id="modal-{{ task.id }}"
+                                                                         class="modal hide fade" tabindex="-1"
+                                                                         role="dialog" aria-labelledby="myModalLabel"
+                                                                         aria-hidden="true">
+                                                                        <div class="modal-header">
+                                                                            <button type="button" class="close"
+                                                                                    data-dismiss="modal"
+                                                                                    aria-hidden="true">x
+                                                                            </button>
+                                                                            <h3 id="myModalLabel">Delivery Notes</h3>
+                                                                        </div>
+                                                                        <div class="modal-body">
+                                                                            {{ task.via_notes|safe }}
+                                                                        </div>
+                                                                        <div class="modal-footer">
+                                                                            <button class="btn" data-dismiss="modal"
+                                                                                    aria-hidden="true">Close
+                                                                            </button>
+                                                                        </div>
+                                                                    </div>
+                                                                {% endif %}
+                                                            {% endfor %}
+                                                        {% endif %}
+                                                    </div>
+                                                    {% if target.has_delivery %}
+                                                        <div class="span6">
+                                                            <a class="btn btn-primary"
+                                                               href="{% url 'client_project_delivery' project.id target.lcid %}">
+                                                                <i class="fa fa-check-square-o"></i>
+                                                                {% blocktrans %}Ready{% endblocktrans %}
+                                                            </a>
+                                                        </div>
+                                                    {% else %}
+                                                        <div class="span6">
+                                    <span class="btn disabled">
+                                        <i class="fa fa-minus-square-o"></i>
+                                        {% blocktrans %}Not Ready{% endblocktrans %}
+                                    </span>
+                                                        </div>
+                                                    {% endif %}
+                                                </div>
+                                                {% if forloop.counter ==  project_target_locales.targets|length and target.has_delivery %}
+                                                    <div class="row-fluid delivery-row">
+                                                        <div class="span12">
+                                                            <a class="btn btn-inverse"
+                                                               href="{% url 'project_target_delivery_zip' project.id 0 %}">
+                                                                <i class="fa fa-download"></i>
+                                                                {% blocktrans %}Download All{% endblocktrans %}
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+                        <div class="row-fluid">
+                            <div class="span6">
+                                <div class="widget-title">
+                                    <h2>
+                                        <i class="fa fa-upload"></i>
+                                        {% trans "Upload Reference Files" %}
+                                    </h2>
+                                </div>
+                                <div class="widget-content well">
+
+                                    <div class="uploadContentWidget nopadding">
+                                        <div>
+                                            {% with project.kit.reference_files as files %}
+                                                {% include 'shared/util/_uploader.html' %}
+                                            {% endwith %}
+                                        </div>
+                                        {% if phi_warning %}{% include "clients/order/_phi_warning.html" %}{% endif %}
+                                    </div>
+                                </div>
+                            </div>
+
+                            {% if project.kit.reference_files %}
+                                <div class="span6">
+                                    <div class="widget-title">
+                                        <h2>
+                                            <i class="fa fa-archive"></i>
+                                            {% trans "Reference Files" %}
+                                        </h2>
+                                    </div>
+                                    <div class="widget-content well">
+
+                                        {% for asset in project.kit.reference_files %}
+                                            <div>
+                                                <i class="fa fa-file"></i>
+                                                <a href="{% url 'download_asset' project.id  asset.id %}">{{ asset.orig_name }}</a>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane{% if active_tab == 'instructions' %} active{% endif %}" id="tabInstructions">
+                    {% if project.instructions %}
+                        <div class="row-fluid">
+                            <div class="span12">
+                                <div class="widget-title">
+                                    <h2>
+                                        <i class="fa fa-comment"></i>
+                                        {% trans "Instructions" %}
+                                    </h2>
+                                </div>
+                                <div class="widget-content well">
+                                    <div>
+                                        {{ project.instructions|safe }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="tab-pane{% if active_tab == 'estimate' %} active{% endif %}" id="tabEstimate">
+                    <div class="row-fluid">
+                        <div class="span12">
+                            <div class="widget-box">
+                                <div class="widget-title">
+                                    <div class="row-fluid">
+                                        <div class="pull-right">
+                                            <!--Button for estimation file download-->
+                                            {% if is_sow_available %}
+                                                <a class="btn" href="{% url 'download_client_sow' project.id %}"
+                                                   title="{% trans "Download Statement of Work" %}">
+                                                    <i class="fa fa-download"></i> SOW
+                                                </a>
+                                            {% endif %}
+                                        </div>
+                                        <div>
+                                            <h2>
+                                                <i class="fa fa-th"></i> {% trans "Estimate" %}
+                                            </h2>
+                                        </div>
+                                    </div>
+                                    <div class="row-fluid">
+                                        <div>
+                                            {% blocktrans %}Source{% endblocktrans %}:
+                                            {{ project.source_locale }}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="widget-content">
+                                    <table class="table table-bordered table-fixed">
+                                        <thead>
+                                        <tr>
+                                            <th>{% trans "Target" %}</th>
+                                            <th>{% trans "Service" %}</th>
+                                            <th>{% trans "File" %}</th>
+                                            <th>{% trans "Price" %} <span class="currency-code">(USD)</span></th>
+                                        </tr>
+                                        </thead>
+
+                                        {% for target in project_target_locales.targets %}
+                                            {% with target_details=project.target_price_details|get_item:target.id %}
+                                                <tr class="target-summary-row" id="targetRow{{ target.id }}">
+                                                    <td>{{ target }}<span id="taskGroupToggle{{ target.id }}"
+                                                                          class="task-group-toggle"><i
+                                                            class="fa fa-plus"></i></span></td>
+                                                    <td class="sub">{% trans "All" %}</td>
+                                                    <td class="sub">{% trans "All" %}</td>
+                                                    <td>
+                                                        {% if project.is_standard_speed %}
+                                                            {{ target_details.target_price|currency }}
+                                                        {% else %}
+                                                            {{ target_details.target_express_price|currency }}
+                                                        {% endif %}
+                                                    </td>
+                                                </tr>
+                                                <tbody id="taskGroup{{ target.id }}" style="display:none;">
+
+                                                {% get_sorted_task_list target.tasks as sorted_task_list %}
+                                                {% for task in sorted_task_list %}
+                                                    {% if task.billable %}
+                                                        <tr class="task-summary-row taskRow{{ task.id }}">
+                                                            <td class="sub"></td>
+                                                            <td>{{ task.service.service_type }}
+                                                                {% if task.is_translation %}
+                                                                    <span id="taskAssetToggle{{ task.id }}"
+                                                                          class="task-asset-toggle"><i
+                                                                            class="fa fa-plus"></i></span>
+                                                                {% endif %}
+                                                            </td>
+                                                            <td class="sub">All</td>
+                                                            {% if project.is_standard_speed %}
+                                                                <td>{{ task.net_price|currency }}</td>
+                                                            {% else %}
+                                                                <td>{{ task.express_net_price|currency }}</td>
+                                                            {% endif %}
+                                                        </tr>
+                                                        {% if task.is_translation %}
+                                                            {% for asset in project.kit.source_files %}
+                                                                {% asset_is_minimum_price task asset as minimum_price %}
+                                                                {% if not minimum_price %}
+                                                                    <tr class="task-asset-row taskAsset{{ task.id }}">
+                                                                        <td class="sub"></td>
+                                                                        <td class="sub"></td>
+                                                                        <td>
+                                                                            {{ asset.orig_name }}
+                                                                        </td>
+                                                                        {% if project.kit.source_files|length_is:1 or minimum_price %}
+                                                                            <td>{% trans "incl." %}</td>
+                                                                        {% else %}
+                                                                            {% get_taskassetquote task asset as asset_price_object %}
+                                                                            {% if project.is_standard_speed %}
+                                                                                <td>{{ asset_price_object.asset_net_price|currency }}</td>
+                                                                            {% else %}
+                                                                                <td>{{ asset_price_object.asset_express_net_price|currency }}</td>
+                                                                            {% endif %}
+                                                                        {% endif %}
+                                                                    </tr>
+                                                                {% endif %}
+                                                            {% endfor %}
+                                                        {% endif %}
+                                                    {% endif %}
+                                                {% endfor %}
+                                                </tbody>
+                                            {% endwith %}
+                                        {% endfor %}
+                                        <tr>
+                                            <td colspan="3" style="text-align: right;">
+                                                <b>{% trans "Total Price: " %}</b></td>
+                                            <td><b>{{ project.price|currency }}</b></td>
+                                        </tr>
+                                        {% if client_discount_flag %}
+                                            <tr>
+                                                <td colspan="3"
+                                                    style="text-align: right; font-style: italic; color: #888888">{% trans "Original Price: " %}</td>
+                                                <td style="font-style: italic; color: #888888">
+                                                    {% if project.is_standard_speed %}
+                                                        {{ original_price_standard|currency }}
+                                                    {% else %}
+                                                        {{ original_price_express|currency }}
+                                                    {% endif %}
+                                                </td>
+                                            </tr>
+                                        {% endif %}
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% if user.account.manifest.word_count_breakdown_flag %}
+                        {% include "clients/projects/word_count_breakdown.html" %}
+                    {% endif %}
+                </div>
+                <div class="tab-pane{% if active_tab == 'job_messages' %} active{% endif %}" id="tabMessenger">
+                    {% include "clients/projects/client_project_comments.html" %}
+                </div>
+
+                <div class="tab-pane{% if active_tab == 'secure_job_team' %} active{% endif %}" id="tabSecureJobTeam">
+                    {% include "clients/projects/add_secure_job_team_members.html" %}
+                </div>
+
+
+            </div>
+        </div>
+    {% else %}
+        {% include "clients/projects/_project_permissions_notice.html" %}
+    {% endif %}
+{% endblock %}
+

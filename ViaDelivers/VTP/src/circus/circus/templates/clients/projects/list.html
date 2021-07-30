@@ -1,0 +1,336 @@
+{% extends "shared/external/theme_base.html" %}
+{% load i18n %}
+{% load bootstrap_pagination %}
+{% load currency_filter %}
+{% load sorting_field_parameter %}
+{% load comments_exist %}
+{% load check_job_access %}
+{% load get_item %}
+
+{% block css %}
+    <link rel="stylesheet" href="{{ STATIC_URL }}shared/css/table-cell-dropdown.css" media="screen"/>
+    <link rel="stylesheet" href="{{ STATIC_URL }}clients/css/job-list.css" type="text/css" media="all"/>
+    <link rel="stylesheet" href="{{ STATIC_URL }}clients/css/jobstatus.css" type="text/css" media="all"/>
+{% endblock %}
+
+{% block script %}
+    <script src="{{ STATIC_URL }}shared/js/filters/table-cell-dropdown.js" type="text/javascript"></script>
+    <script src="{{ STATIC_URL }}shared/js/filters/job-list.js" type="text/javascript"></script>
+    <script src="{{ STATIC_URL }}shared/js/start_job_button.js" type="text/javascript"></script>
+{% endblock %}
+
+{% block title %}{% trans "Job List" %} | {{ workflow_status.text | capfirst }} | VTP{% endblock %}
+{% block content_header %}{% endblock %}
+
+{% block content_breadcrumb %}
+    <div class="breadcrumb">
+        <span><i class="fa fa-home"></i></span>
+        <span><a href="{% url 'client_dashboard' %}">{% trans "Home" %}</a></span>
+        <span class="divider"><i class="fa fa-chevron-right"></i></span>
+        <span class="active">{% trans "Job List" %}</span>
+        {{ block.super }}
+    </div>
+{% endblock %}
+
+{% block content %}
+
+    <div class="job-active job-content">
+        <div class="job-active-table">
+            <div class="row-fluid list-header">
+                <div class="span3 headings">
+                    <h2><i class="{{ workflow_status.icon }}"></i> {{ workflow_status.text | capfirst }}</h2>
+                </div>
+                <div class="span9 form-inline job-filters">
+                    <div class="row-fluid column-display-controls">
+                        <span class="span2">
+                            <input id="display_price_columns_checkbox" type="checkbox" />
+                            <label for="display_price_columns_checkbox">{% trans "Price" %}</label>
+                        </span>
+                        <span class="span2">
+                            <input id="display_people_columns_checkbox" type="checkbox" />
+                            <label for="display_people_columns_checkbox">{% trans "People" %}</label>
+                        </span>
+                        <span class="span2">
+                            <input id="display_est_date_columns_checkbox" type="checkbox" />
+                            <label for="display_est_date_columns_checkbox">{% trans "Estimate Dates" %}</label>
+                        </span>
+                        <span class="span2">
+                            <input id="display_job_date_columns_checkbox" type="checkbox" />
+                            <label for="display_job_date_columns_checkbox">{% trans "Job Dates" %}</label>
+                        </span>
+                        <span class="span4 text-right">
+                            <div class="btn-group">
+{#                                <a href="{% url 'client_new_project_start' %}"#}
+{#                                   class="btn btn-primary start_job_button"><i#}
+{#                                        class="fa fa-plus-circle fa-white"></i> {% trans "Start Estimate" %}#}
+{#                                </a>#}
+                                <a href="{{ workflow_status.export_url }}"
+                                   class="btn"><i class="fa fa-cloud-download fa-white"></i> {% trans "Export" %}
+                                </a>
+                                {% include 'clients/projects/_workflow_filter_dropdown.html' %}
+                            </div>
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="table-wrapper table-responsive">
+                <table class="table table-bordered table-hover table-striped">
+                <thead>
+                    <tr>
+                        <th class="col col-express clickable-th" data-href="?{% url_replace request 'order_by' 'express' %}" id="express">
+                            <i class="fa fa-rocket" title="{% trans "Express" %}"></i>
+                        <div style="float: right"><i class="sort-icon fa fa-sort"></i></div></th>
+                        <th class="col col-warnings clickable-th" data-href="?{% url_replace request 'order_by' 'warnings' %}" id="warnings"><i class="fa fa-exclamation-triangle" title="{% trans "Warnings" %}"></i><div style="float: right"><i class="sort-icon fa fa-sort"></i></div></th>
+                        <th class="col col-approved clickable-th" data-href="?{% url_replace request 'order_by' 'approved' %}" id="approved"><i class="fa fa-check-circle" title="{% trans "Approved" %}"></i><div style="float: right"><i class="sort-icon fa fa-sort"></i></div></th>
+                        {% if secure_jobs %}
+                        <th class="col col-restricted clickable-th" data-href="?{% url_replace request 'order_by' 'restricted' %}" id="restricted"><i class="fa fa-cloud" title="{% trans "Restricted Access" %}"></i><div style="float: right"><i class="sort-icon fa fa-sort"></i></div></th>
+                        {% endif %}
+
+                        {% if show_client_messenger %}
+                        <th class="col col-messages-id"><i class="fa fa-comments-o" title="{% trans "Messages" %}"></i></th>
+                        {% endif %}
+
+                        <th class="col col-phi clickable-th" data-href="?{% url_replace request 'order_by' 'phi' %}" id="phi"><i class="fa fa-user-md" title="{% trans "PHI Secure Job" %}"></i><div style="float: right"><i class="sort-icon fa fa-sort"></i></div></th>
+
+                        {% if secure_hierarchy %}
+                        <th class="col col-request-access"><i class="fa fa-unlock-alt" title="{% trans "Request Access to Job" %}"></i></th>
+                        {% endif %}
+
+                        <th class="col col-job-id clickable-th" data-href="?{% url_replace request 'order_by' 'job_id' %}" id="job_id"><span>{% blocktrans %}Job ID{% endblocktrans %}</span><div style="float: right"><i class="sort-icon fa fa-sort"></i></div></th>
+                        <th class="col col-workflow clickable-th" data-href="?{% url_replace request 'order_by' 'workflow' %}" id="workflow">{% trans "Workflow" %}<div style="float: right"><i class="sort-icon fa fa-sort"></i></div></th>
+                        <th class="col col-purchase-order clickable-th" data-href="?{% url_replace request 'order_by' 'purchase_order' %}" id="purchase_order">{% trans "Purchase Order" %}<div style="float: right"><i class="sort-icon fa fa-sort"></i></div></th>
+                        <th class="col col-reference-name clickable-th" data-href="?{% url_replace request 'order_by' 'job_reference' %}" id="job_reference">{% trans "Job Reference" %}<div style="float: right"><i class="sort-icon fa fa-sort"></i></div></th>
+                        <th class="col col-file clickable-th" data-href="?{% url_replace request 'order_by' 'file' %}" id="file">{% trans "File" %}<div style="float: right"><i class="sort-icon fa fa-sort"></i></div></th>
+                        <th class="col col-source clickable-th" data-href="?{% url_replace request 'order_by' 'source' %}" id="source">{% trans "Source" %}<div style="float: right"><i class="sort-icon fa fa-sort"></i></div></th>
+                        <th class="col col-target clickable-th" data-href="?{% url_replace request 'order_by' 'targets' %}" id="targets">{% trans "Target(s)" %}<div style="float: right"><i class="sort-icon fa fa-sort"></i></div></th>
+                        <th class="col col-price col-optional clickable-th" data-href="?{% url_replace request 'order_by' 'price' %}" id="price">{% trans "Price" %}<div style="float: right"><i class="sort-icon fa fa-sort"></i></div></th>
+                        <th class="col col-requester col-optional clickable-th" data-href="?{% url_replace request 'order_by' 'requester' %}" id="requester">{% trans "Requester" %}<div style="float: right"><i class="sort-icon fa fa-sort"></i></div></th>
+                        <th class="col col-requester-dept col-optional clickable-th" data-href="?{% url_replace request 'order_by' 'department' %}" id="department">{% trans "Department" %}<div style="float: right"><i class="sort-icon fa fa-sort"></i></div></th>
+                        <th class="col col-pm col-optional clickable-th" data-href="?{% url_replace request 'order_by' 'pm' %}" id="pm">{% trans "PM" %}<div style="float: right"><i class="sort-icon fa fa-sort"></i></div></th>
+                        <th class="col col-ae col-optional clickable-th" data-href="?{% url_replace request 'order_by' 'ae' %}" id="ae">{% trans "AE" %}<div style="float: right"><i class="sort-icon fa fa-sort"></i></div></th>
+                        <th class="col col-estimate-due col-optional clickable-th" data-href="?{% url_replace request 'order_by' 'estimate_due' %}" id="estimate_due">{% trans "Estimate" %}<div style="float: right"><i class="sort-icon fa fa-sort"></i></div></th>
+                        <th class="col col-estimated col-optional clickable-th" data-href="?{% url_replace request 'order_by' 'estimated' %}" id="estimated">{% trans "Estimated" %}<div style="float: right"><i class="sort-icon fa fa-sort"></i></div></th>
+                        <th class="col col-started col-optional clickable-th" data-href="?{% url_replace request 'order_by' 'started' %}" id="started">{% trans "Started" %}<div style="float: right"><i class="sort-icon fa fa-sort"></i></div></th>
+                        <th class="col col-due col-optional clickable-th" data-href="?{% url_replace request 'order_by' 'due' %}" id="due">{% trans "Due" %}<div style="float: right"><i class="sort-icon fa fa-sort"></i></div></th>
+                        <th class="col col-delivered col-optional clickable-th" data-href="?{% url_replace request 'order_by' 'delivered' %}" id="delivered">{% trans "Delivered" %}<div style="float: right"><i class="sort-icon fa fa-sort"></i></div></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        {% for project in project_list %}
+                        {% check_secure_job_team_member request.user.id request.user.account.id project.id project.client_poc project.is_secure_job as secure_job_memeber  %}
+                            {% with warnings=project.client_warnings %}
+                                <tr>
+                                    <td class="col col-express">
+                                        {% if project.is_express_speed %}
+                                            <i class="fa fa-rocket" title="{% trans "Express" %}"></i>
+                                        {% endif %}
+                                    </td>
+                                    <td class="col col-warnings">
+                                        {% if warnings %}
+                                            <i class="fa fa-exclamation-triangle" title="{{ warnings }}"></i>
+                                        {% endif %}
+                                    </td>
+                                    <td class="col col-approved">
+                                        {% if project.approved  %}
+                                            <i class="fa fa-check-circle" title="{% trans "Approved" %}"></i>
+                                        {% endif %}
+                                    </td>
+                                    {% if secure_jobs %}
+                                    <td class="col col-restricted">
+                                        {% if project.is_restricted_job  %}
+                                            <i class="fa fa-cloud" title="{% trans "Restricted Access" %}"></i>
+                                        {% endif %}
+                                    </td>
+                                    {% endif %}
+                                    {% if show_client_messenger %}
+                                    <td class="col col-comments">
+                                         {% client_comments_exist project.id as comments %}
+                                         {% if comments %}
+                                             <a href="
+                                                {% if project.is_queued_status %}
+                                                    {% if secure_hierarchy %}
+                                                        {%  if perms.clients.client_manager or user.id == project.client_poc_id %}
+                                                            {% url 'client_new_project' project.id %}
+                                                         {% endif %}
+                                                    {% else %}
+                                                        {% url 'client_new_project' project.id %}
+                                                    {% endif %}
+                                                {% elif project.is_client_quote_status %}
+                                                    {% if project.status == 'quoted' %}
+                                                        {% url 'client_quote' project.id %}
+                                                    {% else %}
+                                                        {% if secure_hierarchy %}
+                                                            {%  if perms.clients.client_manager or user.id == project.client_poc_id or project_access %}
+                                                                {% url 'client_quote' project.id %}
+                                                            {% else %}
+                                                                {% url 'client_no_access' %}
+                                                            {% endif %}
+                                                        {% else %}
+                                                            {% url 'client_quote' project.id %}
+                                                        {% endif %}
+                                                    {% endif %}
+                                                {% else %}
+                                                    {% if secure_hierarchy %}
+                                                        {%  if perms.clients.client_manager or user.id == project.client_poc_id or project_access %}
+                                                            {% url 'client_project_detail' project.id %}
+                                                         {% endif %}
+                                                    {% else %}
+                                                         {% url 'client_project_detail' project.id %}
+                                                    {% endif %}
+                                                {% endif %}
+                                            "><i class="fa fa-comments-o" title="{% trans "Job Messages" %}"></i></a>
+                                         {% endif %}
+                                    </td>
+                                    {% endif %}
+                                    <td>
+                                        {% if project.is_phi_secure_job  %}
+                                            <i class="fa fa-user-md" title="{% trans "PHI Secure Job" %}"></i>
+                                        {% endif %}
+                                    </td>
+                                    {% if secure_hierarchy %}
+                                        {% check_job_access user.id project.id as project_access %}
+                                        <td class="col col-request-access">
+                                        {% if not project_access and not perms.clients.client_manager and user.id != project.client_poc_id %}
+                                            <form method="post" action="" class="no-layout" name="request_access">
+                                                {% csrf_token %}
+                                                <input type="hidden" name="request_access" value="1">
+                                                <input type="hidden" name="project_id" value="{{ project.id }}">
+                                                <button type="submit" class="btn btn-mini btn-success" title="{% trans "Please request access from manager or job owner." %}">
+                                                    <i class="fa fa-unlock-alt" title="{% trans "Locked" %}"></i>
+                                                </button>
+                                            </form>
+                                        {% endif %}
+                                        </td>
+                                    {% endif %}
+                                    <td class="col col-job-id">
+                                        <a href="
+                                            {% if project.is_queued_status %}
+                                                {% if secure_hierarchy %}
+                                                    {%  if perms.clients.client_manager or user.id == project.client_poc_id or project_access %}
+                                                        {% url 'client_new_project' project.id %}
+                                                    {% else %}
+                                                        {% url 'client_no_access' %}
+                                                    {% endif %}
+                                                {% else %}
+                                                    {% url 'client_new_project' project.id %}
+                                                {% endif %}
+
+                                            {% elif project.is_client_quote_status %}
+                                                    {% if project.status == 'quoted' %}
+                                                        {% url 'client_quote' project.id %}
+                                                    {% else %}
+                                                        {% if secure_hierarchy %}
+                                                            {%  if perms.clients.client_manager or user.id == project.client_poc_id or project_access %}
+                                                                {% url 'client_quote' project.id %}
+                                                            {% else %}
+                                                                {% url 'client_no_access' %}
+                                                            {% endif %}
+                                                        {% else %}
+                                                            {% url 'client_quote' project.id %}
+                                                        {% endif %}
+                                                    {% endif %}
+                                            {% else %}
+                                                {% if secure_hierarchy %}
+                                                    {%  if perms.clients.client_manager or user.id == project.client_poc_id or project_access %}
+                                                        {% url 'client_project_detail' project.id %}
+                                                    {% else %}
+                                                        {% url 'client_no_access' %}
+                                                    {% endif %}
+                                                {% else %}
+                                                    {% url 'client_project_detail' project.id %}
+                                                {% endif %}
+                                            {% endif %}
+                                        ">{{ project.job_number }}</a>
+                                    </td>
+                                    <td class="col col-workflow">
+                                        <i class="{{ project.workflow.icon }}"></i>
+                                        {{ project.workflow.text }}
+                                    </td>
+                                    <td class="col col-purchase-order">
+                                        {{ project.payment_details.ca_invoice_number|default_if_none:"" }}
+                                    </td>
+                                    <td class="col col-reference-name">
+                                        {{ project.project_reference_name|default_if_none:"" }}
+                                    </td>
+                                    <td class="col col-file">
+                                    {% if secure_job_memeber %}
+                                        {% for asset in project.kit.source_files.all %}
+                                            {% if project.kit.source_files.all|length == 1 %}
+                                                <span>{{ asset.short_name  }}</span>
+                                            {% else %}
+                                                {% if forloop.first %}
+                                                <span class="table-cell-dropdown-toggle">
+                                                    {{ asset.short_name }}
+                                                    <i class="fa fa-caret-down"></i>
+                                                </span>
+                                                {% else %}
+                                                <span class="table-cell-additional-item">
+                                                    {{ asset.short_name }}
+                                                </span>
+                                                {% endif %}
+                                            {% endif %}
+                                        {% endfor %}
+                                    {% else %}
+                                        <span class="icon-lock" title="Need permissions to access this Secure Job"></span>
+                                    {% endif %}
+                                    </td>
+                                    <td class="col col-source">{{ project.source_locale }}</td>
+                                    <td class="col col-target">
+                                        {% for target in project.target_locales.all %}
+                                        {% if project.target_locales.all|length == 1 %}
+                                            <span>{{ target }}</span>
+                                        {% else %}
+                                            {% if forloop.first %}
+                                            <span class="table-cell-dropdown-toggle">
+                                                {{target}}
+                                                <i class="fa fa-caret-down"></i>
+                                            </span>
+                                            {% else %}
+                                            <span class="table-cell-additional-item">
+                                                {{ target }}
+                                            </span>
+                                            {% endif %}
+                                        {% endif %}
+                                        {% endfor %}
+                                    </td>
+                                    <td class="col col-price col-optional">
+                                    {% if secure_job_memeber %}
+                                        {% with project_price=project.price %}
+                                            {% if project_price %}
+                                                {{ project.price|currency }}
+                                            {% else %}
+                                                {% trans "--" %}
+                                            {% endif %}
+                                        {% endwith %}
+                                    {% else %}
+                                        <span class="icon-lock" title="Need permissions to access this Secure Job"></span>
+                                    {% endif %}
+                                    </td>
+                                    <td class="col col-requester col-optional">{{ project.client_poc|default_if_none:'' }}</td>
+                                    <td class="col col-requester-dept col-optional">{{ project.client_poc.department|default_if_none:'' }}</td>
+                                    <td class="col col-pm col-optional">{{ project.primary_pm|default_if_none:'' }}</td>
+                                    <td class="col col-ae col-optional">{{ project.account_executive|default_if_none:'' }}</td>
+                                    <td class="col col-estimate-due col-optional">{{ project.quote_due|date:"SHORT_DATE_FORMAT" }}</td>
+                                    <td class="col col-estimated col-optional">{{ project.quoted|date:"SHORT_DATE_FORMAT" }}</td>
+                                    <td class="col col-started col-optional">{{ project.started_timestamp|date:"SHORT_DATE_FORMAT" }}</td>
+                                    <td class="col col-due col-optional">{{ project.due|date:"SHORT_DATE_FORMAT" }}</td>
+                                    <td class="col col-delivered col-optional">{{ project.delivered|date:"SHORT_DATE_FORMAT" }}</td>
+                                </tr>
+                            {% endwith %}
+                        {% empty %}
+                            <tr><td colspan="100%" style="text-align: left">{% trans "No Jobs" %}</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <div class="pagination pagination-centered">
+                {% bootstrap_paginate page_obj range=10 centered="true" %}
+                </div>
+            </div>
+        </div>
+
+    </div>
+{% endblock %}
+
+
+
+

@@ -1,0 +1,9 @@
+{% load bootstrap %}
+{% load i18n %}
+{% load humanize %}
+
+<div id="delivery-upload-{{ la.id }}" class="delivery-form">
+    <h3>{% trans "Replace Delivery" %}</h3>
+    <p>{% trans "Please upload file:" %} {{ la.output_file_name }}</p>
+    {{ la.via_final_approval_upload_form.as_form_html }}
+</div>

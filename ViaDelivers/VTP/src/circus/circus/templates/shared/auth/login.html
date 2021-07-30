@@ -1,0 +1,71 @@
+{% extends "shared/external/theme_base.html" %}
+{% load i18n %}
+{% load bootstrap %}
+
+{% block title %}{% trans "VIA Translation Platform" %}{% endblock %}
+{% block top_nav_img %}
+    <img class="brand powered" src="{{ STATIC_URL }}shared/img/via.png" alt="{{ APP_FULL_NAME }}" title="{{ APP_FULL_NAME }}">
+{% endblock %}
+
+{% block css %}{% endblock %}
+{% block search_menu %}{% endblock %}
+{% block login_menu %}{% endblock %}
+{% block navbar_menu %}{% endblock %}
+{% block content_header %}{% endblock %}
+{% block content_breadcrumb %}{% endblock %}
+
+{% block content %}
+    <div class="signinBox row-fluid">
+        <div class="span6 center">
+        <div class="imgContain">
+            <img alt="{{ APP_FULL_NAME }}" title="{{ APP_FULL_NAME }}" src="{{ STATIC_URL }}shared/img/via.png"  />
+        </div>
+        </div>
+        <div class="span6 center signin">
+          <form novalidate class="form-signin" accept-charset="UTF-8" action="{% url 'login' %}" method="post">
+            {% csrf_token %}
+            <h2 class="form-signin-heading">{% blocktrans %}Welcome to the VIA Translation Platform.{% endblocktrans %}</h2>
+            {{ form.username }}
+            {{ form.password }}
+          <input type="hidden" name="next" value="{{ next }}" />
+
+            <button class="btn btn-large btn-primary btn-block" type="submit">{% blocktrans %}Sign in{% endblocktrans %}</button>
+              <br/>
+              {% if form.non_field_errors %}
+                <div class="alert alert-error">
+                    <a class="close" data-dismiss="alert">&times;</a>
+                    {% for e in form.non_field_errors %}
+                        {{ e }}
+                    {% endfor %}
+                </div>
+              {% endif %}
+              <div class="row-fluid">
+                    {% if new_client_setup %}
+                    <div class="span6">
+                        <a class="btn btn-block" href="{% url 'signup' %}">{% blocktrans %}New Client account?{% endblocktrans %}</a>
+                    </div>
+                    {% endif %}
+                    <div class="span5 pull-right">
+                        <a class="btn btn-block" href="{% url 'password_reset' %}">{% blocktrans %}Forgot password?{% endblocktrans %}</a>
+                    </div>
+            </div>
+            <br/><br/>
+            <div class="row-fluid">
+                <h3>
+                    {% blocktrans %}See how easy it is to have global translation, estimating, and project management at your fingertips!
+                    <a class="login" href="http://www.viadelivers.com/what-we-do/technology/translation-portal" target="_blank">
+                         Watch a quick overview video now. <i class="fa fa-share"></i>
+                    </a>
+                    {% endblocktrans %}
+                </h3>
+            </div>
+          </form>
+        </div>
+        <br/><br/><br/><br/>
+    </div>
+{% endblock content %}
+
+{% block script %}
+    <script type="text/javascript" src="{{ STATIC_URL }}shared/js/placeholder_support.js"></script>
+{% endblock script %}
+

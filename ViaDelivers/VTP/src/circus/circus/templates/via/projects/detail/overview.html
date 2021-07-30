@@ -1,0 +1,377 @@
+{% extends "via/projects/detail/base.html" %}
+{% load i18n %}
+{% load bootstrap %}
+
+<head>
+    form.media
+</head>
+
+{% block content %}
+{% if can_access_secure_job %}
+    <form novalidate action="" method="post" class="form-horizontal">
+        {% csrf_token %}
+        <input type="hidden" name="set_costs" value="False" id="set_costs">
+        <div class="row-fluid">
+            <div class="btn-group pull-right">
+                {% if can_edit_job %}
+                    <button type="submit" id="save" class="btn btn-primary">{% blocktrans %}Save{% endblocktrans %}</button>
+                    <button type="reset" class="btn">{% blocktrans %}Reset{% endblocktrans %}</button>
+                {% endif %}
+                <a href="{% url 'my_dashboard' 'my' request.user.id %}" class="btn">{% blocktrans %}Close{% endblocktrans %}</a>
+            </div>
+        </div>
+        <hr class="clearfix"/>
+        <div class="row-fluid">
+            <div class="span8">
+                <div class="row-fluid">
+                    <div class="accordion" id="accordionDates">
+                        <div class="accordion-group">
+                            <div class="accordion-heading">
+                                <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordionDates" href="#collapseDatesOne">
+                                    <i class="fa fa-calendar"></i> <b>{% blocktrans %}Dates {% endblocktrans %}</b>
+                                </a>
+                            </div>
+                            <div id="collapseDatesOne" class="accordion-body collapse in">
+                                <div class="accordion-inner">
+                                    <div class="row-fluid">
+                                        <div class="span3">
+                                            {{ form.started_timestamp|bootstrap }}
+                                            {{ form.due|bootstrap }}
+                                            {{ form.reschedule_all_due_dates.as_hidden }}
+                                        </div>
+                                        <div class="span3">
+                                            {{ form.delivered|bootstrap }}
+                                            {{ form.completed|bootstrap }}
+                                            {{ form.canceled|bootstrap }}
+                                        </div>
+                                        <div class="span3">
+                                            {{ form.quote_due|bootstrap }}
+                                            {{ form.quoted|bootstrap }}
+                                        </div>
+                                        <div class="span3">
+                                            {{ form.project_speed|bootstrap }}
+                                            {{ form.ignore_holiday_flag|bootstrap }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row-fluid">
+                    <div class="span8">
+                        <div class="accordion" id="accordionLangs">
+                            <div class="accordion-group">
+                                <div class="accordion-heading">
+                                    <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordionLangs" href="#collapseLangsOne">
+                                        <i class="fa fa-language"></i> <b>{% blocktrans %}Locales{% endblocktrans %}</b>
+                                    </a>
+                                </div>
+                                <div id="collapseLangsOne" class="accordion-body collapse in">
+                                    <div class="accordion-inner">
+                                        <div class="row-fluid">
+                                            <div class="span6">
+                                                {{ form.source_locale|bootstrap }}
+                                            </div>
+                                        </div>
+                                        <div class="row-fluid">
+                                            {{ form.target_locales|bootstrap }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="span4">
+                        <div class="accordion" id="accordionTeam">
+                        <div class="accordion-group">
+                            <div class="accordion-heading">
+                                <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordionTeam" href="#collapseTeamOne">
+                                    <i class="fa fa-users"></i> <b>{% blocktrans %}VIA{% endblocktrans %}</b>
+                                </a>
+                            </div>
+                            <div id="collapseTeamOne" class="accordion-body collapse in">
+                                <div class="accordion-inner">
+                                    <div class="row-fluid">
+                                        {{ form.project_manager|bootstrap }}
+                                        {{ form.account_executive|bootstrap }}
+                                        {{ form.estimator|bootstrap }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+                <div class="row-fluid">
+                    <div class="span8">
+                        <div class="accordion" id="accordionDetails">
+                            <div class="accordion-group">
+                                <div class="accordion-heading">
+                                    <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordionDetails" href="#collapseDetailsOne">
+                                        <i class="fa fa-angle-double-right"></i> <b>{% blocktrans %}Details{% endblocktrans %}</b>
+                                    </a>
+                                </div>
+                                <div id="collapseDetailsOne" class="accordion-body collapse in">
+                                    <div class="accordion-inner">
+                                        <div class="row-fluid">
+                                            <div class="span6">
+                                                {{ form.job_number|bootstrap }}
+                                                {{ form.price_per_document|bootstrap }}
+                                            </div>
+                                            <div class="span6">
+                                                {{ form.industry|bootstrap }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="span4">
+                        <div class="accordion" id="accordionSupplierPO">
+                            <div class="accordion-group">
+                                <div class="accordion-heading">
+                                    <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordionSupplierPO" href="#collapseSupplierPOOne">
+                                        <i class="fa fa-angle-double-right"></i> <b>{% blocktrans %}Supplier POs{% endblocktrans %}</b>
+                                    </a>
+                                </div>
+                                <div id="collapseSupplierPOOne" class="accordion-body collapse in">
+                                    <div class="accordion-inner">
+                                        <div class="row-fluid">
+                                            {{ form.delay_job_po|bootstrap }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row-fluid">
+                    <div class="span12">
+                        <div class="accordion" id="accordionClient">
+                            <div class="accordion-group">
+                                <div class="accordion-heading">
+                                    <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordionClient" href="#collapseClientOne">
+                                        <i class="fa fa-university"></i> <b>{% blocktrans %}Client{% endblocktrans %}</b>
+                                    </a>
+                                </div>
+                                <div id="collapseClientOne" class="accordion-body collapse in">
+                                    <div class="accordion-inner">
+                                        <div class="row-fluid">
+                                            <div class="span4">
+                                                {{ form.name|bootstrap }}
+                                                {{ form.is_phi_secure_job|bootstrap }}
+                                            </div>
+                                            <div class="span4">
+                                                {{ form.client|bootstrap }}
+                                                {{ form.client_poc|bootstrap }}
+                                                {{ form.project_reference_name|bootstrap }}
+                                            </div>
+                                            <div class="span4">
+                                                {{ form.payment_method|bootstrap }}
+                                                {{ form.ca_invoice_number|bootstrap }}
+                                                {{ form.is_secure_job.as_hidden }}
+                                                <div class="row-fluid">
+                                                    <div class="span6">
+                                                        {{ form.no_express_option|bootstrap }}
+                                                    </div>
+                                                    <div class="span6">
+                                                        {{ form.internal_via_project|bootstrap }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% if secure_jobs %}
+                <div class="row-fluid">
+                    <div class="span12">
+                        <div class="accordion" id="accordionSecureJob">
+                            <div class="accordion-group">
+                                <div class="accordion-heading">
+                                    <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordionSecureJob" href="#collapseSecureJobOne">
+                                        <i class="fa fa-user-secret"></i> <b>{% blocktrans %}Security{% endblocktrans %}</b>
+                                    </a>
+                                </div>
+                                <div id="collapseSecureJobOne" class="accordion-body collapse in">
+                                    <div class="accordion-inner">
+                                        <div class="row-fluid">
+                                            <div class="span6">
+                                                <div class="row-fluid">
+                                                    {{ form.is_restricted_job|bootstrap }}
+                                                </div>
+                                            </div>
+                                            <div class="span6">
+                                                <div class="row-fluid">
+                                                    {% if object.is_restricted_job %}
+                                                        {{ form.restricted_locations|bootstrap }}
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+            <div class="span4">
+                <div class="accordion" id="accordionNotes">
+                    <div class="accordion-group">
+                        <div class="accordion-heading">
+                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordionNotes" href="#collapseNotesOne">
+                                <i class="fa fa-comments-o"></i> <b>{% blocktrans %}Instructions / Notes{% endblocktrans %}</b>
+                            </a>
+                        </div>
+                        <div id="collapseNotesOne" class="accordion-body collapse in">
+                            <div class="accordion-inner">
+                                <div class="tabbable"> <!-- Only required for left/right tabs -->
+                                  <ul class="nav nav-tabs">
+                                    <li class="active"><a href="#tabVI" data-toggle="tab">{% blocktrans %}VIA {% endblocktrans %}
+                                    {% if has_instructions_via %}
+                                        <i class="fa fa-sticky-note" title="{% trans "VIA Instructions/Notes Added" %}"></i>
+                                    {% else %}
+                                        <i class="fa fa-sticky-note-o"></i>
+                                    {% endif %}
+                                    </a></li>
+                                    <li><a href="#tabCI" data-toggle="tab">{% blocktrans %}Client {% endblocktrans %}
+                                    {% if has_instructions_client %}
+                                        <i class="fa fa-sticky-note" title="{% trans "Client Instructions/Notes Added" %}"></i>
+                                    {% else %}
+                                        <i class="fa fa-sticky-note-o"></i>
+                                    {% endif %}
+                                    </a></li>
+                                    <li><a href="#tabSI" data-toggle="tab">{% blocktrans %}Vendor {% endblocktrans %}
+                                    {% if has_instructions_vendor %}
+                                        <i class="fa fa-sticky-note" title="{% trans "Vendor Instructions/Notes Added" %}"></i>
+                                    {% else %}
+                                        <i class="fa fa-sticky-note-o"></i>
+                                    {% endif %}
+                                    </a></li>
+                                  </ul>
+                                  <div class="tab-content">
+                                    <div class="tab-pane active" id="tabVI">
+                                      <p>{{ form.instructions_via|safe }}</p>
+                                    </div>
+                                    <div class="tab-pane" id="tabCI">
+                                      <p>{{ form.instructions|safe }}</p>
+                                    </div>
+                                    <div class="tab-pane" id="tabSI">
+                                      <p>{{ form.instructions_vendor|safe }}</p>
+                                    </div>
+                                  </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+{% endif %}
+{% endblock %}
+
+{% block script %}
+    {{ block.super }}
+    <script>
+        $(document).ready(function () {
+            $("#id_started_timestamp_0").bind("change", toggle_reschedule_all_due_dates);
+
+            var secure_job = $('input[name="is_restricted_job"]:checked').val();
+            $('input[name="is_restricted_job"]').click(function(){
+                $('#set_costs').val(false);
+                var update_pricing = false;
+                if( secure_job != $(this).val()){
+                   update_pricing = confirm("{% blocktrans %}Be sure to regenerate Reset Costs and Pricing so that pricing reflects the selected Access model?{% endblocktrans %}");
+                }
+                if(update_pricing){
+                    $('#set_costs').val(true);
+                }
+            });
+            $('#id_project_speed').select2();
+            $('#id_status').select2();
+            $('#id_industry').select2();
+            $('#id_restricted_locations').select2();
+            $('#id_client').select2();
+            $('#id_client_poc').select2();
+            $('#id_project_manager').select2();
+            $('#id_account_executive').select2();
+            $('#id_estimator').select2();
+            $('#id_is_phi_secure_job').select2();
+
+            var $source_locale = $('#id_source_locale'),
+                $target_locales = $('#id_target_locales'),
+                readonly_languages;
+
+            /* select2 doesn't seem to automatically go in to read-only mode
+             * when the element's readonly attribute is set. */
+            readonly_languages = $target_locales.attr("readonly") === undefined;
+            $source_locale.select2();
+            $target_locales.select2({
+                placeholder: "{% trans 'Select Target(s)' %}"
+            });
+            if (!readonly_languages) {
+                $source_locale.select2("readonly", true);
+                $target_locales.select2("readonly", true);
+            };
+
+            $('#id_no_express_option').click(function(){
+                validate_no_express_options();
+            });
+
+            $('#id_project_speed').on('change', function() {
+                validate_no_express_options();
+            });
+        });
+
+        function toggle_reschedule_all_due_dates(){
+            $('#id_reschedule_all_due_dates').val("True");
+        }
+
+        function validate_no_express_options() {
+            var project_speed = $('#id_project_speed').val().toLowerCase() == "express";
+            var no_express_option = $('#id_no_express_option').is(":checked");
+            var no_express_option_confirm = false;
+
+            if( no_express_option == true && project_speed == true){
+               no_express_option_confirm = confirm("{% blocktrans %}Job's Project Speed is Express but you have selected *No Client Express Speed* on the Client View.  Click OK to uncheck selection?{% endblocktrans %}");
+            }
+
+            if(no_express_option_confirm){
+                $('#id_no_express_option').attr('checked', false); // Unchecks it
+            }
+        }
+
+        function json_to_select(url, select_selector) {
+        /*
+         Fill a select input field with data from a getJSON call
+         Inspired by: http://stackoverflow.com/questions/1388302/create-option-on-the-fly-with-jquery
+        */
+            $.getJSON(url, function(data) {
+            var opt=$(select_selector);
+            var old_val=opt.val();
+                opt.html('');
+                $.each(data, function () {
+                    opt.append($('<option/>').val(this.id).text(this.value));
+                });
+                opt.val(old_val);
+                opt.change();
+            })
+        }
+
+       $(function(){
+         $('#id_client').change(function(){
+           $("#id_client_poc").select2('val', '');
+           json_to_select('/via/client-poc-lookup/?client=' + $(this).val(), '#id_client_poc');
+         })
+        });
+
+    </script>
+{% endblock %}

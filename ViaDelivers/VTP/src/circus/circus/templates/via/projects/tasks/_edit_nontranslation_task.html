@@ -1,0 +1,46 @@
+{% load i18n %}
+{% load bootstrap %}
+{% load currency_filter %}
+
+<div class="row-fluid">
+    <table class="table table-bordered table-striped table-condensed asset-table">
+        <thead><tr>
+            <th>{% blocktrans %}Unit Cost{% endblocktrans %}</th>
+            <th>{% blocktrans %}Total Cost{% endblocktrans %}</th>
+            <th>{% blocktrans %}Unit Price{% endblocktrans %}</th>
+            <th>{% blocktrans %}Std Price{% endblocktrans %}</th>
+            <th>{% blocktrans %}Std GM{% endblocktrans %}</th>
+            <th>{% blocktrans %}Exp Price{% endblocktrans %}</th>
+            <th>{% blocktrans %}Exp GM{% endblocktrans %}</th>
+        </tr></thead>
+        <tbody><tr>
+        <td class="number-cell">
+        {% if task.percentage_based %}
+            {{ task.unit_cost|percent }}
+        {% else %}
+            {{ task.unit_cost|currency }}
+        {% endif %}
+        </td>
+        <td class="number-cell">{{ task.quote_total_cost|currency }}</td>
+        <td class="number-cell">
+        {% if task.percentage_based %}
+            {{ task.unit_price|percent }}
+        {% else %}
+            {{ task.unit_price|currency }}
+        {% endif %}
+        </td>
+        <td class="number-cell">{{ task.net_price|currency }}</td>
+        <td class="number-cell">{{ task.gm|percent }}</td>
+        <td class="number-cell">{{ task.express_net_price|currency }}</td>
+        <td class="number-cell">{{ task.express_gm|percent }}</td>
+        </tr></tbody>
+    </table>
+</div>
+<hr class="soften">
+<div class="row-fluid">
+        <div class="span2">{{ form.unit_price|bootstrap }}</div>
+        <div class="span2">{{ form.price_is_percentage|bootstrap }}</div>
+        <div class="span2">{{ form.unit_cost|bootstrap }}</div>
+        <div class="span2">{{ form.formula|bootstrap }}</div>
+        <div class="span2">{{ form.vendor_minimum|bootstrap }}</div>
+</div>

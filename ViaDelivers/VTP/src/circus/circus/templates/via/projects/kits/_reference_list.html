@@ -1,0 +1,138 @@
+{% load i18n %}
+{% load bootstrap %}
+{% load circus_loc_kit %}
+
+{% if not project.can_edit_kit %}
+<div class="row-fluid">
+    <p>{% trans "Current project state doesn't allow editing the localization kit" %}</p>
+</div>
+<br/>
+{% endif %}
+
+<div class="row-fluid">
+    <div class="span12">
+        <table class="table table-bordered table-hover">
+        <thead>
+        <tr>
+            <th>{% blocktrans %}Job Reference(s){% endblocktrans %}</th>
+            {% if project.can_edit_kit %}
+                <th colspan="100%"></th>
+            {% endif %}
+        </tr>
+        </thead>
+        <tbody>
+        {% for asset in project.kit.reference_files %}
+            <tr>
+                <td>
+                    {% if asset.file_exists %}
+                        <a href="{% url 'download_asset' project.id asset.id %}">
+                            {{ asset.orig_name }} <i class="fa fa-download"></i></a>
+{#                            <span class="filesize">({{ asset.orig_file.size | filesizeformat }})</span>#}
+                    {% else %}
+                        {{ asset.orig_name }}
+                    {% endif %}
+                </td>
+
+                {% if asset.file_exists and project.can_edit_kit %}
+                {#For editing/renaming and replacing the reference file#}
+                <td width="15%">
+                    <button data-lightbox="replace_reference-file-upload-{{ asset.id }}"
+                        class="btn small-btn btn-success upload-btn"
+                        ><i class="fa fa-upload fa-white"></i>
+                    {% blocktrans %}Replace Job Reference{% endblocktrans %}
+                    </button>
+                    <div id="replace_reference-file-upload-{{ asset.id }}" class="delivery-form">
+                    <h3>{% trans "Replace Job Reference" %}</h3>
+                        {% reference_replace_form project.kit asset.id %}
+                    </div>
+                </td>
+
+                <td width="10%">
+                    <form novalidate name="DELETE_ASSET{{ asset.id }}" action="" method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="asset_id" value="{{ asset.id }}">
+                        <input type="hidden" name="delete_client_reference_file" value="{{ asset.id }}">
+                        <a type="submit"
+                           class="btn btn-danger pull-right"
+                           href="javascript:document.DELETE_ASSET{{ asset.id }}.submit()"
+                           data-confirm="{% trans "Are you sure you want to Delete File?" %}"
+                                ><i
+                                class="fa fa-times"></i>&nbsp;{% trans "Delete" %}
+                        </a>
+                    </form>
+                </td>
+
+                <td width="10%">
+                    <div class="checkbox">
+                        <label><input type="checkbox" name="available_to_supplier" class="available_to_supplier" id="available_to_supplier" asset_id={{ asset.id }} {% if asset.available_on_supplier %} checked {% endif %}>Available to Supplier</label>
+                    </div>
+                </td>
+
+
+                {% if project.can_edit_source_files %}
+                    <td width="10%">
+                        <form novalidate name="MOVE_ASSET{{ asset.id }}" action="" method="post">
+                            {% csrf_token %}
+                            <input type="hidden" name="asset_id" value="{{ asset.id }}">
+                            <input type="hidden" name="kits_asset_move_from_reference_to_source" value="{{ asset.id }}">
+                            <a type="submit"
+                               class="btn small-btn upload-btn pull-right"
+                               href="javascript:document.MOVE_ASSET{{ asset.id }}.submit()"
+                               data-confirm="{% trans "Are you sure you want to move this file to Job Source File?" %}">
+                                <i class="fa fa-arrows-alt"></i>&nbsp;{% trans "Move Source" %}
+                            </a>
+                        </form>
+                    </td>
+                {% endif %}
+                {% endif %}
+            </tr>
+        {% empty %}
+            <tr>
+                <td colspan="100%">
+                    <p>{% blocktrans %}No Reference file{% endblocktrans %}</p>
+                </td>
+            </tr>
+        {% endfor %}
+        {% if project.kit.reference_files.all|length > 1 %}
+            <tr>
+                <td colspan="100%">
+                    <a class="btn btn-primary"
+                       href="{% url 'project_reference_files_zip' project.id %}">
+                        <i class="fa fa-download"></i>
+                        {% blocktrans %}Download All{% endblocktrans %}
+                    </a>
+                </td>
+            </tr>
+        {% endif %}
+        </tbody>
+        </table>
+        {% if project.can_edit_kit %}
+        <button data-lightbox="reference-file-upload-{{ project.kit.id }}"
+           class="btn small-btn btn-success upload-btn"
+                ><i class="fa fa-upload fa-white"></i>
+            {% blocktrans %}Upload Reference File{% endblocktrans %}
+        </button>
+        <div id="reference-file-upload-{{ project.kit.id }}" class="delivery-form">
+            <h3>{% trans "Upload Reference File" %}</h3>
+            {% reference_upload_form project.kit %}
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+{% block script %}
+    <script type="text/javascript" src="{{ STATIC_URL }}shared/js/data-confirm.js"></script>
+
+    <script type='text/javascript'>
+
+        $('.available_to_supplier').change(function() {
+            $.post('',
+                    {
+                        available_to_supplier: $(this).prop('checked') ? 'True' : 'False',
+                        asset_id: $(this).attr('asset_id'),
+                        "csrfmiddlewaretoken": "{{ csrf_token }}"
+                    });
+        });
+
+    </script>
+{% endblock %}

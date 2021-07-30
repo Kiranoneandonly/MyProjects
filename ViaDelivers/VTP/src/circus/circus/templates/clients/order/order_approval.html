@@ -1,0 +1,359 @@
+{% extends "shared/external/theme_base.html" %}
+{% load i18n %}
+{% load bootstrap %}
+{% load currency_filter %}
+{% load get_item %}
+
+{% block css %}
+    <link rel="stylesheet" href="{{ STATIC_URL }}shared/css/select2.min.css" type="text/css" media="all"/>
+    <link rel="stylesheet" href="{{ STATIC_URL }}shared/css/fine-uploader.min.css" type="text/css" media="all"/>
+    <link rel="stylesheet" href="{{ STATIC_URL }}shared/css/fine-uploader-custom.css" type="text/css" media="all"/>
+    <link rel="stylesheet" href="{{ STATIC_URL }}clients/css/orders.css" type="text/css" media="all"/>
+{% endblock %}
+
+{% block content_breadcrumb %}
+        {% include "clients/order/_estimate_breadcrumb.html" %}
+{% endblock %}
+
+{% block content_header %}
+        {% include "clients/order/_estimate_header.html" %}
+{% endblock %}
+
+{% block content %}
+    {% if secure_hierarchy and not user.is_approver_admin_groups %}
+        {% include 'shared/components/approver_permission_needed_for_client.html' %}
+    {% endif %}
+    {% if can_access_job %}
+        <form novalidate method="post" action="" class="no-layout">
+            {% csrf_token %}
+            <div class="row-fluid">
+                <div class="span12">
+                    <div class="order-approval-container">
+                        <h3 class="order-approval-header">
+                            <span>{% blocktrans %}Source:{% endblocktrans %} {{ project.source_locale }}</span>
+                            <span class="pull-right"><i>{% trans "All prices in USD" %}</i></span>
+                            {% if project.is_manual_estimate %}
+                                <span class="estimate-type pull-right"><i class="fa fa-wrench"></i> {% blocktrans %}
+                                    Manual{% endblocktrans %}</span>
+                            {% else %}
+                                <span class="estimate-type pull-right"><i class="fa fa-cogs"></i> {% blocktrans %}
+                                    Automatic{% endblocktrans %}</span>
+                            {% endif %}
+                            {% if project.is_restricted_job %}
+                                <span class="alert alert-error pull-right"><i class="fa fa-cloud"
+                                                                              title="{% trans "Restricted Access" %}"></i>
+                                    {% blocktrans %} Restricted Access{% endblocktrans %}</span>
+                            {% endif %}
+                        </h3>
+                        <table class="table table-bordered table-fixed">
+                            <thead>
+                            <tr>
+                                <th>{% trans "Target" %}</th>
+                                <th>{% trans "Service" %}</th>
+                                <th>{% trans "File" %}</th>
+                                <th>{% trans "Standard" %}</th>
+                                {% if not project.no_express_option %}
+                                    <th>{% trans "Express" %}</th>
+                                {% endif %}
+                            </tr>
+                            </thead>
+                            {% for target in project_targets.targets %}
+                                {% with target_details=project.target_price_details|get_item:target.id %}
+                                    <tr class="target-summary-row" id="targetRow{{ target.id }}">
+                                        <td>
+                                            {% if project.target_locales.all|length > 1 %}
+                                                <input id="tar_{{ target.id }}" class="target_remove" name="targid_rem"
+                                                       type="checkbox" value="{{ target.id }}">
+                                            {% endif %}
+                                            {{ target }}<span id="taskGroupToggle{{ target.id }}"
+                                                              class="task-group-toggle"><i
+                                                class="fa fa-plus"></i></span>
+                                        </td>
+                                        <td class="sub">{% trans "All" %}</td>
+                                        <td class="sub">{% trans "All" %}</td>
+                                        <td>{{ target_details.target_price|currency }}</td>
+                                        {% if not project.no_express_option %}
+                                            <td>{{ target_details.target_express_price|currency }}</td>
+                                        {% endif %}
+                                    </tr>
+                                    <tbody id="taskGroup{{ target.id }}" style="display:none;">
+
+                                    {% get_sorted_task_list target.tasks as sorted_task_list %}
+                                    {% for task in sorted_task_list %}
+                                        {% if task.billable %}
+                                            <tr class="task-summary-row taskRow{{ task.id }}">
+                                                <td class="sub">&nbsp;</td>
+                                                <td>{{ task.service.service_type }}
+                                                    {% if task.is_translation %}<span id="taskAssetToggle{{ task.id }}"
+                                                                                      class="task-asset-toggle"><i
+                                                            class="fa fa-plus"></i></span>{% endif %}
+                                                </td>
+                                                <td class="sub">All</td>
+                                                <td>{{ task.net_price|currency }}</td>
+                                                {% if not project.no_express_option %}
+                                                    <td>{{ task.express_net_price|currency }}</td>
+                                                {% endif %}
+                                            </tr>
+                                            {% if task.is_translation %}
+                                                {% for document in project_asset_documents %}
+                                                    {% asset_is_minimum_price task document.id as minimum_price %}
+                                                    {% if not minimum_price %}
+                                                        <tr class="task-asset-row taskAsset{{ task.id }}">
+                                                            <td class="sub">&nbsp;</td>
+                                                            <td class="sub">&nbsp;</td>
+                                                            <td>
+                                                                <a href="{% url 'download_asset' task.project.id document.id %}"
+                                                                   class="filename">{{ document.orig_name }}</a>
+                                                            </td>
+                                                            {#                                    {% if quote_standard.task_details|get_item:task|length_is:1 or task_quote_standard.is_minimum_price %}#}
+                                                            {% if project_asset_documents|length_is:1 or minimum_price %}
+                                                                <td>{% trans "incl." %}</td>
+                                                                {% if not project.no_express_option %}
+                                                                    <td>{% trans "incl." %}</td>
+                                                                {% endif %}
+                                                            {% else %}
+                                                                {% asset_target_price document target.id as targetobject %}
+                                                                <td>{{ targetobject.asset_net_price|currency }}</td>
+                                                                {% if not project.no_express_option %}
+                                                                    <td>{{ targetobject.asset_express_net_price|currency }}</td>
+                                                                {% endif %}
+                                                            {% endif %}
+                                                        </tr>
+                                                    {% endif %}
+                                                {% endfor %}
+                                            {% endif %}
+                                        {% endif %}
+                                    {% endfor %}
+                                    </tbody>
+                                {% endwith %}
+                            {% endfor %}
+                        </table>
+                    </div>
+                    {% if project.target_locales.all|length > 1 %}
+                        <button id="remove_target_locales" name="remove_target_locales" type="submit"
+                                class="btn btn-warning" value="{{ project.id }}"><i class="fa fa-times"
+                                                                                    title="{% trans "Remove Targets" %}"></i> {% trans "Remove Targets" %}
+                        </button>
+                    {% endif %}
+                    {% if user.account.manifest.word_count_breakdown_flag %}
+                        <a href="#modal" class="btn" data-toggle="modal"><i class="fa fa-language"
+                                                                            title="{% trans "Word Counts" %}"></i>
+                            {% blocktrans %}Word Counts{% endblocktrans %}</a>
+                        <div id="modal" class="modal hide fade modal-admin" tabindex="-1" role="dialog"
+                             aria-labelledby="myModalLabel" aria-hidden="true">
+                            <div class="modal-dialog model-lg">
+                                <div class="modal-content">
+                                    <div class="modal-body">
+                                        <div class="comment_body">
+                                            {% include "clients/projects/word_count_breakdown.html" %}
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button class="btn btn-inverse" data-dismiss="modal" aria-hidden="true">Close
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="row-fluid" style="margin-top: 30px;">
+                <div class="span5">
+                    <div class="well">
+                        <h4>{% trans "Reference Materials:" %}</h4>
+                        <div class="uploadContentWidget nopadding">
+                            <div>
+                                {% if form.non_field_errors %}
+                                    <div class="alert alert-error">
+                                        <a class="close" data-dismiss="alert">&times;</a>
+                                        {% for e in form.non_field_errors %}
+                                            {{ e }}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                                {% with project.kit.reference_files as files %}
+                                    {% include 'shared/util/_uploader.html' %}
+                                {% endwith %}
+                            </div>
+                            {% if phi_warning %}{% include "clients/order/_phi_warning.html" %}{% endif %}
+                        </div>
+                    </div>
+                    <div class="well">
+                        <h4>{% trans "Special Instructions" %}</h4>
+                        <br/>
+                        <div class="control-group">
+                            <div class="controls">
+                                {{ form.project_reference_name|bootstrap }}
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <div class="controls">
+                                <label class="textarea">
+                                    {{ form.instructions|safe }}
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="span7">
+                    <div class="row-fluid">
+                        <div class="span12 pull-right">
+                            <div class="well">
+                                <h4>{% trans "Summary" %}</h4>
+                                <table class="estimate-table">
+                                    <thead>
+                                    <tr>
+                                        <th></th>
+                                        {% if not project.no_express_option %}
+                                            {% for radio in form.project_speed %}
+                                                <th class="text-right">{{ radio.tag }} {{ radio.choice_label }}</th>
+                                            {% endfor %}
+                                        {% else %}
+                                            {% for radio in form.project_speed|slice:":1" %}
+                                                <th class="text-right">{{ radio.tag }} {{ radio.choice_label }}</th>
+                                            {% endfor %}
+                                        {% endif %}
+
+                                    </tr>
+                                    </thead>
+                                    {% for task in task_list %}
+                                        {% if task.billable %}
+                                            <tr>
+                                                <td>{{ task.service.service_type }}</td>
+                                                <td class="standard text-right">{% trans "incl." %}</td>
+                                                {% if not project.no_express_option %}
+                                                    <td class="express text-right">{% trans "incl." %}</td>
+                                                {% endif %}
+                                            </tr>
+                                        {% endif %}
+                                    {% endfor %}
+                                    <tr class="totals">
+                                        <td>{% trans "Total Price" %}</td>
+                                        <td class="standard text-right">{{ project.project_pricequote.price|currency }}</td>
+                                        {% if not project.no_express_option %}
+                                            <td class="express text-right">{{ project.project_pricequote.express_price|currency }}</td>
+                                        {% endif %}
+                                    </tr>
+                                    {% if client_discount_flag %}
+                                        <tr>
+                                            <td style="font-style: italic; color: #888888">{% trans "Original Price" %}</td>
+                                            <td style="font-style: italic; color: #888888"
+                                                class="standard text-right">{{ original_price_standard|currency }}</td>
+                                            {% if not project.no_express_option %}
+                                                <td style="font-style: italic; color: #888888"
+                                                    class="express text-right">{{ original_price_express|currency }}</td>
+                                            {% endif %}
+                                        </tr>
+                                    {% endif %}
+                                    <tr>
+                                        <td colspan="100%">
+                                            <hr/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>{% trans "Delivery Time in Business Days" %}</td>
+                                        <td class="standard text-right">
+                                            {{ project.standard_duration|floatformat:0 }}</td>
+                                        {% if not project.no_express_option %}
+                                            <td class="express text-right">
+                                                {{ project.express_duration|floatformat:0 }}</td>
+                                        {% endif %}
+                                    </tr>
+
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row-fluid">
+                        <div class="span12 pull-right">
+                            <div class="well payment-info">
+                                <h4>{% trans "Payment Method" %}</h4>
+                                {% for radio in form.payment_method %}
+                                    {{ radio.tag }} {{ radio.choice_label }}
+                                    {% if not forloop.last %}
+                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    {% endif %}
+                                {% endfor %}
+                                <div id="cc" class="desc card-fields form-horizontal"
+                                        {% if form.payment_method.value != "cc" %}
+                                     style="display: none;"
+                                        {% endif %}>
+                                    <p>{% blocktrans %}We accept American Express, Discover, MasterCard, and VISA.{% endblocktrans %}</p>
+                                </div>
+                                <div id="ca" class="desc card-fields form-horizontal"
+                                        {% if form.payment_method.value != "ca" %}
+                                     style="display: none;"
+                                        {% endif %}>
+                                    <fieldset>
+                                        {{ form.ca_invoice_number|bootstrap }}
+                                    </fieldset>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% if secure_hierarchy %}
+                        {% if user.is_approver_admin_groups %}
+                            {% include "clients/order/order_approval_buttons.html" %}
+                        {% else %}
+                            {% trans "You do not have access to order this job. Please request access from manager." %}
+                            <form method="post" action="" class="no-layout" name="request_access">
+                                {% csrf_token %}
+                                <input type="hidden" name="request_access" value="1">
+                                <button type="submit" class="btn btn-success"
+                                        title="{% trans "Please request access from manager." %}">{% blocktrans %}Request Access to Job{% endblocktrans %}
+                                </button>
+                            </form>
+                        {% endif %}
+                    {% else %}
+                            {% include "clients/order/order_approval_buttons.html" %}
+                    {% endif %}
+                </div>
+            </div>
+        </form>
+    {% else %}
+        {% include "clients/order/_estimate_permissions_notice.html" %}
+    {% endif %}
+{% endblock %}
+
+{% block script %}
+    <script>
+        var INITIAL_PROJECT_SPEED = '{{ form.project_speed.value }}';
+        $("#remove_target_locales").click(function () {
+            var allCheckBox = $("input.target_remove");
+            var allCheckBox_len = allCheckBox.length;
+            var count_checked = allCheckBox.filter(":checked").length;
+            if (count_checked > 0) {
+                if (allCheckBox_len == count_checked) {
+                    var conf = confirm("You have selected all languages to remove. You need at least one language to Place the Order. Click OK to continue and cancel the Order");
+                    if (conf) {
+                        location.href = window.location.protocol + "//" + window.location.host + "/projects/" + $(this).val() + "/cancel";
+                        return false
+                    } else {
+                        $("input.target_remove").attr('checked', false);
+                        return false
+                    }
+                } else {
+                    var conf = confirm("Are you sure you want to remove Target(s)?");
+                    if (conf) {
+                        return true;
+                    } else {
+                        $("input.target_remove").attr('checked', false);
+                        return false;
+                    }
+                }
+            }
+            alert("To Remove Targets, please select one or more target(s).");
+            return false;
+        });
+    </script>
+    <script type="text/javascript" src="{{ STATIC_URL }}shared/js/select2.min.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}clients/js/order_approval.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}shared/js/data-confirm.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}clients/js/locale-estimate-table.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}shared/js/disable_after_click.js"></script>
+
+    {% with "reference" as asset_type %}
+        {% include 'shared/util/_uploader_script.html' %}
+    {% endwith %}
+{% endblock %}

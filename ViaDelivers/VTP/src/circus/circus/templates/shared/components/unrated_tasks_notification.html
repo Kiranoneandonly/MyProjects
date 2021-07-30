@@ -1,0 +1,9 @@
+{% load i18n %}
+
+<div class="row-fluid">
+    <div class="alert alert-danger">
+    <a class="close" data-dismiss="alert">&times;</a>
+        <i class="fa fa-star" title="{% trans "Rate Task" %}"></i>
+        <b><a href="{% url 'via_job_detail_tasks' project.id %}">Rate Task </a></b> has not been completed for all billable tasks.  Please ensure this process has been performed.
+    </div>
+</div>

@@ -1,0 +1,43 @@
+{% load bootstrap %}
+{% load i18n %}
+{% load humanize %}
+
+{% if task.is_translation %}
+    {% if file_pair.support.file %}
+        <a id="replace-btn-{{ file_pair.trans_kit.id }}"
+            class="btn btn-info upload-btn sup-upload-btn small-btn" href="#">
+            <i class="fa fa-upload fa-white"></i>
+            {% blocktrans %}Replace Support{% endblocktrans %}
+        </a>
+    {% else %}
+        <a id="upload-btn-{{ file_pair.trans_kit.id }}"
+            class="btn btn-info upload-btn sup-upload-btn small-btn" href="#">
+            <i class="fa fa-upload fa-white"></i>
+            {% blocktrans %}Upload Support{% endblocktrans %}
+        </a>
+    {% endif %}
+    <div id="delivery-support-upload-{{ file_pair.trans_kit.id }}" class="delivery-form">
+        <h3>{% trans "Upload Delivery Support " %}</h3>
+
+        {{ file_pair.trans_kit.vendor_tlsf_upload_form.as_support_form_html }}
+    </div>
+{% else %}
+        {% if file_pair.support.file %}
+        <a id="replace-btn-{{ file_pair.la.id }}"
+            class="btn btn-info upload-btn sup-upload-btn small-btn" href="#">
+            <i class="fa fa-upload fa-white"></i>
+            {% blocktrans %}Replace Support{% endblocktrans %}
+        </a>
+    {% else %}
+        <a id="upload-btn-{{ file_pair.la.id }}"
+            class="btn btn-info upload-btn sup-upload-btn small-btn" href="#">
+            <i class="fa fa-upload fa-white"></i>
+            {% blocktrans %}Upload Support{% endblocktrans %}
+        </a>
+    {% endif %}
+    <div id="delivery-support-upload-{{ file_pair.la.id }}" class="delivery-form">
+        <h3>{% trans "Upload Delivery Support" %}</h3>
+
+        {{ file_pair.la.vendor_tlasf_upload_form.as_support_form_html }}
+    </div>
+{%  endif %}

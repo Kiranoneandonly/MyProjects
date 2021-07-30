@@ -1,0 +1,19 @@
+{% load i18n %}
+<li class="unit-border {% if request.path == url %}active{% endif %}">
+    <a href="{{ home_url }}">
+        <i class="fa fa-home"></i>
+        {% trans "Dashboard" %}
+    </a>
+</li>
+{% for status, status_detail in via_tasks.statuses.iteritems %}
+    {% url 'my_tasks_status' status=status is_user_type=is_user_type as url %}
+    {% if is_user_type == 'my' and status_detail.name != 'Unassigned' or is_user_type == 'all' or is_user_type == 'team' %}
+    <li class="unit-border {% if request.path == url %}active{% endif %}">
+        <a href="{{ url }}">
+            <i class="{{ status_detail.icon }}"></i>
+            {{ status_detail.name }} {% trans "Tasks" %}
+            ({{ status_detail.tasks.count }})
+        </a>
+    </li>
+    {% endif %}
+{% endfor %}

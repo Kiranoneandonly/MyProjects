@@ -1,0 +1,91 @@
+{% extends "via/theme_base.html" %}
+{% load i18n %}
+{#{% load url from future %}#}
+{% load widget_tweaks %}
+
+{% block title %}{% trans "Supplier" %}{% endblock %}
+
+{% block css %}
+{% endblock %}
+
+{% block content_header %}
+{% endblock %}
+
+{% block content %}
+    <ul class="breadcrumb">
+        <li><i class="fa fa-home"></i> <a href="{% url 'via_dashboard' %}">{% trans "Home" %}</a> <span class="divider"><i class="fa fa-chevron-right"></i></span></li>
+        <li class="active">{% trans "Suppliers" %}</li>
+    </ul>
+    {% if request.user.is_superuser %}
+    <div class="row-fluid">
+        <div class="span12">
+            <a class="btn btn-success pull-right" href="{% url 'vendors_create' %}">{% trans "Add Supplier" %}</a>
+        </div>
+    </div>
+    {% endif %}
+    <br/>
+    <div class="row-fluid">
+        <div class="span12">
+            Search:<input name="q_list" id="namelist-search" class="grp-search-field" value="" type="text">
+            <table class="table table-bordered table-hover">
+                <thead>
+                <tr>
+                    <th>{% blocktrans %}Supplier ID{% endblocktrans %}</th>
+                    <th>{% trans "Name" %}</th>
+                    <th>{% trans "Type" %}</th>
+                    <th>{% trans "Country" %}</th>
+                    <th>{% trans "Email" %}</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>   <!-- data  -->
+                {% for vendor in object_list.all %}
+                    <tr>
+                        <td>{{ vendor.pk }}</td>
+                        <td id="vendor_name"><a href="{{ vendor.get_absolute_url }}">{{ vendor.name }}</a></td>
+                        <td>{{ vendor.account_type }}</td>
+                        <td>{{ vendor.billing_city }}, {{ vendor.billing_country }}</td>
+                        <td>{{ vendor.jobs_email }}</td>
+                        <td><a href="#" data-confirm="{% trans "Are you sure you want to delete?" %}"><i class="fa fa-times"></i></a></td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}
+
+
+{% block script %}
+    <script>
+    $(document).ready(function()
+    {
+    $('input#namelist-search').keyup(function()
+    {
+        searchTable($(this).val());
+    });
+    });
+    function searchTable(inputVal)
+    {
+    var table = $('table');
+    table.find('tr').each(function(index, row)
+    {
+        var allCells = $(row).find('td#vendor_name');
+        if(allCells.length > 0)
+        {
+            var found = false;
+            allCells.each(function(index, td)
+            {
+                var regExp = new RegExp(inputVal, 'i');
+                if(regExp.test($(td).text()))
+                {
+                    found = true;
+                    //return false;
+                }
+            });
+            if(found == true)$(row).show();else $(row).hide();
+        }
+    });
+    }
+    </script>
+{% endblock %}

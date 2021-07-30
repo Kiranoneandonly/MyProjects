@@ -1,0 +1,43 @@
+{% load humanize %}{% load currency_filter %}
+
+{% include 'notifications/_email_base_top.html' %}
+
+<table style="font-family: Helvetica, Verdana, Tahoma, Arial, sans-serif; font-size: 100%; line-height: 1.5; width: 100%; margin: 0; padding: 1px;">
+    <tr style="font-family: Helvetica, Verdana, Tahoma, Arial, sans-serif; font-size: 100%; line-height: 1.5; margin: 0; padding: 1px;">
+        <td style="font-family: Helvetica, Verdana, Tahoma, Arial, sans-serif; font-size: 100%; line-height: 1.5; margin: 0; padding: 1px;">
+            <p style="font-family: Helvetica, Verdana, Tahoma, Arial, sans-serif; font-size: 14px; line-height: 1.5; font-weight: normal; margin: 0 0 10px; padding: 1px;">
+                A new user has signed up.
+            </p>
+            <p style="font-family: Helvetica, Verdana, Tahoma, Arial, sans-serif; font-size: 14px; line-height: 1.5; font-weight: normal; margin: 0 0 10px; padding: 1px;">
+                <ul>
+                {% if user.account %}
+                    <li style="list-style-type:none;">Account: <b>{{ user.account.name }}</b>
+                    {% if user.account.parent %}
+                        / <b>{{ user.account.parent.name }}</b>
+                    {% endif %}
+                    </li>
+                {% else %}
+                    <li style="list-style-type:none;">Account: This user is not yet associated with any client account.</li>
+                {% endif %}
+
+                    <li style="list-style-type:none;">Name: <b>{{ user.get_full_name }}</b></li>
+                    <li style="list-style-type:none;">Title: <b>{{ user.title }}</b></li>
+                    <li style="list-style-type:none;">E-mail: <b>{{ user.email }}</b></li>
+                    <li style="list-style-type:none;">Phone: <b>{{ user.phone }}</b></li>
+                    <li style="list-style-type:none;">Address: <br/>
+                        <b>
+                        {{ user.mailing_street }}<br />
+                        {{ user.mailing_city }} {{ user.mailing_state }} {{ user.mailing_postal_code }}<br/>
+                        {{ user.mailing_country }}
+                        </b>
+                    </li>
+                </ul>
+            </p>
+            <p style="font-family: Helvetica, Verdana, Tahoma, Arial, sans-serif; font-size: 14px; line-height: 1.5; font-weight: normal; margin: 0 0 10px; padding: 1px;">
+                For more information, please visit the <a href="{{ vtp_url }}">VIA Translation Platform</a>.
+            </p>
+        </td>
+    </tr>
+</table>
+
+{% include 'notifications/_email_base_bottom.html' %}

@@ -1,0 +1,18 @@
+{% load humanize %}Welcome to the {{ app_full_name }}! Your account has been created.
+
+To activate your account, please visit:
+
+{{ confirm_url }}
+
+We look forward to working with you.
+
+Sincerely,
+
+The VIA Team
+
+Give 10. Get 10.
+If you know others who would benefit from using the VIA Translation Platform let us know (http://www2.viadelivers.com/l/17482/2017-03-08/7yy7vs) and we will give you each a 10% discount on your next translation project.
+
+________________________________________
+
+{% include 'notifications/_email_footer.txt' %}

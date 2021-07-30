@@ -1,0 +1,94 @@
+.job-detail-container > div {
+    margin-bottom: 20px;
+}
+
+.job-detail-container i {
+    margin-right: 5px;
+}
+
+.job-detail-container .btn {
+    min-width: 65px;
+}
+
+.job-detail-header > h1 {
+    font-size: 38.5px;
+    margin-bottom: 10px;
+}
+
+.job-detail-container .widget-title {
+    margin-bottom: 10px;
+}
+
+.job-detail-container .well {
+    min-height: 75px;
+}
+
+.job-detail-container .delivery-row {
+    margin-bottom: 20px;
+}
+
+
+@media(max-width: 767px) {
+    .job-detail-general .span4 {
+        font-weight: bold;
+    }
+}
+
+@media(min-width: 767px) {
+    .job-detail-general .well div {
+        min-height: 25px !important;
+        height: 25px !important;
+        line-height: 25px !important;
+    }
+}
+
+.job-detail-general {
+    margin-bottom: 20px;
+}
+
+
+/* ESTIMATE TABLE
+ * *************/
+
+.currency-code {
+    margin-left: 5px;
+    font-size: 0.85em;
+    font-weight: normal;
+}
+
+.task-group-toggle, .task-asset-toggle {
+    margin-left: 10px;
+    color: #00AADD;
+}
+
+.task-summary-row {
+    background: #F5F5F5;
+}
+
+.task-asset-row {
+    background: #CDCDCD;
+}
+
+.breadcrumb .estimate-type {
+    font-weight: bold;
+    font-size: 18px;
+    float: right;
+}
+
+.table-fixed {
+    table-layout: fixed;
+}
+
+.order-approval-container .order-approval-header {
+    margin-bottom: 10px;
+    clear: both;
+}
+.order-approval-container .order-approval-header > span {
+    margin-right: 20px;
+}
+.order-approval-container .task-asset-row td:first-child span {
+    margin-left: 40px;
+}
+.target-total-row {
+    font-weight: bold;
+}

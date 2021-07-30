@@ -1,0 +1,65 @@
+{% extends "shared/external/theme_base.html" %}
+{% load i18n %}
+{% load bootstrap %}
+
+{% block title %}{% trans "Waiting for Estimate" %}{% endblock %}
+
+{% block css %}
+    <link rel="stylesheet" href="{{ STATIC_URL }}clients/css/waitingquote.css" type="text/css" media="all"/>
+{% endblock %}
+
+{% block content_breadcrumb %}
+    <div class="breadcrumb">
+        <span><i class="fa fa-home"></i></span>
+        <span>{% trans "Home" %}</span>
+        <span class="divider"><i class="fa fa-chevron-right"></i></span>
+        <span class="active">{% trans "Analyzing" %} : {{ project.job_number }}</span>
+        {{ block.super }}
+    </div>
+{% endblock %}
+
+{% block content_header %}
+{% endblock %}
+
+{% block content %}
+    <div class="well">
+        <div>
+            <h2>{% blocktrans %}Analyzing{% endblocktrans %}: {{ project.job_number }}</h2>
+        </div>
+        <div class="progress progress-striped active">
+            <div class="bar" style="width: 100%"></div>
+        </div>
+        <div id="analysis_step">
+            <span class="message">Processing</span>
+        </div>
+    </div>
+    <div id="new_analysis_modal" class="modal">
+        <div class="modal-header"><h3>
+            {% blocktrans  with job_number=project.job_number  %}
+                Job: {{ job_number }} - Analysis In Progress...
+            {% endblocktrans %}
+        </h3></div>
+        <div class="modal-body">{% blocktrans  with job_number=project.job_number  %}
+            <p>We are analyzing the content you provided and preparing our estimate.
+               This may take some time, so we'll let you know when it's ready.
+            </p>
+        {% endblocktrans %}</div>
+        <div class="modal-footer">
+            <button class="btn btn-primary" data-dismiss="modal">OK</button>
+        </div>
+    </div>
+{% endblock %}
+
+{% block script %}
+    <script>
+        $(document).ready(function () {
+            $("#new_analysis_modal").on('hide', function () {
+                window.location = "{% url 'client_dashboard' %}";
+            }).modal();
+
+            /* TODO: Strictly speaking, we only want to redirect if it's *this*
+             *     project that completes. */
+            VTP_Notifications.redirect_on_completion(true);
+        });
+    </script>
+{% endblock %}

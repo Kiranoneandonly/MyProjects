@@ -1,0 +1,229 @@
+{% extends template %}
+{% load i18n %}
+{% load bootstrap %}
+{% load static %}
+{% load manager_exist %}
+
+{% block title %}{% blocktrans %}Reporting Dashboard{% endblocktrans %}{% endblock title %}
+{% block content %}
+
+    <div class="breadcrumb">
+        <span><i class="fa fa-home"></i></span>
+        <span><a href="{% url dash_board %}">{% trans "Home" %}</a></span>
+        <span class="divider"><i class="fa fa-chevron-right"></i></span>
+        <span class="active">{% trans "Reports" %}</span>
+        <span class="divider"><i class="fa fa-chevron-right"></i></span>
+        <span class="active">{% trans "Customer" %}</span>
+        <span class="divider"><i class="fa fa-chevron-right"></i></span>
+        <span class="active">
+            {% if request.user.is_client%}
+                <a href="{% url 'total_spend_by_tasks_client_portal' %}">{% trans "Total Spend by Tasks" %}</a>
+            {% else %}
+                <a href="{% url 'total_spend_by_tasks' %}">{% trans "Total Spend by Tasks" %}</a>
+            {% endif %}
+        </span>
+        <span class="divider"><i class="fa fa-chevron-right"></i></span>
+        <span class="active">
+            {% if request.user.is_client%}
+                <a href="{% url 'department_total_tasks_client_portal'  task_id jobs_from_date jobs_to_date %}">{% trans "Total Spend by Tasks - Departments" %}</a>
+            {% else %}
+                <a href="{% url 'department_total_tasks'  task_id jobs_from_date jobs_to_date %}">{% trans "Total Spend by Tasks - Departments" %}</a>
+            {% endif %}
+        </span>
+        <span class="divider"><i class="fa fa-chevron-right"></i></span>
+        <span class="active">{% trans "Total Spend by Tasks - Clients" %}</span>
+        {{ block.super }}
+    </div>
+    <div class="row-fluid">
+        <div class="span12">
+
+        {% for key,value in jobs_dict.items %}
+            <div class="row-fluid">
+                <div class="span12 pagination-centered">
+                    <div id="costs{{ key }}" class="hc_report_chart"></div>
+                </div>
+
+            </div>
+            {% parent_client_exists key as client %}
+            {% if client %}
+            <div class="row-fluid">
+                <row class="span12 pagination-centered">
+                    <h4>
+                        {% if request.user.is_client%}
+                            <a href="{% url 'clients_total_tasks_client_portal' key task_id jobs_from_date jobs_to_date %}">{% trans "Clients Breakdown" %}</a>
+                        {% else %}
+                            <a href="{% url 'clients_total_tasks' key task_id jobs_from_date jobs_to_date %}">{% trans "Clients Breakdown" %}</a>
+                        {% endif %}
+                    </h4>
+                </row>
+            </div>
+            {% endif %}
+            {% if not forloop.last %}
+                <hr/>
+            {% endif %}
+        {% endfor %}
+
+        <div class="row-fluid">
+                <row class="span12 pagination-centered">
+                    <h4>{% trans "Grand Total" %}</h4>
+                </row>
+        </div>
+        {% for key,value in grand_jobs_dict_sorted.items %}
+            <div class="row-fluid">
+                <div class="span12">
+                    <div id="grand_costs{{ key }}" class="hc_report_chart"></div>
+                </div>
+
+            </div>
+
+            <hr/>
+        {% endfor %}
+
+        </div>
+    </div>
+
+    <br/>
+
+<script type="text/javascript" src='{% static 'js/highcharts.js' %}'></script>
+<script>
+
+ $(function () {
+     {% for key,value in jobs_dict.items %}
+        $('#costs{{ key }}').highcharts({
+            chart: {
+                borderColor: '#CCCCCC',
+                borderWidth: 1,
+                type: 'line',
+                marginRight: 75,
+                marginBottom: 25
+            },
+            colors: [
+               '#492970',
+               '#f28f43',
+               '#77a1e5',
+               '#c42525',
+               '#a6c96a',
+               '#2f7ed8',
+               '#0d233a',
+               '#8bbc21',
+               '#910000',
+               '#1aadce'
+            ],
+            credits: {
+                enabled: false
+            },
+            title: {
+                text: '{{ value.name.0|safe }} : Total Amount',
+                x: -20 //center
+            },
+            subtitle: {
+                text: '',
+                x: -20
+            },
+            xAxis: {
+                categories: {{ value.month|safe }}
+            },
+            yAxis: {
+                title: {
+                    text: ''
+                },
+                plotLines: [{
+                    value: 0,
+                    width: 1,
+                    color: '#808080'
+                }]
+            },
+            tooltip: {
+                valueSuffix: ''
+            },
+            legend: {
+                layout: 'vertical',
+                align: 'right',
+                verticalAlign: 'top',
+                x: -10,
+                y: 100,
+                borderWidth: 0
+            },
+            series: [{
+                name: 'Total Amount',
+                data: {{ value.total_spend_by_tasks|safe }}
+            }]
+        });
+
+
+
+         {% endfor %}
+
+
+    {% for key,value in grand_jobs_dict_sorted.items %}
+        $('#grand_costs{{ key }}').highcharts({
+            chart: {
+                borderColor: '#CCCCCC',
+                borderWidth: 1,
+                type: 'line',
+                marginRight: 75,
+                marginBottom: 25
+            },
+            colors: [
+               '#492970',
+               '#f28f43',
+               '#77a1e5',
+               '#c42525',
+               '#a6c96a',
+               '#2f7ed8',
+               '#0d233a',
+               '#8bbc21',
+               '#910000',
+               '#1aadce'
+            ],
+            credits: {
+                enabled: false
+            },
+            title: {
+                text: 'Grand Total up to this level',
+                x: -20 //center
+            },
+            subtitle: {
+                text: '',
+                x: -20
+            },
+            xAxis: {
+                categories: {{ value.month|safe }}
+            },
+            yAxis: {
+                title: {
+                    text: ''
+                },
+                plotLines: [{
+                    value: 0,
+                    width: 1,
+                    color: '#808080'
+                }]
+            },
+            tooltip: {
+                valueSuffix: ''
+            },
+            legend: {
+                layout: 'vertical',
+                align: 'right',
+                verticalAlign: 'top',
+                x: -10,
+                y: 100,
+                borderWidth: 0
+            },
+            series: [{
+                name: 'Total Amount',
+                data: {{ value.total_spend_by_tasks|safe }}
+            }]
+        });
+
+
+
+         {% endfor %}
+
+
+    });
+
+    </script>
+
+{% endblock content %}

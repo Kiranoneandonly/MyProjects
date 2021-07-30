@@ -1,0 +1,32 @@
+.form-row {
+    position: relative;
+    overflow: hidden;
+}
+
+.files {
+    border: 1px solid black;
+    padding: 10px 0 10px 0;
+    margin-top: 10px;
+}
+
+.file-element {
+    float: left
+}
+
+.file-element .controls > input {
+    display: inline;
+}
+
+.file-element .controls > label {
+    display: inline;
+}
+
+.delete-row {
+    position: absolute;
+    bottom: 19px;
+    left: 570px;
+}
+
+.add-row {
+    margin: 10px
+}

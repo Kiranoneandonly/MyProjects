@@ -1,0 +1,103 @@
+{% extends "via/theme_base.html" %}
+{% load i18n %}
+{#{% load url from future %}#}
+{% load widget_tweaks %}
+
+{% block title %}{% trans "Customers" %}{% endblock %}
+
+{% block css %}{% endblock %}
+
+{% block content_header %}
+{% endblock %}
+
+{% block content %}
+    <ul class="breadcrumb">
+        <li><i class="fa fa-home"></i> <a href="{% url 'via_dashboard' %}">{% trans "Home" %}</a> <span class="divider"><i class="fa fa-chevron-right"></i></span></li>
+        <li class="active">{% trans "Customers" %}</li>
+    </ul>
+    {% if request.user.is_superuser %}
+    <div class="row-fluid">
+        <div class="span12">
+            <a class="btn btn-success pull-right" href="{% url 'clients_create' %}">{% trans "Add Customer" %}</a>
+        </div>
+    </div>
+    {% endif %}
+    <br/>
+    <div class="row-fluid">
+        <div class="span12">
+            Search:<input name="q_list" id="namelist-search" class="grp-search-field" value="" type="text">
+            <table class="table table-bordered table-hover">
+                <thead>
+                <tr>
+                    <th>{% trans "ID" %}</th>
+                    <th>{% trans "JAMS ID" %}</th>
+                    <th>{% trans "Client" %}</th>
+                    <th>{% trans "Parent" %}</th>
+                    <th>{% trans "Site" %}</th>
+                    <th>{% trans "Description" %}</th>
+                    <th>{% trans "Owner" %}</th>
+                    <th>{% trans "Phone" %}</th>
+                    <th>{% trans "Address" %}</th>
+                    <th>{% trans "Express" %}</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>   <!-- data  -->
+                {% for client in object_list.all %}
+                    <tr>
+                        <td>{{ client.id }}</td>
+                        <td>{{ client.account_number }}</td>
+                        <td id="client_name"><a href="{{ client.get_absolute_url }}">{{ client.name }}</a></td>
+                        <td>{% if client.parent %}<a href="{% url 'clients_detail' client.parent.id %}">{{ client.parent.name }}</a>{% else %}{% endif %}</td>
+                        <td>{{ client.site }}</td>
+                        <td>{{ client.description }}</td>
+                        <td>{{ client.owner }}</td>
+                        <td>{{ client.phone }}</td>
+                        <td>{{ client.billing_city }} {{ client.billing_state }} {{ client.billing_postal_code }} {{ client.billing_country }}</td>
+                        <td>{{ client.manifest.express_factor }}</td>
+                        <td>
+                            {% if client.id %}
+                                <a href="#" data-confirm="{% trans "Are you sure you want to delete?" %}"><i class="fa fa-times"></i></a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}
+
+{% block script %}
+     <script>
+    $(document).ready(function()
+    {
+    $('input#namelist-search').keyup(function()
+    {
+        searchTable($(this).val());
+    });
+    });
+    function searchTable(inputVal)
+    {
+    var table = $('table');
+    table.find('tr').each(function(index, row)
+    {
+        var allCells = $(row).find('td#client_name');
+        if(allCells.length > 0)
+        {
+            var found = false;
+            allCells.each(function(index, td)
+            {
+                var regExp = new RegExp(inputVal, 'i');
+                if(regExp.test($(td).text()))
+                {
+                    found = true;
+                    //return false;
+                }
+            });
+            if(found == true)$(row).show();else $(row).hide();
+        }
+    });
+    }
+    </script>
+{% endblock %}

@@ -1,0 +1,19 @@
+{% load bootstrap %}
+{% load i18n %}
+{% load humanize %}
+
+{% if task.is_translation %}
+    <div id="delivery-upload-{{ trans_kit.id }}" class="delivery-form">
+        <h3>{% trans "Upload Delivery" %}</h3>
+        <p>{{ task.service.service_type }}: {{ task.quantity|floatformat:-2|intcomma }} {{ task.service.unit_of_measure }}</p>
+        <p>{% trans "Please upload translation for:" %} {{ trans_kit.input_file_name }}</p>
+        {{ trans_kit.via_tltk_upload_form.as_form_html }}
+    </div>
+{% else %}
+    <div id="delivery-upload-{{ la.id }}" class="delivery-form">
+        <h3>{% trans "Upload Delivery" %}</h3>
+        <p>{{ task.service.service_type }}: {{ task.quantity|floatformat:-2|intcomma }} {{ task.service.unit_of_measure }}</p>
+        <p>{% trans "Please upload new file for:" %} {{ la.output_file_name }}</p>
+        {{ la.via_tla_upload_form.as_form_html }}
+    </div>
+{%  endif %}

@@ -1,0 +1,20 @@
+#calendar .pending {
+    background: #e0d8ff;
+}
+#calendar .upcoming {
+    background: #c7e4f2;
+}
+#calendar .overdue {
+    background: #f2deda;
+}
+#calendar .active {
+    background: #cff2d0;
+}
+#calendar .complete {
+    background: #cccccc;
+}
+
+#calendar a {
+    color: #08c;
+    text-decoration: none;
+}

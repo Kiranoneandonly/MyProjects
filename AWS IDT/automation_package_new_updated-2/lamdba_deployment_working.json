@@ -1,0 +1,3851 @@
+{
+  "Description" : "IDT automated lamp 6 lowpan",
+  "AWSTemplateFormatVersion" : "2010-09-09",
+  "Parameters" : {
+
+    "ModelAndCodeBucket" : {
+      "Description" : "Name of the Bucket containing DeepLearning bundle as a ZIP object",
+      "Type" : "String",
+      "Default" : "kbilgund-test-code",
+      "MinLength" : "1",
+      "MaxLength" : "80"
+    },
+
+    "staticWebsite" : {
+      "Description" : "Name of the Bucket containing static website content",
+      "Type" : "String",
+      "Default" : "idt3",
+      "MinLength" : "1",
+      "MaxLength" : "80"
+    },
+
+    "WeatherBundleObjectKey" : {
+      "Description" : "The ZIP object prefix for the code bundle",
+      "Type" : "String",
+      "Default" : "weather-bundle.zip",
+      "MinLength" : "1",
+      "MaxLength" : "80"
+    },
+
+    "DLTestBucketName" : {
+      "Description" : "Bucket where the test images will be located",
+      "Type" : "String",
+      "Default" : "deeplearning-test-bucket",
+      "MinLength" : "1",
+      "MaxLength" : "80"
+    },
+
+
+
+    "iotEndPoint" : {
+      "Description" : "account specific endpoint",
+      "Type" : "String",
+      "Default" : "a2aoegwed86tb9-ats.iot.us-west-2.amazonaws.com",
+      "MinLength" : "1",
+      "MaxLength" : "120"
+    },
+
+    "sunrise" : {
+      "Description" : "sunrise time",
+      "Type" : "String",
+      "Default" : "11 30",
+      "MinLength" : "1",
+      "MaxLength" : "10"
+    },
+
+    "sunset" : {
+      "Description" : "sunset time",
+      "Type" : "String",
+      "Default" : "23 30",
+      "MinLength" : "1",
+      "MaxLength" : "10"
+    }
+
+  },
+
+  "Resources": {
+
+    "ScheduledRule": {
+      "Type": "AWS::Events::Rule",
+      "Properties": {
+        "Description": "ScheduledRule",
+        "ScheduleExpression": "rate(15 minutes)",
+        "State": "ENABLED",
+        "Targets": [{
+          "Arn": { "Fn::GetAtt": ["cronschedular", "Arn"] },
+          "Id": "TargetFunctionV1"
+        }]
+      }
+    },
+
+    "PermissionForEventsToInvokeLambda": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "FunctionName": { "Ref": "cronschedular" },
+        "Action": "lambda:InvokeFunction",
+        "Principal": "events.amazonaws.com",
+        "SourceArn": { "Fn::GetAtt": ["ScheduledRule", "Arn"] }
+      }
+    },
+
+
+    "TraceRouteTopicRule": {
+             "Type": "AWS::IoT::TopicRule",
+             "Properties": {
+                "RuleName":
+                   "traceRoute"
+                ,
+                "TopicRulePayload": {
+                   "RuleDisabled": "false",
+                   "Sql": "SELECT * FROM 'cloud/hub/trace-route'",
+                   "Actions": [{
+                      "Lambda": {
+                         "FunctionArn" : {"Fn::GetAtt": ["idtlcm26updatetraceroutecf", "Arn"]}
+                      }
+                   }]
+                }
+             }
+    },
+
+
+  "CognitoPool":  {
+  "Type" : "AWS::Cognito::UserPool",
+  "Properties" : {
+    "UserPoolName":"idt-led-cf",
+    "Schema": [
+      {
+        "Mutable": false,
+        "Name": "email",
+        "Required": true
+      }],
+
+    "EmailVerificationMessage" : "ICE verification code: {####}. Please provide it inside the application.",
+    "EmailVerificationSubject" : "ICE verification code",
+
+    "AutoVerifiedAttributes": [
+      "email"
+    ]
+
+  }
+  },
+
+  "idtUserPoolcf":{
+    "Type" : "AWS::Cognito::UserPoolClient",
+    "Properties" : {
+      "ClientName" : "idt-user-pool-cf",
+      "RefreshTokenValidity" : 30,
+      "UserPoolId" : { "Ref" : "CognitoPool" }
+    }
+  },
+
+
+  "RootRole": {
+     "Type": "AWS::IAM::Role",
+     "Properties": {
+      "AssumeRolePolicyDocument": {
+       "Version" : "2012-10-17",
+       "Statement": [ {
+        "Effect": "Allow",
+        "Principal": {
+         "Service": [ "lambda.amazonaws.com" ]
+       },
+       "Action": [ "sts:AssumeRole" ]
+     } ]
+     },
+     "Path": "/",
+     "Policies": [ {
+       "PolicyName": "root",
+       "PolicyDocument": {
+        "Version" : "2012-10-17",
+        "Statement": [ {
+         "Effect": "Allow",
+         "Action": "*",
+         "Resource": "*"
+       } ]
+      }
+    } ]
+   }
+   },
+
+   "RootInstanceProfile": {
+     "Type": "AWS::IAM::InstanceProfile",
+     "Properties": {
+      "Path": "/",
+      "Roles": [ {
+       "Ref": "RootRole"
+     } ]
+    }
+  },
+
+
+  "cronschedular": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Handler": "app.lambda_handler",
+        "FunctionName": "cronweatherfunction",
+        "Role": { "Fn::GetAtt": ["RootRole", "Arn"] },
+        "Description": "weather api based cron schedular",
+        "MemorySize": 200,
+        "Code": {
+          "S3Bucket": {"Ref": "ModelAndCodeBucket"},
+          "S3Key": "cronweatherfunction.zip"
+        },
+        "Runtime": "python3.6",
+        "Timeout": "300",
+        "Environment": {
+          "Variables": {
+            "model_bucket_name": {"Ref": "ModelAndCodeBucket"},
+            "region": { "Ref": "AWS::Region" },
+            "sunrise": {"Ref": "sunrise"},
+            "sunset": {"Ref": "sunset"}
+          }
+        }
+      }
+    },
+
+   "idtlcm1groupgetcf": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Handler": "getGroups.get_groups",
+        "FunctionName": "idt-groupv2-get",
+        "Role": { "Fn::GetAtt": ["RootRole", "Arn"] },
+        "Description": "Lambda function for ICE Control Website",
+        "MemorySize": 200,
+        "Code": {
+          "S3Bucket": {"Ref": "ModelAndCodeBucket"},
+          "S3Key": "idt_groupV2_get.zip"
+        },
+        "Runtime": "python3.7",
+        "Timeout": "300",
+        "Environment": {
+          "Variables": {
+            "model_bucket_name": {"Ref": "ModelAndCodeBucket"}
+          }
+        }
+      }
+    },
+
+
+   "idtlcm2grouppostcf": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Handler": "createGroup.create_group",
+        "FunctionName": "idt-groupv2-post",
+        "Role": { "Fn::GetAtt": ["RootRole", "Arn"] },
+        "Description": "Lambda function for ICE Control Website",
+        "MemorySize": 200,
+        "Code": {
+          "S3Bucket": {"Ref": "ModelAndCodeBucket"},
+          "S3Key": "idt_groupV2_post.zip"
+        },
+        "Runtime": "python3.7",
+        "Timeout": "300",
+        "Environment": {
+          "Variables": {
+            "model_bucket_name": {"Ref": "ModelAndCodeBucket"}
+          }
+        }
+      }
+    },
+
+   "idtlcm3groupnamegetcf": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Handler": "lambda_function.get_group",
+        "FunctionName": "idt-group-name-get",
+        "Role": { "Fn::GetAtt": ["RootRole", "Arn"] },
+        "Description": "Lambda function for ICE Control Website",
+        "MemorySize": 200,
+        "Code": {
+          "S3Bucket": {"Ref": "ModelAndCodeBucket"},
+          "S3Key": "idt_group-name-get.zip"
+        },
+        "Runtime": "python3.7",
+        "Timeout": "300",
+        "Environment": {
+          "Variables": {
+            "model_bucket_name": {"Ref": "ModelAndCodeBucket"}
+          }
+        }
+      }
+    },
+
+
+ "idtlcm4groupnameputcf": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Handler": "groupUpdate.update_group",
+        "FunctionName": "idt-groupv2-name-put",
+        "Role": { "Fn::GetAtt": ["RootRole", "Arn"] },
+        "Description": "Lambda function for ICE Control Website",
+        "MemorySize": 200,
+        "Code": {
+          "S3Bucket": {"Ref": "ModelAndCodeBucket"},
+          "S3Key": "idt_groupV2_name_put.zip"
+        },
+        "Runtime": "python3.7",
+        "Timeout": "300",
+        "Environment": {
+          "Variables": {
+            "model_bucket_name": {"Ref": "ModelAndCodeBucket"}
+          }
+        }
+      }
+    },
+
+  "idtlcm5goupnamedimcf": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Handler": "lambda_function.set_dim",
+        "FunctionName": "idt-group-name-dim",
+        "Role": { "Fn::GetAtt": ["RootRole", "Arn"] },
+        "Description": "Lambda function for ICE Control Website",
+        "MemorySize": 200,
+        "Code": {
+          "S3Bucket": {"Ref": "ModelAndCodeBucket"},
+          "S3Key": "idt_group-name-dim.zip"
+        },
+        "Runtime": "python3.7",
+        "Timeout": "300",
+        "Environment": {
+          "Variables": {
+            "model_bucket_name": {"Ref": "ModelAndCodeBucket"}
+          }
+        }
+      }
+    },
+
+
+
+  "idtlcm6groupnameotauputcf": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Handler": "otauGroup.group_ota",
+        "FunctionName": "idt-group-name-otau-put",
+        "Role": { "Fn::GetAtt": ["RootRole", "Arn"] },
+        "Description": "Lambda function for ICE Control Website",
+        "MemorySize": 200,
+        "Code": {
+          "S3Bucket": {"Ref": "ModelAndCodeBucket"},
+          "S3Key": "idt_group-name-otau_put.zip"
+        },
+        "Runtime": "python3.7",
+        "Timeout": "300",
+        "Environment": {
+          "Variables": {
+            "model_bucket_name": {"Ref": "ModelAndCodeBucket"}
+          }
+        }
+      }
+    },
+
+
+
+  "idtlcm7groupnameprofileputcf": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Handler": "groupProfileUpdate.update_group_prfile",
+        "FunctionName": "idt-group-name-profile-put",
+        "Role": { "Fn::GetAtt": ["RootRole", "Arn"] },
+        "Description": "Lambda function for ICE Control Website",
+        "MemorySize": 200,
+        "Code": {
+          "S3Bucket": {"Ref": "ModelAndCodeBucket"},
+          "S3Key": "idt_group-name-profile_put.zip"
+        },
+        "Runtime": "python3.7",
+        "Timeout": "300",
+        "Environment": {
+          "Variables": {
+            "model_bucket_name": {"Ref": "ModelAndCodeBucket"}
+          }
+        }
+      }
+    },
+
+
+  "idtlcm8listhubcf": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Handler": "hub_lister.list_hub",
+        "FunctionName": "idt-list-hub",
+        "Role": { "Fn::GetAtt": ["RootRole", "Arn"] },
+        "Description": "Lambda function for ICE Control Website",
+        "MemorySize": 200,
+        "Code": {
+          "S3Bucket": {"Ref": "ModelAndCodeBucket"},
+          "S3Key": "test-List-hub.zip"
+        },
+        "Runtime": "python3.7",
+        "Timeout": "300",
+        "Environment": {
+          "Variables": {
+            "model_bucket_name": {"Ref": "ModelAndCodeBucket"}
+          }
+        }
+      }
+    },
+
+  "idtlcm9gethubcf": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Handler": "hub.get_hub",
+        "FunctionName": "idt-get-hub",
+        "Role": { "Fn::GetAtt": ["RootRole", "Arn"] },
+        "Description": "Lambda function for ICE Control Website",
+        "MemorySize": 200,
+        "Code": {
+          "S3Bucket": {"Ref": "ModelAndCodeBucket"},
+          "S3Key": "test-get-hub.zip"
+        },
+        "Runtime": "python3.7",
+        "Timeout": "300",
+        "Environment": {
+          "Variables": {
+            "model_bucket_name": {"Ref": "ModelAndCodeBucket"}
+          }
+        }
+      }
+    },
+
+  "idtlcm10puthubcf": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Handler": "lambda_function.set_params",
+        "FunctionName": "idt-put-hub",
+        "Role": { "Fn::GetAtt": ["RootRole", "Arn"] },
+        "Description": "Lambda function for ICE Control Website",
+        "MemorySize": 200,
+        "Code": {
+          "S3Bucket": {"Ref": "ModelAndCodeBucket"},
+          "S3Key": "HubSetParameters.zip"
+        },
+        "Runtime": "python3.7",
+        "Timeout": "300",
+        "Environment": {
+          "Variables": {
+            "model_bucket_name": {"Ref": "ModelAndCodeBucket"}
+          }
+        }
+      }
+    },
+
+  "idtlcm11listlampcf": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Handler": "lambda_function.list_lamp",
+        "FunctionName": "idt-list_lamp",
+        "Role": { "Fn::GetAtt": ["RootRole", "Arn"] },
+        "Description": "Lambda function for ICE Control Website",
+        "MemorySize": 200,
+        "Code": {
+          "S3Bucket": {"Ref": "ModelAndCodeBucket"},
+          "S3Key": "LampsGET.zip"
+        },
+        "Runtime": "python3.7",
+        "Timeout": "300",
+        "Environment": {
+          "Variables": {
+            "model_bucket_name": {"Ref": "ModelAndCodeBucket"}
+          }
+        }
+      }
+    },
+
+  "idtlcm12lcmloadpostcf": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Handler": "lambda_function.load_lcm",
+        "FunctionName": "idt-lcm-load-post",
+        "Role": { "Fn::GetAtt": ["RootRole", "Arn"] },
+        "Description": "Lambda function for ICE Control Website",
+        "MemorySize": 200,
+        "Code": {
+          "S3Bucket": {"Ref": "ModelAndCodeBucket"},
+          "S3Key": "idt_lcm_load_post.zip"
+        },
+        "Runtime": "python3.7",
+        "Timeout": "300",
+        "Environment": {
+          "Variables": {
+            "model_bucket_name": {"Ref": "ModelAndCodeBucket"}
+          }
+        }
+      }
+    },
+
+
+  "idtlcm13lcmdeletetcf": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Handler": "lcm_decommission.lcm_decommission",
+        "FunctionName": "idt-lcm-delete",
+        "Role": { "Fn::GetAtt": ["RootRole", "Arn"] },
+        "Description": "Lambda function for ICE Control Website",
+        "MemorySize": 200,
+        "Code": {
+          "S3Bucket": {"Ref": "ModelAndCodeBucket"},
+          "S3Key": "lamp_decommission.zip"
+        },
+        "Runtime": "python3.7",
+        "Timeout": "300",
+        "Environment": {
+          "Variables": {
+            "model_bucket_name": {"Ref": "ModelAndCodeBucket"}
+          }
+        }
+      }
+    },
+
+  "idtlcm14lcmipgetcf": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Handler": "get_ip_lamp.get_ip_lamp",
+        "FunctionName": "idt-lcm-get-lamp",
+        "Role": { "Fn::GetAtt": ["RootRole", "Arn"] },
+        "Description": "Lambda function for ICE Control Website",
+        "MemorySize": 200,
+        "Code": {
+          "S3Bucket": {"Ref": "ModelAndCodeBucket"},
+          "S3Key": "LampGetDetail.zip"
+        },
+        "Runtime": "python3.7",
+        "Timeout": "300",
+        "Environment": {
+          "Variables": {
+            "model_bucket_name": {"Ref": "ModelAndCodeBucket"}
+          }
+        }
+      }
+    },
+
+  "idtlcm15installlightcf": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Handler": "lamp_commission.commission",
+        "FunctionName": "idt-lcm-install-light",
+        "Role": { "Fn::GetAtt": ["RootRole", "Arn"] },
+        "Description": "Lambda function for ICE Control Website",
+        "MemorySize": 200,
+        "Code": {
+          "S3Bucket": {"Ref": "ModelAndCodeBucket"},
+          "S3Key": "test-install-light.zip"
+        },
+        "Runtime": "python3.7",
+        "Timeout": "300",
+        "Environment": {
+          "Variables": {
+            "model_bucket_name": {"Ref": "ModelAndCodeBucket"}
+          }
+        }
+      }
+    },
+
+  "idtlcm16dimlightcf": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Handler": "lambda_function.set_dim",
+        "FunctionName": "idt-dim-light",
+        "Role": { "Fn::GetAtt": ["RootRole", "Arn"] },
+        "Description": "Lambda function for ICE Control Website",
+        "MemorySize": 200,
+        "Code": {
+          "S3Bucket": {"Ref": "ModelAndCodeBucket"},
+          "S3Key": "test-dim-light.zip"
+        },
+        "Runtime": "python3.7",
+        "Timeout": "300",
+        "Environment": {
+          "Variables": {
+            "model_bucket_name": {"Ref": "ModelAndCodeBucket"}
+          }
+        }
+      }
+    },
+
+
+  "idtlcm17dimrbgputcf": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Handler": "rgbDim.dim_rgb_put",
+        "FunctionName": "idt-dim-rgb-put",
+        "Role": { "Fn::GetAtt": ["RootRole", "Arn"] },
+        "Description": "Lambda function for ICE Control Website",
+        "MemorySize": 200,
+        "Code": {
+          "S3Bucket": {"Ref": "ModelAndCodeBucket"},
+          "S3Key": "idt_lcm-ipv6-dimrgb_put.zip"
+        },
+        "Runtime": "python3.7",
+        "Timeout": "300",
+        "Environment": {
+          "Variables": {
+            "model_bucket_name": {"Ref": "ModelAndCodeBucket"}
+          }
+        }
+      }
+    },
+
+
+    "idtlcm18lcmotauupdatecf": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Handler": "lcmOTAUpdate.ota_update",
+        "FunctionName": "idt-lcm-otau-update",
+        "Role": { "Fn::GetAtt": ["RootRole", "Arn"] },
+        "Description": "Lambda function for ICE Control Website",
+        "MemorySize": 200,
+        "Code": {
+          "S3Bucket": {"Ref": "ModelAndCodeBucket"},
+          "S3Key": "lcmOTAUpdate.zip"
+        },
+        "Runtime": "python3.7",
+        "Timeout": "300",
+        "Environment": {
+          "Variables": {
+            "model_bucket_name": {"Ref": "ModelAndCodeBucket"}
+          }
+        }
+      }
+    },
+
+
+
+    "idtlcm19registerlampscf": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Handler": "lambda_function.register",
+        "FunctionName": "idt-register-lamps",
+        "Role": { "Fn::GetAtt": ["RootRole", "Arn"] },
+        "Description": "Lambda function for ICE Control Website",
+        "MemorySize": 200,
+        "Code": {
+          "S3Bucket": {"Ref": "ModelAndCodeBucket"},
+          "S3Key": "test-register-lamps.zip"
+        },
+        "Runtime": "python3.7",
+        "Timeout": "300",
+        "Environment": {
+          "Variables": {
+            "model_bucket_name": {"Ref": "ModelAndCodeBucket"}
+          }
+        }
+      }
+    },
+
+
+    "idtlcm20daygetcf": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Handler": "lambda_function.lambda_handler",
+        "FunctionName": "idt-day-get",
+        "Role": { "Fn::GetAtt": ["RootRole", "Arn"] },
+        "Description": "Lambda function for ICE Control Website",
+        "MemorySize": 200,
+        "Code": {
+          "S3Bucket": {"Ref": "ModelAndCodeBucket"},
+          "S3Key": "day_get.zip"
+        },
+        "Runtime": "python3.7",
+        "Timeout": "300",
+        "Environment": {
+          "Variables": {
+            "model_bucket_name": {"Ref": "ModelAndCodeBucket"}
+          }
+        }
+      }
+    },
+
+
+
+  "idtlcm21daypostcf": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Handler": "lambda_function.lambda_handler",
+        "FunctionName": "idt-day-post",
+        "Role": { "Fn::GetAtt": ["RootRole", "Arn"] },
+        "Description": "Lambda function for ICE Control Website",
+        "MemorySize": 200,
+        "Code": {
+          "S3Bucket": {"Ref": "ModelAndCodeBucket"},
+          "S3Key": "day_post.zip"
+        },
+        "Runtime": "python3.7",
+        "Timeout": "300",
+        "Environment": {
+          "Variables": {
+            "model_bucket_name": {"Ref": "ModelAndCodeBucket"}
+          }
+        }
+      }
+    },
+
+
+  "idtlcm22timedoffcf": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Handler": "lambda_function.lambda_handler",
+        "FunctionName": "idt-timed-off",
+        "Role": { "Fn::GetAtt": ["RootRole", "Arn"] },
+        "Description": "Lambda function for ICE Control Website",
+        "MemorySize": 200,
+        "Code": {
+          "S3Bucket": {"Ref": "ModelAndCodeBucket"},
+          "S3Key": "timed_off.zip"
+        },
+        "Runtime": "python3.7",
+        "Timeout": "300",
+        "Environment": {
+          "Variables": {
+            "model_bucket_name": {"Ref": "ModelAndCodeBucket"}
+          }
+        }
+      }
+    },
+
+
+  "idtlcm23weekgetcf": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Handler": "lambda_function.lambda_handler",
+        "FunctionName": "idt-week-get",
+        "Role": { "Fn::GetAtt": ["RootRole", "Arn"] },
+        "Description": "Lambda function for ICE Control Website",
+        "MemorySize": 200,
+        "Code": {
+          "S3Bucket": {"Ref": "ModelAndCodeBucket"},
+          "S3Key": "week_get.zip"
+        },
+        "Runtime": "python3.7",
+        "Timeout": "300",
+        "Environment": {
+          "Variables": {
+            "model_bucket_name": {"Ref": "ModelAndCodeBucket"}
+          }
+        }
+      }
+    },
+
+
+
+  "idtlcm24weekpostcf": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Handler": "lambda_function.lambda_handler",
+        "FunctionName": "idt-week-post",
+        "Role": { "Fn::GetAtt": ["RootRole", "Arn"] },
+        "Description": "Lambda function for ICE Control Website",
+        "MemorySize": 200,
+        "Code": {
+          "S3Bucket": {"Ref": "ModelAndCodeBucket"},
+          "S3Key": "week_post.zip"
+        },
+        "Runtime": "python3.7",
+        "Timeout": "300",
+        "Environment": {
+          "Variables": {
+            "model_bucket_name": {"Ref": "ModelAndCodeBucket"}
+          }
+        }
+      }
+    },
+
+
+   "idtlcm25lampgetcf": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Handler": "lambda_function.get_lamp_status",
+        "FunctionName": "idt-lcm-lamp-get",
+        "Role": { "Fn::GetAtt": ["RootRole", "Arn"] },
+        "Description": "Lambda function for ICE Control Website",
+        "MemorySize": 200,
+        "Code": {
+          "S3Bucket": {"Ref": "ModelAndCodeBucket"},
+          "S3Key": "LampStatusGet.zip"
+        },
+        "Runtime": "python3.7",
+        "Timeout": "300",
+        "Environment": {
+          "Variables": {
+            "model_bucket_name": {"Ref": "ModelAndCodeBucket"}
+          }
+        }
+      }
+    },
+
+
+  "idtlcm26updatetraceroutecf": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Handler": "lambda_function.lambda_handler",
+        "FunctionName": "idt-update-traceroute",
+        "Role": { "Fn::GetAtt": ["RootRole", "Arn"] },
+        "Description": "Lambda function for ICE Control Website",
+        "MemorySize": 200,
+        "Code": {
+          "S3Bucket": {"Ref": "ModelAndCodeBucket"},
+          "S3Key": "update_traceroute.zip"
+        },
+        "Runtime": "python3.6",
+        "Timeout": "300",
+        "Environment": {
+          "Variables": {
+            "model_bucket_name": {"Ref": "ModelAndCodeBucket"}
+          }
+        }
+      }
+    },
+
+    "idtlcm26lightsensorcapturecf": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Handler": "lambda_function.lambda_handler",
+        "FunctionName": "idt-light-sensor-capture",
+        "Role": { "Fn::GetAtt": ["RootRole", "Arn"] },
+        "Description": "Lambda function for ICE Control Website",
+        "MemorySize": 200,
+        "Code": {
+          "S3Bucket": {"Ref": "ModelAndCodeBucket"},
+          "S3Key": "light_sensor_capture.zip"
+        },
+        "Runtime": "python3.7",
+        "Timeout": "300",
+        "Environment": {
+          "Variables": {
+            "model_bucket_name": {"Ref": "ModelAndCodeBucket"}
+          }
+        }
+      }
+    },
+
+
+
+  "connectivity" : {
+      "Type" : "AWS::DynamoDB::Table",
+      "Properties" : {
+        "AttributeDefinitions" : [
+          {
+            "AttributeName" : "timestamp",
+            "AttributeType" : "S"
+          }
+        ],
+        "KeySchema" : [
+          {
+            "AttributeName" : "timestamp",
+            "KeyType" : "HASH"
+          }
+        ],
+        "ProvisionedThroughput" : {
+          "ReadCapacityUnits" : "5",
+          "WriteCapacityUnits" : "5"
+        },
+        "TableName" : "connectivity"
+      }
+    },
+
+    "schedularDay" : {
+      "Type" : "AWS::DynamoDB::Table",
+      "Properties" : {
+        "AttributeDefinitions" : [
+          {
+            "AttributeName" : "id",
+            "AttributeType" : "S"
+          }
+
+        ],
+        "KeySchema" : [
+          {
+            "AttributeName" : "id",
+            "KeyType" : "HASH"
+          }
+        ],
+        "ProvisionedThroughput" : {
+          "ReadCapacityUnits" : "5",
+          "WriteCapacityUnits" : "5"
+        },
+        "TableName" : "day"
+      }
+    },
+
+    "schedularWeek" : {
+      "Type" : "AWS::DynamoDB::Table",
+      "Properties" : {
+        "AttributeDefinitions" : [
+          {
+            "AttributeName" : "id",
+            "AttributeType" : "S"
+          }
+
+        ],
+        "KeySchema" : [
+          {
+            "AttributeName" : "id",
+            "KeyType" : "HASH"
+          }
+        ],
+        "ProvisionedThroughput" : {
+          "ReadCapacityUnits" : "5",
+          "WriteCapacityUnits" : "5"
+        },
+        "TableName" : "week"
+      }
+    },
+
+      "DimHistory" : {
+      "Type" : "AWS::DynamoDB::Table",
+      "Properties" : {
+        "AttributeDefinitions" : [
+          {
+            "AttributeName" : "ip",
+            "AttributeType" : "S"
+          },
+          {
+            "AttributeName" : "timestamp",
+            "AttributeType" : "N"
+          }
+
+        ],
+        "KeySchema" : [
+          {
+            "AttributeName" : "ip",
+            "KeyType" : "HASH"
+          },
+          {
+            "AttributeName" : "timestamp",
+            "KeyType" : "RANGE"
+          }
+        ],
+        "ProvisionedThroughput" : {
+          "ReadCapacityUnits" : "5",
+          "WriteCapacityUnits" : "5"
+        },
+        "TableName" : "DimHistory"
+      }
+    },
+
+
+  "group" : {
+      "Type" : "AWS::DynamoDB::Table",
+      "Properties" : {
+        "AttributeDefinitions" : [
+          {
+            "AttributeName" : "groupName",
+            "AttributeType" : "S"
+          }
+
+        ],
+        "KeySchema" : [
+          {
+            "AttributeName" : "groupName",
+            "KeyType" : "HASH"
+          }
+        ],
+        "ProvisionedThroughput" : {
+          "ReadCapacityUnits" : "5",
+          "WriteCapacityUnits" : "5"
+        },
+        "TableName" : "group"
+      }
+    },
+
+
+   "GroupLcm" : {
+      "Type" : "AWS::DynamoDB::Table",
+      "Properties" : {
+        "AttributeDefinitions" : [
+          {
+            "AttributeName" : "groupName",
+            "AttributeType" : "S"
+          },
+          {
+            "AttributeName" : "ip",
+            "AttributeType" : "S"
+          }
+
+        ],
+        "KeySchema" : [
+          {
+            "AttributeName" : "groupName",
+            "KeyType" : "HASH"
+          },
+          {
+            "AttributeName" : "ip",
+            "KeyType" : "RANGE"
+          }
+        ],
+        "ProvisionedThroughput" : {
+          "ReadCapacityUnits" : "5",
+          "WriteCapacityUnits" : "5"
+        },
+        "TableName" : "GroupLcm"
+      }
+    },
+
+    "groupV2" : {
+      "Type" : "AWS::DynamoDB::Table",
+      "Properties" : {
+        "AttributeDefinitions" : [
+          {
+            "AttributeName" : "groupName",
+            "AttributeType" : "S"
+          }
+
+        ],
+        "KeySchema" : [
+          {
+            "AttributeName" : "groupName",
+            "KeyType" : "HASH"
+          }
+        ],
+        "ProvisionedThroughput" : {
+          "ReadCapacityUnits" : "5",
+          "WriteCapacityUnits" : "5"
+        },
+        "TableName" : "groupV2"
+      }
+    },
+
+   "Hub" : {
+      "Type" : "AWS::DynamoDB::Table",
+      "Properties" : {
+        "AttributeDefinitions" : [
+          {
+            "AttributeName" : "hubid",
+            "AttributeType" : "S"
+          }
+
+        ],
+        "KeySchema" : [
+          {
+            "AttributeName" : "hubid",
+            "KeyType" : "HASH"
+          }
+        ],
+        "ProvisionedThroughput" : {
+          "ReadCapacityUnits" : "5",
+          "WriteCapacityUnits" : "5"
+        },
+        "TableName" : "Hub"
+      }
+    },
+
+
+  "ikeykeys" : {
+      "Type" : "AWS::DynamoDB::Table",
+      "Properties" : {
+        "AttributeDefinitions" : [
+          {
+            "AttributeName" : "ip",
+            "AttributeType" : "S"
+          }
+
+        ],
+        "KeySchema" : [
+          {
+            "AttributeName" : "ip",
+            "KeyType" : "HASH"
+          }
+        ],
+        "ProvisionedThroughput" : {
+          "ReadCapacityUnits" : "5",
+          "WriteCapacityUnits" : "5"
+        },
+        "TableName" : "ikeykeys"
+      }
+    },
+
+
+    "LCM" : {
+      "Type" : "AWS::DynamoDB::Table",
+      "Properties" : {
+        "AttributeDefinitions" : [
+          {
+            "AttributeName" : "primaryKey",
+            "AttributeType" : "S"
+          }
+
+        ],
+        "KeySchema" : [
+          {
+            "AttributeName" : "primaryKey",
+            "KeyType" : "HASH"
+          }
+        ],
+        "ProvisionedThroughput" : {
+          "ReadCapacityUnits" : "5",
+          "WriteCapacityUnits" : "5"
+        },
+        "TableName" : "LCM"
+      }
+    },
+
+
+
+  "LCMMaster" : {
+      "Type" : "AWS::DynamoDB::Table",
+      "Properties" : {
+        "AttributeDefinitions" : [
+          {
+            "AttributeName" : "primaryKey",
+            "AttributeType" : "S"
+          },
+          {
+            "AttributeName" : "batch",
+            "AttributeType" : "S"
+          }
+
+        ],
+        "KeySchema" : [
+          {
+            "AttributeName" : "primaryKey",
+            "KeyType" : "HASH"
+          },
+          {
+            "AttributeName" : "batch",
+            "KeyType" : "RANGE"
+          }
+        ],
+        "ProvisionedThroughput" : {
+          "ReadCapacityUnits" : "5",
+          "WriteCapacityUnits" : "5"
+        },
+        "TableName" : "LCMMaster"
+      }
+    },
+
+
+    "LCMStatus" : {
+      "Type" : "AWS::DynamoDB::Table",
+      "Properties" : {
+        "AttributeDefinitions" : [
+          {
+            "AttributeName" : "ip",
+            "AttributeType" : "S"
+          },
+          {
+            "AttributeName" : "timestamp",
+            "AttributeType" : "N"
+          }
+
+        ],
+        "KeySchema" : [
+          {
+            "AttributeName" : "ip",
+            "KeyType" : "HASH"
+          },
+          {
+            "AttributeName" : "timestamp",
+            "KeyType" : "RANGE"
+          }
+        ],
+        "ProvisionedThroughput" : {
+          "ReadCapacityUnits" : "5",
+          "WriteCapacityUnits" : "5"
+        },
+        "TableName" : "LCMStatus"
+      }
+    },
+
+    "lightSensor" : {
+      "Type" : "AWS::DynamoDB::Table",
+      "Properties" : {
+        "AttributeDefinitions" : [
+          {
+            "AttributeName" : "ip",
+            "AttributeType" : "S"
+          },
+          {
+            "AttributeName" : "timestamp",
+            "AttributeType" : "S"
+          }
+
+        ],
+        "KeySchema" : [
+          {
+            "AttributeName" : "ip",
+            "KeyType" : "HASH"
+          },
+          {
+            "AttributeName" : "timestamp",
+            "KeyType" : "RANGE"
+          }
+        ],
+        "ProvisionedThroughput" : {
+          "ReadCapacityUnits" : "5",
+          "WriteCapacityUnits" : "5"
+        },
+        "TableName" : "lightSensor"
+      }
+    },
+
+
+  "profileGroup" : {
+      "Type" : "AWS::DynamoDB::Table",
+      "Properties" : {
+        "AttributeDefinitions" : [
+          {
+            "AttributeName" : "groupName",
+            "AttributeType" : "S"
+          }
+
+        ],
+        "KeySchema" : [
+          {
+            "AttributeName" : "groupName",
+            "KeyType" : "HASH"
+          }
+        ],
+        "ProvisionedThroughput" : {
+          "ReadCapacityUnits" : "5",
+          "WriteCapacityUnits" : "5"
+        },
+        "TableName" : "profileGroup"
+      }
+    },
+
+
+  "Rides" : {
+      "Type" : "AWS::DynamoDB::Table",
+      "Properties" : {
+        "AttributeDefinitions" : [
+          {
+            "AttributeName" : "RideId",
+            "AttributeType" : "S"
+          }
+
+        ],
+        "KeySchema" : [
+          {
+            "AttributeName" : "RideId",
+            "KeyType" : "HASH"
+          }
+        ],
+        "ProvisionedThroughput" : {
+          "ReadCapacityUnits" : "5",
+          "WriteCapacityUnits" : "5"
+        },
+        "TableName" : "Rides"
+      }
+    },
+
+  "ulampconfig" : {
+      "Type" : "AWS::DynamoDB::Table",
+      "Properties" : {
+        "AttributeDefinitions" : [
+          {
+            "AttributeName" : "id",
+            "AttributeType" : "S"
+          }
+
+        ],
+        "KeySchema" : [
+          {
+            "AttributeName" : "id",
+            "KeyType" : "HASH"
+          }
+        ],
+        "ProvisionedThroughput" : {
+          "ReadCapacityUnits" : "5",
+          "WriteCapacityUnits" : "5"
+        },
+        "TableName" : "ulampconfig"
+      }
+    },
+
+  "ulampconfig" : {
+      "Type" : "AWS::DynamoDB::Table",
+      "Properties" : {
+        "AttributeDefinitions" : [
+          {
+            "AttributeName" : "id",
+            "AttributeType" : "S"
+          }
+
+        ],
+        "KeySchema" : [
+          {
+            "AttributeName" : "id",
+            "KeyType" : "HASH"
+          }
+        ],
+        "ProvisionedThroughput" : {
+          "ReadCapacityUnits" : "5",
+          "WriteCapacityUnits" : "5"
+        },
+        "TableName" : "ulampconfig"
+      }
+    },
+
+
+
+
+
+  "ApiGatewayCloudWatchLogsRole": {
+  "Type": "AWS::IAM::Role",
+  "Properties": {
+    "AssumeRolePolicyDocument": {
+      "Version": "2012-10-17",
+      "Statement": [{
+        "Effect": "Allow",
+        "Principal": { "Service": ["apigateway.amazonaws.com"] },
+        "Action": ["sts:AssumeRole"]
+      }]
+    },
+    "Policies": [{
+      "PolicyName": "ApiGatewayLogsPolicy",
+      "PolicyDocument": {
+        "Version": "2012-10-17",
+        "Statement": [{
+          "Effect": "Allow",
+          "Action": [
+            "logs:CreateLogGroup",
+            "logs:CreateLogStream",
+            "logs:DescribeLogGroups",
+            "logs:DescribeLogStreams",
+            "logs:PutLogEvents",
+            "logs:GetLogEvents",
+            "logs:FilterLogEvents"
+          ],
+          "Resource": "*"
+        }]
+      }
+    }]
+  }
+  },
+
+  "ApiGatewayAccount": {
+    "Type" : "AWS::ApiGateway::Account",
+    "Properties" : {
+      "CloudWatchRoleArn" : {"Fn::GetAtt" : ["ApiGatewayCloudWatchLogsRole", "Arn"] }
+    }
+  },
+
+  "ApiDeployment": {
+    "Type": "AWS::ApiGateway::Deployment",
+    "DependsOn": ["HubRequest"],
+    "Properties": {
+      "RestApiId": {"Ref": "lampAPIcf"},
+      "StageName": "prod"
+    }
+  },
+
+
+
+
+  "Authorizer": {
+    "Type": "AWS::ApiGateway::Authorizer",
+    "Properties": {
+      "Name": "Authorizercf",
+          "IdentitySource": "method.request.header.authToken",
+              "IdentityValidationExpression" : "",
+      "ProviderARNs" : [{"Fn::GetAtt": ["CognitoPool", "Arn"]}],
+         "Type": "COGNITO_USER_POOLS",
+      "RestApiId": {
+        "Ref":  "lampAPIcf"
+      }
+    }
+
+
+    },
+
+
+   "lampAPIcf": {
+    "Type": "AWS::ApiGateway::RestApi",
+    "Properties": {
+      "Name": "lampAPIcf",
+      "Description": "API used for 6 lowpan lamps",
+      "FailOnWarnings" : true
+    }
+  },
+
+
+
+
+  "LambdaPermissiongroupgetcf": {
+    "Type": "AWS::Lambda::Permission",
+    "Properties": {
+      "Action": "lambda:invokeFunction",
+      "FunctionName": {"Fn::GetAtt": ["idtlcm1groupgetcf", "Arn"]},
+      "Principal": "apigateway.amazonaws.com",
+      "SourceArn": {"Fn::Join": ["",
+        ["arn:aws:execute-api:", {"Ref": "AWS::Region"}, ":", {"Ref": "AWS::AccountId"}, ":", {"Ref": "lampAPIcf"}, "/*"]
+      ]}
+    }
+  },
+
+  "LambdaPermissiongrouppostcf": {
+    "Type": "AWS::Lambda::Permission",
+    "Properties": {
+      "Action": "lambda:invokeFunction",
+      "FunctionName": {"Fn::GetAtt": ["idtlcm2grouppostcf", "Arn"]},
+      "Principal": "apigateway.amazonaws.com",
+      "SourceArn": {"Fn::Join": ["",
+        ["arn:aws:execute-api:", {"Ref": "AWS::Region"}, ":", {"Ref": "AWS::AccountId"}, ":", {"Ref": "lampAPIcf"}, "/*"]
+      ]}
+    }
+  },
+
+
+  "LambdaPermissiongroupnamegetcf": {
+    "Type": "AWS::Lambda::Permission",
+    "Properties": {
+      "Action": "lambda:invokeFunction",
+      "FunctionName": {"Fn::GetAtt": ["idtlcm3groupnamegetcf", "Arn"]},
+      "Principal": "apigateway.amazonaws.com",
+      "SourceArn": {"Fn::Join": ["",
+        ["arn:aws:execute-api:", {"Ref": "AWS::Region"}, ":", {"Ref": "AWS::AccountId"}, ":", {"Ref": "lampAPIcf"}, "/*"]
+      ]}
+    }
+  },
+
+
+  "LambdaPermissiongroupnameputcf": {
+    "Type": "AWS::Lambda::Permission",
+    "Properties": {
+      "Action": "lambda:invokeFunction",
+      "FunctionName": {"Fn::GetAtt": ["idtlcm4groupnameputcf", "Arn"]},
+      "Principal": "apigateway.amazonaws.com",
+      "SourceArn": {"Fn::Join": ["",
+        ["arn:aws:execute-api:", {"Ref": "AWS::Region"}, ":", {"Ref": "AWS::AccountId"}, ":", {"Ref": "lampAPIcf"}, "/*"]
+      ]}
+    }
+  },
+
+  "LambdaPermissiongoupnamedimcf": {
+    "Type": "AWS::Lambda::Permission",
+    "Properties": {
+      "Action": "lambda:invokeFunction",
+      "FunctionName": {"Fn::GetAtt": ["idtlcm5goupnamedimcf", "Arn"]},
+      "Principal": "apigateway.amazonaws.com",
+      "SourceArn": {"Fn::Join": ["",
+        ["arn:aws:execute-api:", {"Ref": "AWS::Region"}, ":", {"Ref": "AWS::AccountId"}, ":", {"Ref": "lampAPIcf"}, "/*"]
+      ]}
+    }
+  },
+
+  "LambdaPermissiongroupnameotauputcf": {
+    "Type": "AWS::Lambda::Permission",
+    "Properties": {
+      "Action": "lambda:invokeFunction",
+      "FunctionName": {"Fn::GetAtt": ["idtlcm6groupnameotauputcf", "Arn"]},
+      "Principal": "apigateway.amazonaws.com",
+      "SourceArn": {"Fn::Join": ["",
+        ["arn:aws:execute-api:", {"Ref": "AWS::Region"}, ":", {"Ref": "AWS::AccountId"}, ":", {"Ref": "lampAPIcf"}, "/*"]
+      ]}
+    }
+  },
+
+  "LambdaPermissiongroupnameprofileputcf": {
+    "Type": "AWS::Lambda::Permission",
+    "Properties": {
+      "Action": "lambda:invokeFunction",
+      "FunctionName": {"Fn::GetAtt": ["idtlcm7groupnameprofileputcf", "Arn"]},
+      "Principal": "apigateway.amazonaws.com",
+      "SourceArn": {"Fn::Join": ["",
+        ["arn:aws:execute-api:", {"Ref": "AWS::Region"}, ":", {"Ref": "AWS::AccountId"}, ":", {"Ref": "lampAPIcf"}, "/*"]
+      ]}
+    }
+  },
+
+
+  "LambdaPermissionlisthubcf": {
+    "Type": "AWS::Lambda::Permission",
+    "Properties": {
+      "Action": "lambda:invokeFunction",
+      "FunctionName": {"Fn::GetAtt": ["idtlcm8listhubcf", "Arn"]},
+      "Principal": "apigateway.amazonaws.com",
+      "SourceArn": {"Fn::Join": ["",
+        ["arn:aws:execute-api:", {"Ref": "AWS::Region"}, ":", {"Ref": "AWS::AccountId"}, ":", {"Ref": "lampAPIcf"}, "/*"]
+      ]}
+    }
+  },
+
+  "LambdaPermissiongethubcf": {
+    "Type": "AWS::Lambda::Permission",
+    "Properties": {
+      "Action": "lambda:invokeFunction",
+      "FunctionName": {"Fn::GetAtt": ["idtlcm9gethubcf", "Arn"]},
+      "Principal": "apigateway.amazonaws.com",
+      "SourceArn": {"Fn::Join": ["",
+        ["arn:aws:execute-api:", {"Ref": "AWS::Region"}, ":", {"Ref": "AWS::AccountId"}, ":", {"Ref": "lampAPIcf"}, "/*"]
+      ]}
+    }
+  },
+
+  "LambdaPermissionputhubcf": {
+    "Type": "AWS::Lambda::Permission",
+    "Properties": {
+      "Action": "lambda:invokeFunction",
+      "FunctionName": {"Fn::GetAtt": ["idtlcm10puthubcf", "Arn"]},
+      "Principal": "apigateway.amazonaws.com",
+      "SourceArn": {"Fn::Join": ["",
+        ["arn:aws:execute-api:", {"Ref": "AWS::Region"}, ":", {"Ref": "AWS::AccountId"}, ":", {"Ref": "lampAPIcf"}, "/*"]
+      ]}
+    }
+  },
+
+  "LambdaPermissionlistlampcf": {
+    "Type": "AWS::Lambda::Permission",
+    "Properties": {
+      "Action": "lambda:invokeFunction",
+      "FunctionName": {"Fn::GetAtt": ["idtlcm11listlampcf", "Arn"]},
+      "Principal": "apigateway.amazonaws.com",
+      "SourceArn": {"Fn::Join": ["",
+        ["arn:aws:execute-api:", {"Ref": "AWS::Region"}, ":", {"Ref": "AWS::AccountId"}, ":", {"Ref": "lampAPIcf"}, "/*"]
+      ]}
+    }
+  },
+
+  "LambdaPermissionlcmloadpostcf": {
+    "Type": "AWS::Lambda::Permission",
+    "Properties": {
+      "Action": "lambda:invokeFunction",
+      "FunctionName": {"Fn::GetAtt": ["idtlcm12lcmloadpostcf", "Arn"]},
+      "Principal": "apigateway.amazonaws.com",
+      "SourceArn": {"Fn::Join": ["",
+        ["arn:aws:execute-api:", {"Ref": "AWS::Region"}, ":", {"Ref": "AWS::AccountId"}, ":", {"Ref": "lampAPIcf"}, "/*"]
+      ]}
+    }
+  },
+
+
+  "LambdaPermissionlcmdeletetcf": {
+    "Type": "AWS::Lambda::Permission",
+    "Properties": {
+      "Action": "lambda:invokeFunction",
+      "FunctionName": {"Fn::GetAtt": ["idtlcm13lcmdeletetcf", "Arn"]},
+      "Principal": "apigateway.amazonaws.com",
+      "SourceArn": {"Fn::Join": ["",
+        ["arn:aws:execute-api:", {"Ref": "AWS::Region"}, ":", {"Ref": "AWS::AccountId"}, ":", {"Ref": "lampAPIcf"}, "/*"]
+      ]}
+    }
+  },
+
+
+  "LambdaPermissionlcmipgetcf": {
+    "Type": "AWS::Lambda::Permission",
+    "Properties": {
+      "Action": "lambda:invokeFunction",
+      "FunctionName": {"Fn::GetAtt": ["idtlcm14lcmipgetcf", "Arn"]},
+      "Principal": "apigateway.amazonaws.com",
+      "SourceArn": {"Fn::Join": ["",
+        ["arn:aws:execute-api:", {"Ref": "AWS::Region"}, ":", {"Ref": "AWS::AccountId"}, ":", {"Ref": "lampAPIcf"}, "/*"]
+      ]}
+    }
+  },
+
+
+  "LambdaPermissioninstalllightcf": {
+    "Type": "AWS::Lambda::Permission",
+    "Properties": {
+      "Action": "lambda:invokeFunction",
+      "FunctionName": {"Fn::GetAtt": ["idtlcm15installlightcf", "Arn"]},
+      "Principal": "apigateway.amazonaws.com",
+      "SourceArn": {"Fn::Join": ["",
+        ["arn:aws:execute-api:", {"Ref": "AWS::Region"}, ":", {"Ref": "AWS::AccountId"}, ":", {"Ref": "lampAPIcf"}, "/*"]
+      ]}
+    }
+  },
+
+  "LambdaPermissiondimlightcf": {
+    "Type": "AWS::Lambda::Permission",
+    "Properties": {
+      "Action": "lambda:invokeFunction",
+      "FunctionName": {"Fn::GetAtt": ["idtlcm16dimlightcf", "Arn"]},
+      "Principal": "apigateway.amazonaws.com",
+      "SourceArn": {"Fn::Join": ["",
+        ["arn:aws:execute-api:", {"Ref": "AWS::Region"}, ":", {"Ref": "AWS::AccountId"}, ":", {"Ref": "lampAPIcf"}, "/*"]
+      ]}
+    }
+  },
+
+  "LambdaPermissiondimrbgputcf": {
+    "Type": "AWS::Lambda::Permission",
+    "Properties": {
+      "Action": "lambda:invokeFunction",
+      "FunctionName": {"Fn::GetAtt": ["idtlcm17dimrbgputcf", "Arn"]},
+      "Principal": "apigateway.amazonaws.com",
+      "SourceArn": {"Fn::Join": ["",
+        ["arn:aws:execute-api:", {"Ref": "AWS::Region"}, ":", {"Ref": "AWS::AccountId"}, ":", {"Ref": "lampAPIcf"}, "/*"]
+      ]}
+    }
+  },
+
+
+  "LambdaPermissionlcmotauupdatecf": {
+    "Type": "AWS::Lambda::Permission",
+    "Properties": {
+      "Action": "lambda:invokeFunction",
+      "FunctionName": {"Fn::GetAtt": ["idtlcm18lcmotauupdatecf", "Arn"]},
+      "Principal": "apigateway.amazonaws.com",
+      "SourceArn": {"Fn::Join": ["",
+        ["arn:aws:execute-api:", {"Ref": "AWS::Region"}, ":", {"Ref": "AWS::AccountId"}, ":", {"Ref": "lampAPIcf"}, "/*"]
+      ]}
+    }
+  },
+
+
+  "LambdaPermissionregisterlampscf": {
+    "Type": "AWS::Lambda::Permission",
+    "Properties": {
+      "Action": "lambda:invokeFunction",
+      "FunctionName": {"Fn::GetAtt": ["idtlcm19registerlampscf", "Arn"]},
+      "Principal": "apigateway.amazonaws.com",
+      "SourceArn": {"Fn::Join": ["",
+        ["arn:aws:execute-api:", {"Ref": "AWS::Region"}, ":", {"Ref": "AWS::AccountId"}, ":", {"Ref": "lampAPIcf"}, "/*"]
+      ]}
+    }
+  },
+
+
+  "LambdaPermissiondaygetcf": {
+    "Type": "AWS::Lambda::Permission",
+    "Properties": {
+      "Action": "lambda:invokeFunction",
+      "FunctionName": {"Fn::GetAtt": ["idtlcm20daygetcf", "Arn"]},
+      "Principal": "apigateway.amazonaws.com",
+      "SourceArn": {"Fn::Join": ["",
+        ["arn:aws:execute-api:", {"Ref": "AWS::Region"}, ":", {"Ref": "AWS::AccountId"}, ":", {"Ref": "lampAPIcf"}, "/*"]
+      ]}
+    }
+  },
+
+  "LambdaPermissiondaypostcf": {
+    "Type": "AWS::Lambda::Permission",
+    "Properties": {
+      "Action": "lambda:invokeFunction",
+      "FunctionName": {"Fn::GetAtt": ["idtlcm21daypostcf", "Arn"]},
+      "Principal": "apigateway.amazonaws.com",
+      "SourceArn": {"Fn::Join": ["",
+        ["arn:aws:execute-api:", {"Ref": "AWS::Region"}, ":", {"Ref": "AWS::AccountId"}, ":", {"Ref": "lampAPIcf"}, "/*"]
+      ]}
+    }
+  },
+
+  "LambdaPermissiontimedoffcf": {
+    "Type": "AWS::Lambda::Permission",
+    "Properties": {
+      "Action": "lambda:invokeFunction",
+      "FunctionName": {"Fn::GetAtt": ["idtlcm22timedoffcf", "Arn"]},
+      "Principal": "apigateway.amazonaws.com",
+      "SourceArn": {"Fn::Join": ["",
+        ["arn:aws:execute-api:", {"Ref": "AWS::Region"}, ":", {"Ref": "AWS::AccountId"}, ":", {"Ref": "lampAPIcf"}, "/*"]
+      ]}
+    }
+  },
+
+  "LambdaPermissionweekgetcf": {
+    "Type": "AWS::Lambda::Permission",
+    "Properties": {
+      "Action": "lambda:invokeFunction",
+      "FunctionName": {"Fn::GetAtt": ["idtlcm23weekgetcf", "Arn"]},
+      "Principal": "apigateway.amazonaws.com",
+      "SourceArn": {"Fn::Join": ["",
+        ["arn:aws:execute-api:", {"Ref": "AWS::Region"}, ":", {"Ref": "AWS::AccountId"}, ":", {"Ref": "lampAPIcf"}, "/*"]
+      ]}
+    }
+  },
+
+  "LambdaPermissionweekpostcf": {
+    "Type": "AWS::Lambda::Permission",
+    "Properties": {
+      "Action": "lambda:invokeFunction",
+      "FunctionName": {"Fn::GetAtt": ["idtlcm24weekpostcf", "Arn"]},
+      "Principal": "apigateway.amazonaws.com",
+      "SourceArn": {"Fn::Join": ["",
+        ["arn:aws:execute-api:", {"Ref": "AWS::Region"}, ":", {"Ref": "AWS::AccountId"}, ":", {"Ref": "lampAPIcf"}, "/*"]
+      ]}
+    }
+  },
+
+  "LambdaPermissionlampgetcf": {
+    "Type": "AWS::Lambda::Permission",
+    "Properties": {
+      "Action": "lambda:invokeFunction",
+      "FunctionName": {"Fn::GetAtt": ["idtlcm25lampgetcf", "Arn"]},
+      "Principal": "apigateway.amazonaws.com",
+      "SourceArn": {"Fn::Join": ["",
+        ["arn:aws:execute-api:", {"Ref": "AWS::Region"}, ":", {"Ref": "AWS::AccountId"}, ":", {"Ref": "lampAPIcf"}, "/*"]
+      ]}
+    }
+  },
+
+
+
+
+  "IdtResource": {
+  "Type": "AWS::ApiGateway::Resource",
+  "Properties": {
+    "RestApiId": {"Ref": "lampAPIcf"},
+    "ParentId": {"Fn::GetAtt": ["lampAPIcf", "RootResourceId"]},
+    "PathPart": "idt"
+  }
+  },
+
+  "idtcorsenable": {
+    "Type": "AWS::ApiGateway::Method",
+    "Properties": {
+      "ResourceId": {"Ref": "IdtResource"},
+      "RestApiId":  {"Ref": "lampAPIcf"},
+      "AuthorizationType": "NONE",
+      "HttpMethod": "OPTIONS",
+      "Integration": {
+        "Type": "MOCK",
+        "IntegrationResponses": [
+          {
+            "ResponseParameters": {
+              "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,authToken'",
+              "method.response.header.Access-Control-Allow-Methods": "'GET,POST,OPTIONS'",
+              "method.response.header.Access-Control-Allow-Origin": "'*'"
+            },
+            "ResponseTemplates": {
+              "application/json": ""
+            },
+            "StatusCode": "200"
+          }
+        ],
+        "PassthroughBehavior": "NEVER",
+        "RequestTemplates": {
+          "application/json": "{\"statusCode\": 200}"
+          }
+        },
+        "MethodResponses": [
+          {
+            "ResponseModels": {
+              "application/json": "Empty"
+            },
+            "ResponseParameters": {
+              "method.response.header.Access-Control-Allow-Headers": true,
+              "method.response.header.Access-Control-Allow-Methods": true,
+              "method.response.header.Access-Control-Allow-Origin": true
+            },
+            "StatusCode": "200"
+          }
+        ]
+      }
+    },
+
+
+
+  "GroupResource": {
+  "Type": "AWS::ApiGateway::Resource",
+  "Properties": {
+    "RestApiId": {"Ref": "lampAPIcf"},
+    "ParentId": {"Ref":"IdtResource"},
+    "PathPart": "group"
+  }
+  },
+
+  "GroupRequestGet": {
+  "DependsOn": "LambdaPermissiongroupgetcf",
+  "Type": "AWS::ApiGateway::Method",
+
+  "Properties": {
+  "AuthorizerId" : {"Ref":"Authorizer"},
+  "AuthorizationType" : "COGNITO_USER_POOLS",
+    "HttpMethod": "GET",
+    "Integration": {
+      "Type": "AWS_PROXY",
+      "IntegrationHttpMethod": "POST",
+      "Uri": {"Fn::Join" : ["",
+        ["arn:aws:apigateway:",
+         {"Ref": "AWS::Region"},
+         ":lambda:path/2015-03-31/functions/",
+         {"Fn::GetAtt": ["idtlcm1groupgetcf", "Arn"]},
+         "/invocations"]
+      ]},
+      "IntegrationResponses": [{
+        "StatusCode": 200,
+        "ResponseParameters": {
+          "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
+          "method.response.header.Access-Control-Allow-Methods": "'POST,GET,OPTIONS'",
+          "method.response.header.Access-Control-Allow-Origin": "'*'"
+        }
+      }]
+
+    },
+
+    "RequestParameters": {
+      "method.request.header.authToken": true
+    },
+    "ResourceId": {"Ref": "GroupResource"},
+    "RestApiId": {"Ref": "lampAPIcf"},
+    "MethodResponses": [{
+      "StatusCode": 200,
+      "ResponseModels": { "application/json": "Empty" },
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Methods": true,
+       "method.response.header.Access-Control-Allow-Origin": true
+     }
+   }]
+  }
+  },
+
+  "GroupRequestPost": {
+  "DependsOn": "LambdaPermissiongrouppostcf",
+  "Type": "AWS::ApiGateway::Method",
+
+  "Properties": {
+  "AuthorizerId" : {"Ref":"Authorizer"},
+  "AuthorizationType" : "COGNITO_USER_POOLS",
+    "HttpMethod": "POST",
+    "Integration": {
+      "Type": "AWS_PROXY",
+      "IntegrationHttpMethod": "POST",
+      "Uri": {"Fn::Join" : ["",
+        ["arn:aws:apigateway:",
+         {"Ref": "AWS::Region"},
+         ":lambda:path/2015-03-31/functions/",
+         {"Fn::GetAtt": ["idtlcm2grouppostcf", "Arn"]},
+         "/invocations"]
+      ]},
+      "IntegrationResponses": [{
+        "StatusCode": 200,
+        "ResponseParameters": {
+          "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
+          "method.response.header.Access-Control-Allow-Methods": "'POST,GET,OPTIONS'",
+          "method.response.header.Access-Control-Allow-Origin": "'*'"
+        }
+      }]
+
+    },
+
+    "RequestParameters": {
+      "method.request.header.authToken": true
+    },
+    "ResourceId": {"Ref": "GroupResource"},
+    "RestApiId": {"Ref": "lampAPIcf"},
+    "MethodResponses": [{
+      "StatusCode": 200,
+      "ResponseModels": { "application/json": "Empty" },
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Methods": true,
+       "method.response.header.Access-Control-Allow-Origin": true
+     }
+   }]
+  }
+  },
+
+  "groupcorsenable": {
+  "Type": "AWS::ApiGateway::Method",
+  "Properties": {
+    "ResourceId": {"Ref": "GroupResource"},
+    "RestApiId":  {"Ref": "lampAPIcf"},
+    "AuthorizationType": "NONE",
+    "HttpMethod": "OPTIONS",
+    "Integration": {
+      "Type": "MOCK",
+      "IntegrationResponses": [
+        {
+          "ResponseParameters": {
+            "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,authToken'",
+            "method.response.header.Access-Control-Allow-Methods": "'GET,POST,OPTIONS'",
+            "method.response.header.Access-Control-Allow-Origin": "'*'"
+          },
+          "ResponseTemplates": {
+            "application/json": ""
+          },
+          "StatusCode": "200"
+        }
+      ],
+      "PassthroughBehavior": "NEVER",
+      "RequestTemplates": {
+        "application/json": "{\"statusCode\": 200}"
+        }
+      },
+      "MethodResponses": [
+        {
+          "ResponseModels": {
+            "application/json": "Empty"
+          },
+          "ResponseParameters": {
+            "method.response.header.Access-Control-Allow-Headers": true,
+            "method.response.header.Access-Control-Allow-Methods": true,
+            "method.response.header.Access-Control-Allow-Origin": true
+          },
+          "StatusCode": "200"
+        }
+      ]
+    }
+  },
+
+
+  "GroupResourceGroupID": {
+  "Type": "AWS::ApiGateway::Resource",
+  "Properties": {
+    "RestApiId": {"Ref": "lampAPIcf"},
+    "ParentId": {"Ref": "GroupResource"},
+    "PathPart": "{name}"
+  }
+  },
+
+  "GroupRequestGroupID": {
+  "DependsOn": "LambdaPermissiongroupnamegetcf",
+  "Type": "AWS::ApiGateway::Method",
+  "Properties": {
+  "AuthorizationType": "NONE",
+    "HttpMethod": "GET",
+    "Integration": {
+      "Type": "AWS_PROXY",
+      "IntegrationHttpMethod": "POST",
+      "Uri": {"Fn::Join" : ["",
+        ["arn:aws:apigateway:",
+         {"Ref": "AWS::Region"},
+         ":lambda:path/2015-03-31/functions/",
+         {"Fn::GetAtt": ["idtlcm3groupnamegetcf", "Arn"]},
+         "/invocations"]
+      ]},
+      "IntegrationResponses": [{
+        "StatusCode": 200,
+        "ResponseParameters": {
+          "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
+          "method.response.header.Access-Control-Allow-Methods": "'POST,GET,OPTIONS'",
+          "method.response.header.Access-Control-Allow-Origin": "'*'"
+        }
+      }]
+
+    },
+
+    "RequestParameters": {
+      "method.request.header.authToken": true
+    },
+    "ResourceId": {"Ref": "GroupResourceGroupID"},
+    "RestApiId": {"Ref": "lampAPIcf"},
+    "MethodResponses": [{
+      "StatusCode": 200,
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Methods": true,
+       "method.response.header.Access-Control-Allow-Origin": true
+     }
+   }]
+  }
+  },
+
+  "GroupRequestPUTGroupID": {
+  "DependsOn": "LambdaPermissiongroupnameputcf",
+  "Type": "AWS::ApiGateway::Method",
+  "Properties": {
+  "AuthorizerId" : {"Ref":"Authorizer"},
+  "AuthorizationType" : "COGNITO_USER_POOLS",
+    "HttpMethod": "PUT",
+    "Integration": {
+      "Type": "AWS_PROXY",
+      "IntegrationHttpMethod": "POST",
+      "Uri": {"Fn::Join" : ["",
+        ["arn:aws:apigateway:",
+         {"Ref": "AWS::Region"},
+         ":lambda:path/2015-03-31/functions/",
+         {"Fn::GetAtt": ["idtlcm4groupnameputcf", "Arn"]},
+         "/invocations"]
+      ]},
+      "IntegrationResponses": [{
+        "StatusCode": 200,
+        "ResponseParameters": {
+          "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
+          "method.response.header.Access-Control-Allow-Methods": "'POST,PUT,GET,OPTIONS'",
+          "method.response.header.Access-Control-Allow-Origin": "'*'"
+        }
+      }]
+
+    },
+
+    "RequestParameters": {
+      "method.request.header.authToken": true
+    },
+    "ResourceId": {"Ref": "GroupResourceGroupID"},
+    "RestApiId": {"Ref": "lampAPIcf"},
+    "MethodResponses": [{
+      "StatusCode": 200,
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Methods": true,
+       "method.response.header.Access-Control-Allow-Origin": true
+     }
+   }]
+  }
+  },
+
+  "GroupIDCorsenable": {
+    "Type": "AWS::ApiGateway::Method",
+    "Properties": {
+      "ResourceId": {"Ref": "GroupResourceGroupID"},
+      "RestApiId":  {"Ref": "lampAPIcf"},
+      "AuthorizationType": "NONE",
+      "HttpMethod": "OPTIONS",
+      "Integration": {
+        "Type": "MOCK",
+        "IntegrationResponses": [
+          {
+            "ResponseParameters": {
+              "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,authToken'",
+              "method.response.header.Access-Control-Allow-Methods": "'GET,POST,OPTIONS'",
+              "method.response.header.Access-Control-Allow-Origin": "'*'"
+            },
+            "ResponseTemplates": {
+              "application/json": ""
+            },
+            "StatusCode": "200"
+          }
+        ],
+        "PassthroughBehavior": "NEVER",
+        "RequestTemplates": {
+          "application/json": "{\"statusCode\": 200}"
+          }
+        },
+        "MethodResponses": [
+          {
+            "ResponseModels": {
+              "application/json": "Empty"
+            },
+            "ResponseParameters": {
+              "method.response.header.Access-Control-Allow-Headers": true,
+              "method.response.header.Access-Control-Allow-Methods": true,
+              "method.response.header.Access-Control-Allow-Origin": true
+            },
+            "StatusCode": "200"
+          }
+        ]
+      }
+    },
+
+
+  "GroupResourceGroupIdDIM": {
+  "Type": "AWS::ApiGateway::Resource",
+  "Properties": {
+    "RestApiId": {"Ref": "lampAPIcf"},
+    "ParentId": {"Ref": "GroupResourceGroupID"},
+    "PathPart": "dim"
+  }
+  },
+
+  "GroupRequestlcmputdim": {
+  "DependsOn": "LambdaPermissiongoupnamedimcf",
+  "Type": "AWS::ApiGateway::Method",
+  "Properties": {
+  "AuthorizerId" : {"Ref":"Authorizer"},
+  "AuthorizationType" : "COGNITO_USER_POOLS",
+    "HttpMethod": "PUT",
+    "Integration": {
+      "Type": "AWS_PROXY",
+      "IntegrationHttpMethod": "POST",
+      "Uri": {"Fn::Join" : ["",
+        ["arn:aws:apigateway:",
+         {"Ref": "AWS::Region"},
+         ":lambda:path/2015-03-31/functions/",
+         {"Fn::GetAtt": ["idtlcm5goupnamedimcf", "Arn"]},
+         "/invocations"]
+      ]},
+       "IntegrationResponses": [{
+        "StatusCode": 200,
+        "ResponseParameters": {
+          "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
+          "method.response.header.Access-Control-Allow-Methods": "'POST,PUT,GET,OPTIONS'",
+          "method.response.header.Access-Control-Allow-Origin": "'*'"
+        }
+      }]
+    },
+    "RequestParameters": {
+      "method.request.header.authToken": true
+    },
+
+    "ResourceId": {"Ref": "GroupResourceGroupIdDIM"},
+    "RestApiId": {"Ref": "lampAPIcf"},
+      "MethodResponses": [{
+      "StatusCode": 200,
+      "ResponseModels": { "application/json": "Empty" },
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Methods": true,
+       "method.response.header.Access-Control-Allow-Origin": true
+     }
+   }]
+
+  }
+  },
+
+ "GroupResourceGroupIdDIMCorsenable": {
+    "Type": "AWS::ApiGateway::Method",
+    "Properties": {
+      "ResourceId": {"Ref": "GroupResourceGroupIdDIM"},
+      "RestApiId":  {"Ref": "lampAPIcf"},
+      "AuthorizationType": "NONE",
+      "HttpMethod": "OPTIONS",
+      "Integration": {
+        "Type": "MOCK",
+        "IntegrationResponses": [
+          {
+            "ResponseParameters": {
+              "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,authToken'",
+              "method.response.header.Access-Control-Allow-Methods": "'GET,PUT,POST,OPTIONS'",
+              "method.response.header.Access-Control-Allow-Origin": "'*'"
+            },
+            "ResponseTemplates": {
+              "application/json": ""
+            },
+            "StatusCode": "200"
+          }
+        ],
+        "PassthroughBehavior": "NEVER",
+        "RequestTemplates": {
+          "application/json": "{\"statusCode\": 200}"
+          }
+        },
+        "MethodResponses": [
+          {
+            "ResponseModels": {
+              "application/json": "Empty"
+            },
+            "ResponseParameters": {
+              "method.response.header.Access-Control-Allow-Headers": true,
+              "method.response.header.Access-Control-Allow-Methods": true,
+              "method.response.header.Access-Control-Allow-Origin": true
+            },
+            "StatusCode": "200"
+          }
+        ]
+      }
+    },
+
+
+  "GroupResourceGroupIdOTAU": {
+  "Type": "AWS::ApiGateway::Resource",
+  "Properties": {
+    "RestApiId": {"Ref": "lampAPIcf"},
+    "ParentId": {"Ref": "GroupResourceGroupID"},
+    "PathPart": "otau"
+  }
+  },
+
+  "GroupRequestlcmputotau": {
+  "DependsOn": "LambdaPermissiongroupnameotauputcf",
+  "Type": "AWS::ApiGateway::Method",
+  "Properties": {
+  "AuthorizerId" : {"Ref":"Authorizer"},
+  "AuthorizationType" : "COGNITO_USER_POOLS",
+    "HttpMethod": "PUT",
+    "Integration": {
+      "Type": "AWS_PROXY",
+      "IntegrationHttpMethod": "POST",
+      "Uri": {"Fn::Join" : ["",
+        ["arn:aws:apigateway:",
+         {"Ref": "AWS::Region"},
+         ":lambda:path/2015-03-31/functions/",
+         {"Fn::GetAtt": ["idtlcm6groupnameotauputcf", "Arn"]},
+         "/invocations"]
+      ]},
+       "IntegrationResponses": [{
+        "StatusCode": 200,
+        "ResponseParameters": {
+          "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
+          "method.response.header.Access-Control-Allow-Methods": "'POST,PUT,GET,OPTIONS'",
+          "method.response.header.Access-Control-Allow-Origin": "'*'"
+        }
+      }]
+    },
+    "RequestParameters": {
+      "method.request.header.authToken": true
+    },
+
+    "ResourceId": {"Ref": "GroupResourceGroupIdOTAU"},
+    "RestApiId": {"Ref": "lampAPIcf"},
+      "MethodResponses": [{
+      "StatusCode": 200,
+      "ResponseModels": { "application/json": "Empty" },
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Methods": true,
+       "method.response.header.Access-Control-Allow-Origin": true
+     }
+   }]
+
+  }
+  },
+
+ "GroupResourceGroupIdOTAUCorsenable": {
+    "Type": "AWS::ApiGateway::Method",
+    "Properties": {
+      "ResourceId": {"Ref": "GroupResourceGroupIdOTAU"},
+      "RestApiId":  {"Ref": "lampAPIcf"},
+      "AuthorizationType": "NONE",
+      "HttpMethod": "OPTIONS",
+      "Integration": {
+        "Type": "MOCK",
+        "IntegrationResponses": [
+          {
+            "ResponseParameters": {
+              "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,authToken'",
+              "method.response.header.Access-Control-Allow-Methods": "'GET,PUT,POST,OPTIONS'",
+              "method.response.header.Access-Control-Allow-Origin": "'*'"
+            },
+            "ResponseTemplates": {
+              "application/json": ""
+            },
+            "StatusCode": "200"
+          }
+        ],
+        "PassthroughBehavior": "NEVER",
+        "RequestTemplates": {
+          "application/json": "{\"statusCode\": 200}"
+          }
+        },
+        "MethodResponses": [
+          {
+            "ResponseModels": {
+              "application/json": "Empty"
+            },
+            "ResponseParameters": {
+              "method.response.header.Access-Control-Allow-Headers": true,
+              "method.response.header.Access-Control-Allow-Methods": true,
+              "method.response.header.Access-Control-Allow-Origin": true
+            },
+            "StatusCode": "200"
+          }
+        ]
+      }
+    },
+
+
+
+  "GroupResourceGroupIdProfile": {
+  "Type": "AWS::ApiGateway::Resource",
+  "Properties": {
+    "RestApiId": {"Ref": "lampAPIcf"},
+    "ParentId": {"Ref": "GroupResourceGroupID"},
+    "PathPart": "profile"
+  }
+  },
+
+  "GroupRequestlcmputprofile": {
+  "DependsOn": "LambdaPermissiongroupnameprofileputcf",
+  "Type": "AWS::ApiGateway::Method",
+  "Properties": {
+  "AuthorizerId" : {"Ref":"Authorizer"},
+  "AuthorizationType" : "COGNITO_USER_POOLS",
+    "HttpMethod": "PUT",
+    "Integration": {
+      "Type": "AWS_PROXY",
+      "IntegrationHttpMethod": "POST",
+      "Uri": {"Fn::Join" : ["",
+        ["arn:aws:apigateway:",
+         {"Ref": "AWS::Region"},
+         ":lambda:path/2015-03-31/functions/",
+         {"Fn::GetAtt": ["idtlcm7groupnameprofileputcf", "Arn"]},
+         "/invocations"]
+      ]},
+       "IntegrationResponses": [{
+        "StatusCode": 200,
+        "ResponseParameters": {
+          "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
+          "method.response.header.Access-Control-Allow-Methods": "'POST,PUT,GET,OPTIONS'",
+          "method.response.header.Access-Control-Allow-Origin": "'*'"
+        }
+      }]
+    },
+    "RequestParameters": {
+      "method.request.header.authToken": true
+    },
+
+    "ResourceId": {"Ref": "GroupResourceGroupIdProfile"},
+    "RestApiId": {"Ref": "lampAPIcf"},
+      "MethodResponses": [{
+      "StatusCode": 200,
+      "ResponseModels": { "application/json": "Empty" },
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Methods": true,
+       "method.response.header.Access-Control-Allow-Origin": true
+     }
+   }]
+
+  }
+  },
+
+ "GroupResourceGroupIdProfileCorsenable": {
+    "Type": "AWS::ApiGateway::Method",
+    "Properties": {
+      "ResourceId": {"Ref": "GroupResourceGroupIdProfile"},
+      "RestApiId":  {"Ref": "lampAPIcf"},
+      "AuthorizationType": "NONE",
+      "HttpMethod": "OPTIONS",
+      "Integration": {
+        "Type": "MOCK",
+        "IntegrationResponses": [
+          {
+            "ResponseParameters": {
+              "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,authToken'",
+              "method.response.header.Access-Control-Allow-Methods": "'GET,PUT,POST,OPTIONS'",
+              "method.response.header.Access-Control-Allow-Origin": "'*'"
+            },
+            "ResponseTemplates": {
+              "application/json": ""
+            },
+            "StatusCode": "200"
+          }
+        ],
+        "PassthroughBehavior": "NEVER",
+        "RequestTemplates": {
+          "application/json": "{\"statusCode\": 200}"
+          }
+        },
+        "MethodResponses": [
+          {
+            "ResponseModels": {
+              "application/json": "Empty"
+            },
+            "ResponseParameters": {
+              "method.response.header.Access-Control-Allow-Headers": true,
+              "method.response.header.Access-Control-Allow-Methods": true,
+              "method.response.header.Access-Control-Allow-Origin": true
+            },
+            "StatusCode": "200"
+          }
+        ]
+      }
+    },
+
+
+  "HubResource": {
+  "Type": "AWS::ApiGateway::Resource",
+  "Properties": {
+    "RestApiId": {"Ref": "lampAPIcf"},
+    "ParentId": {"Ref":"IdtResource"},
+    "PathPart": "hub"
+  }
+  },
+
+  "HubRequest": {
+  "DependsOn": "LambdaPermissionlisthubcf",
+  "Type": "AWS::ApiGateway::Method",
+
+  "Properties": {
+  "AuthorizerId" : {"Ref":"Authorizer"},
+  "AuthorizationType" : "COGNITO_USER_POOLS",
+    "HttpMethod": "GET",
+    "Integration": {
+      "Type": "AWS_PROXY",
+      "IntegrationHttpMethod": "POST",
+      "Uri": {"Fn::Join" : ["",
+        ["arn:aws:apigateway:",
+         {"Ref": "AWS::Region"},
+         ":lambda:path/2015-03-31/functions/",
+         {"Fn::GetAtt": ["idtlcm8listhubcf", "Arn"]},
+         "/invocations"]
+      ]},
+      "IntegrationResponses": [{
+        "StatusCode": 200,
+        "ResponseParameters": {
+          "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
+          "method.response.header.Access-Control-Allow-Methods": "'POST,GET,OPTIONS'",
+          "method.response.header.Access-Control-Allow-Origin": "'*'"
+        }
+      }]
+
+    },
+
+    "RequestParameters": {
+      "method.request.header.authToken": true
+    },
+    "ResourceId": {"Ref": "HubResource"},
+    "RestApiId": {"Ref": "lampAPIcf"},
+    "MethodResponses": [{
+      "StatusCode": 200,
+      "ResponseModels": { "application/json": "Empty" },
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Methods": true,
+       "method.response.header.Access-Control-Allow-Origin": true
+     }
+   }]
+  }
+  },
+
+
+  "hubcorsenable": {
+  "Type": "AWS::ApiGateway::Method",
+  "Properties": {
+    "ResourceId": {"Ref": "HubResource"},
+    "RestApiId":  {"Ref": "lampAPIcf"},
+    "AuthorizationType": "NONE",
+    "HttpMethod": "OPTIONS",
+    "Integration": {
+      "Type": "MOCK",
+      "IntegrationResponses": [
+        {
+          "ResponseParameters": {
+            "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,authToken'",
+            "method.response.header.Access-Control-Allow-Methods": "'GET,POST,OPTIONS'",
+            "method.response.header.Access-Control-Allow-Origin": "'*'"
+          },
+          "ResponseTemplates": {
+            "application/json": ""
+          },
+          "StatusCode": "200"
+        }
+      ],
+      "PassthroughBehavior": "NEVER",
+      "RequestTemplates": {
+        "application/json": "{\"statusCode\": 200}"
+        }
+      },
+      "MethodResponses": [
+        {
+          "ResponseModels": {
+            "application/json": "Empty"
+          },
+          "ResponseParameters": {
+            "method.response.header.Access-Control-Allow-Headers": true,
+            "method.response.header.Access-Control-Allow-Methods": true,
+            "method.response.header.Access-Control-Allow-Origin": true
+          },
+          "StatusCode": "200"
+        }
+      ]
+    }
+  },
+
+
+  "HubResourceHubID": {
+  "Type": "AWS::ApiGateway::Resource",
+  "Properties": {
+    "RestApiId": {"Ref": "lampAPIcf"},
+    "ParentId": {"Ref": "HubResource"},
+    "PathPart": "{hubid}"
+  }
+  },
+
+  "HubRequestHubID": {
+  "DependsOn": "LambdaPermissiongethubcf",
+  "Type": "AWS::ApiGateway::Method",
+  "Properties": {
+  "AuthorizerId" : {"Ref":"Authorizer"},
+  "AuthorizationType" : "COGNITO_USER_POOLS",
+    "HttpMethod": "GET",
+    "Integration": {
+      "Type": "AWS_PROXY",
+      "IntegrationHttpMethod": "POST",
+      "Uri": {"Fn::Join" : ["",
+        ["arn:aws:apigateway:",
+         {"Ref": "AWS::Region"},
+         ":lambda:path/2015-03-31/functions/",
+         {"Fn::GetAtt": ["idtlcm9gethubcf", "Arn"]},
+         "/invocations"]
+      ]},
+      "IntegrationResponses": [{
+        "StatusCode": 200,
+        "ResponseParameters": {
+          "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
+          "method.response.header.Access-Control-Allow-Methods": "'POST,GET,OPTIONS'",
+          "method.response.header.Access-Control-Allow-Origin": "'*'"
+        }
+      }]
+
+    },
+
+    "RequestParameters": {
+      "method.request.header.authToken": true
+    },
+    "ResourceId": {"Ref": "HubResourceHubID"},
+    "RestApiId": {"Ref": "lampAPIcf"},
+    "MethodResponses": [{
+      "StatusCode": 200,
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Methods": true,
+       "method.response.header.Access-Control-Allow-Origin": true
+     }
+   }]
+  }
+  },
+
+  "HubRequestPUTHubID": {
+  "DependsOn": "LambdaPermissionputhubcf",
+  "Type": "AWS::ApiGateway::Method",
+  "Properties": {
+  "AuthorizerId" : {"Ref":"Authorizer"},
+  "AuthorizationType" : "COGNITO_USER_POOLS",
+    "HttpMethod": "PUT",
+    "Integration": {
+      "Type": "AWS_PROXY",
+      "IntegrationHttpMethod": "POST",
+      "Uri": {"Fn::Join" : ["",
+        ["arn:aws:apigateway:",
+         {"Ref": "AWS::Region"},
+         ":lambda:path/2015-03-31/functions/",
+         {"Fn::GetAtt": ["idtlcm10puthubcf", "Arn"]},
+         "/invocations"]
+      ]},
+      "IntegrationResponses": [{
+        "StatusCode": 200,
+        "ResponseParameters": {
+          "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
+          "method.response.header.Access-Control-Allow-Methods": "'POST,GET,OPTIONS'",
+          "method.response.header.Access-Control-Allow-Origin": "'*'"
+        }
+      }]
+
+    },
+
+    "RequestParameters": {
+      "method.request.header.authToken": true
+    },
+    "ResourceId": {"Ref": "HubResourceHubID"},
+    "RestApiId": {"Ref": "lampAPIcf"},
+    "MethodResponses": [{
+      "StatusCode": 200,
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Methods": true,
+       "method.response.header.Access-Control-Allow-Origin": true
+     }
+   }]
+  }
+  },
+
+  "HubIDCorsenable": {
+    "Type": "AWS::ApiGateway::Method",
+    "Properties": {
+      "ResourceId": {"Ref": "HubResourceHubID"},
+      "RestApiId":  {"Ref": "lampAPIcf"},
+      "AuthorizationType": "NONE",
+      "HttpMethod": "OPTIONS",
+      "Integration": {
+        "Type": "MOCK",
+        "IntegrationResponses": [
+          {
+            "ResponseParameters": {
+              "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,authToken'",
+              "method.response.header.Access-Control-Allow-Methods": "'GET,POST,OPTIONS'",
+              "method.response.header.Access-Control-Allow-Origin": "'*'"
+            },
+            "ResponseTemplates": {
+              "application/json": ""
+            },
+            "StatusCode": "200"
+          }
+        ],
+        "PassthroughBehavior": "NEVER",
+        "RequestTemplates": {
+          "application/json": "{\"statusCode\": 200}"
+          }
+        },
+        "MethodResponses": [
+          {
+            "ResponseModels": {
+              "application/json": "Empty"
+            },
+            "ResponseParameters": {
+              "method.response.header.Access-Control-Allow-Headers": true,
+              "method.response.header.Access-Control-Allow-Methods": true,
+              "method.response.header.Access-Control-Allow-Origin": true
+            },
+            "StatusCode": "200"
+          }
+        ]
+      }
+    },
+
+
+  "IdtResourceLCM": {
+    "Type": "AWS::ApiGateway::Resource",
+    "Properties": {
+      "RestApiId": {"Ref": "lampAPIcf"},
+      "ParentId": {"Ref": "IdtResource"},
+      "PathPart": "lcm"
+    }
+  },
+
+  "IdtLCMGet": {
+  "DependsOn": "LambdaPermissionlistlampcf",
+  "Type": "AWS::ApiGateway::Method",
+  "Properties": {
+  "AuthorizerId" : {"Ref":"Authorizer"},
+  "AuthorizationType" : "COGNITO_USER_POOLS",
+    "HttpMethod": "GET",
+    "Integration": {
+      "Type": "AWS_PROXY",
+      "IntegrationHttpMethod": "POST",
+      "Uri": {"Fn::Join" : ["",
+        ["arn:aws:apigateway:",
+         {"Ref": "AWS::Region"},
+         ":lambda:path/2015-03-31/functions/",
+         {"Fn::GetAtt": ["idtlcm11listlampcf", "Arn"]},
+         "/invocations"]
+      ]},
+      "IntegrationResponses": [{
+        "StatusCode": 200,
+        "ResponseParameters": {
+          "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
+          "method.response.header.Access-Control-Allow-Methods": "'POST,GET,OPTIONS'",
+          "method.response.header.Access-Control-Allow-Origin": "'*'"
+        }
+      }]
+
+    },
+
+    "RequestParameters": {
+      "method.request.header.authToken": true
+    },
+    "ResourceId": {"Ref": "IdtResourceLCM"},
+    "RestApiId": {"Ref": "lampAPIcf"},
+    "MethodResponses": [{
+      "StatusCode": 200,
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Methods": true,
+       "method.response.header.Access-Control-Allow-Origin": true
+     }
+   }]
+    }
+  },
+
+
+  "IdtLCMGetCorsenable": {
+    "Type": "AWS::ApiGateway::Method",
+    "Properties": {
+      "ResourceId": {"Ref": "IdtResourceLCM"},
+      "RestApiId":  {"Ref": "lampAPIcf"},
+      "AuthorizationType": "NONE",
+      "HttpMethod": "OPTIONS",
+      "Integration": {
+        "Type": "MOCK",
+        "IntegrationResponses": [
+          {
+            "ResponseParameters": {
+              "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,authToken'",
+              "method.response.header.Access-Control-Allow-Methods": "'GET,POST,OPTIONS'",
+              "method.response.header.Access-Control-Allow-Origin": "'*'"
+            },
+            "ResponseTemplates": {
+              "application/json": ""
+            },
+            "StatusCode": "200"
+          }
+        ],
+        "PassthroughBehavior": "NEVER",
+        "RequestTemplates": {
+          "application/json": "{\"statusCode\": 200}"
+          }
+        },
+        "MethodResponses": [
+          {
+            "ResponseModels": {
+              "application/json": "Empty"
+            },
+            "ResponseParameters": {
+              "method.response.header.Access-Control-Allow-Headers": true,
+              "method.response.header.Access-Control-Allow-Methods": true,
+              "method.response.header.Access-Control-Allow-Origin": true
+            },
+            "StatusCode": "200"
+          }
+        ]
+      }
+    },
+
+  "IdtResourceLCMLoad": {
+  "Type": "AWS::ApiGateway::Resource",
+  "Properties": {
+    "RestApiId": {"Ref": "lampAPIcf"},
+    "ParentId": {"Ref": "IdtResourceLCM"},
+    "PathPart": "load"
+  }
+  },
+
+  "IdtLCMLoadPost": {
+  "DependsOn": "LambdaPermissionlcmloadpostcf",
+  "Type": "AWS::ApiGateway::Method",
+  "Properties": {
+  "AuthorizerId" : {"Ref":"Authorizer"},
+  "AuthorizationType" : "COGNITO_USER_POOLS",
+    "HttpMethod": "POST",
+    "Integration": {
+      "Type": "AWS_PROXY",
+      "IntegrationHttpMethod": "POST",
+      "Uri": {"Fn::Join" : ["",
+        ["arn:aws:apigateway:",
+         {"Ref": "AWS::Region"},
+         ":lambda:path/2015-03-31/functions/",
+         {"Fn::GetAtt": ["idtlcm12lcmloadpostcf", "Arn"]},
+         "/invocations"]
+      ]},
+      "IntegrationResponses": [{
+        "StatusCode": 200,
+        "ResponseParameters": {
+          "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
+          "method.response.header.Access-Control-Allow-Methods": "'POST,GET,OPTIONS'",
+          "method.response.header.Access-Control-Allow-Origin": "'*'"
+        }
+      }]
+
+    },
+
+    "RequestParameters": {
+       "method.request.header.authToken": false
+    },
+    "ResourceId": {"Ref": "IdtResourceLCMLoad"},
+    "RestApiId": {"Ref": "lampAPIcf"},
+    "MethodResponses": [{
+      "StatusCode": 200,
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Methods": true,
+       "method.response.header.Access-Control-Allow-Origin": true
+     }
+   }]
+  }
+  },
+
+  "IdtLCMLoadCorsenable": {
+    "Type": "AWS::ApiGateway::Method",
+    "Properties": {
+      "ResourceId": {"Ref": "IdtResourceLCMLoad"},
+      "RestApiId":  {"Ref": "lampAPIcf"},
+      "AuthorizationType": "NONE",
+      "HttpMethod": "OPTIONS",
+      "Integration": {
+        "Type": "MOCK",
+        "IntegrationResponses": [
+          {
+            "ResponseParameters": {
+              "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,authToken'",
+              "method.response.header.Access-Control-Allow-Methods": "'GET,POST,OPTIONS'",
+              "method.response.header.Access-Control-Allow-Origin": "'*'"
+            },
+            "ResponseTemplates": {
+              "application/json": ""
+            },
+            "StatusCode": "200"
+          }
+        ],
+        "PassthroughBehavior": "NEVER",
+        "RequestTemplates": {
+          "application/json": "{\"statusCode\": 200}"
+          }
+        },
+        "MethodResponses": [
+          {
+            "ResponseModels": {
+              "application/json": "Empty"
+            },
+            "ResponseParameters": {
+              "method.response.header.Access-Control-Allow-Headers": true,
+              "method.response.header.Access-Control-Allow-Methods": true,
+              "method.response.header.Access-Control-Allow-Origin": true
+            },
+            "StatusCode": "200"
+          }
+        ]
+      }
+    },
+
+
+  "IdtResourceLCMIPV6": {
+  "Type": "AWS::ApiGateway::Resource",
+  "Properties": {
+    "RestApiId": {"Ref": "lampAPIcf"},
+    "ParentId": {"Ref": "IdtResourceLCM"},
+    "PathPart": "{ipv6}"
+  }
+  },
+  "IdtLCMIPV6Get": {
+  "DependsOn": "LambdaPermissionlcmipgetcf",
+  "Type": "AWS::ApiGateway::Method",
+  "Properties": {
+  "AuthorizerId" : {"Ref":"Authorizer"},
+  "AuthorizationType" : "COGNITO_USER_POOLS",
+    "HttpMethod": "GET",
+    "Integration": {
+      "Type": "AWS_PROXY",
+      "IntegrationHttpMethod": "POST",
+      "Uri": {"Fn::Join" : ["",
+        ["arn:aws:apigateway:",
+         {"Ref": "AWS::Region"},
+         ":lambda:path/2015-03-31/functions/",
+         {"Fn::GetAtt": ["idtlcm14lcmipgetcf", "Arn"]},
+         "/invocations"]
+      ]},
+      "IntegrationResponses": [{
+        "StatusCode": 200,
+        "ResponseParameters": {
+          "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
+          "method.response.header.Access-Control-Allow-Methods": "'POST,GET,OPTIONS'",
+          "method.response.header.Access-Control-Allow-Origin": "'*'"
+        }
+      }]
+
+    },
+
+    "RequestParameters": {
+            "method.request.header.authToken": true
+    },
+    "ResourceId": {"Ref": "IdtResourceLCMIPV6"},
+    "RestApiId": {"Ref": "lampAPIcf"},
+    "MethodResponses": [{
+      "StatusCode": 200,
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Methods": true,
+       "method.response.header.Access-Control-Allow-Origin": true
+     }
+   }]
+  }
+  },
+
+  "IdtLCMIPV6Post": {
+  "DependsOn": "LambdaPermissioninstalllightcf",
+  "Type": "AWS::ApiGateway::Method",
+  "Properties": {
+  "AuthorizationType": "NONE",
+    "HttpMethod": "POST",
+    "Integration": {
+      "Type": "AWS_PROXY",
+      "IntegrationHttpMethod": "POST",
+      "Uri": {"Fn::Join" : ["",
+        ["arn:aws:apigateway:",
+         {"Ref": "AWS::Region"},
+         ":lambda:path/2015-03-31/functions/",
+         {"Fn::GetAtt": ["idtlcm15installlightcf", "Arn"]},
+         "/invocations"]
+      ]},
+      "IntegrationResponses": [{
+        "StatusCode": 200,
+        "ResponseParameters": {
+          "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
+          "method.response.header.Access-Control-Allow-Methods": "'POST,GET,OPTIONS'",
+          "method.response.header.Access-Control-Allow-Origin": "'*'"
+        }
+      }]
+
+    },
+
+    "RequestParameters": {
+       "method.request.header.authToken": false
+    },
+    "ResourceId": {"Ref": "IdtResourceLCMIPV6"},
+    "RestApiId": {"Ref": "lampAPIcf"},
+    "MethodResponses": [{
+      "StatusCode": 200,
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Methods": true,
+       "method.response.header.Access-Control-Allow-Origin": true
+     }
+   }]
+  }
+  },
+
+
+  "IdtLCMIPV6Corsenable": {
+    "Type": "AWS::ApiGateway::Method",
+    "Properties": {
+      "ResourceId": {"Ref": "IdtResourceLCMIPV6"},
+      "RestApiId":  {"Ref": "lampAPIcf"},
+      "AuthorizationType": "NONE",
+      "HttpMethod": "OPTIONS",
+      "Integration": {
+        "Type": "MOCK",
+        "IntegrationResponses": [
+          {
+            "ResponseParameters": {
+              "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,authToken'",
+              "method.response.header.Access-Control-Allow-Methods": "'GET,POST,OPTIONS'",
+              "method.response.header.Access-Control-Allow-Origin": "'*'"
+            },
+            "ResponseTemplates": {
+              "application/json": ""
+            },
+            "StatusCode": "200"
+          }
+        ],
+        "PassthroughBehavior": "NEVER",
+        "RequestTemplates": {
+          "application/json": "{\"statusCode\": 200}"
+          }
+        },
+        "MethodResponses": [
+          {
+            "ResponseModels": {
+              "application/json": "Empty"
+            },
+            "ResponseParameters": {
+              "method.response.header.Access-Control-Allow-Headers": true,
+              "method.response.header.Access-Control-Allow-Methods": true,
+              "method.response.header.Access-Control-Allow-Origin": true
+            },
+            "StatusCode": "200"
+          }
+        ]
+      }
+    },
+
+  "IdtResourceLCMIPV6DIM": {
+  "Type": "AWS::ApiGateway::Resource",
+  "Properties": {
+    "RestApiId": {"Ref": "lampAPIcf"},
+    "ParentId": {"Ref": "IdtResourceLCMIPV6"},
+    "PathPart": "dim"
+  }
+  },
+
+  "IdtRequestlcmGETdim": {
+  "DependsOn": "LambdaPermissionlampgetcf",
+  "Type": "AWS::ApiGateway::Method",
+  "Properties": {
+  "AuthorizerId" : {"Ref":"Authorizer"},
+  "AuthorizationType" : "COGNITO_USER_POOLS",
+    "HttpMethod": "GET",
+    "Integration": {
+      "Type": "AWS_PROXY",
+      "IntegrationHttpMethod": "POST",
+      "Uri": {"Fn::Join" : ["",
+        ["arn:aws:apigateway:",
+         {"Ref": "AWS::Region"},
+         ":lambda:path/2015-03-31/functions/",
+         {"Fn::GetAtt": ["idtlcm25lampgetcf", "Arn"]},
+         "/invocations"]
+      ]},
+      "IntegrationResponses": [{
+        "StatusCode": 200,
+        "ResponseParameters": {
+          "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
+          "method.response.header.Access-Control-Allow-Methods": "'POST,GET,OPTIONS'",
+          "method.response.header.Access-Control-Allow-Origin": "'*'"
+        }
+      }]
+
+    },
+
+    "RequestParameters": {
+      "method.request.header.authToken": true
+    },
+    "ResourceId": {"Ref": "IdtResourceLCMIPV6DIM"},
+    "RestApiId": {"Ref": "lampAPIcf"},
+    "MethodResponses": [{
+      "StatusCode": 200,
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Methods": true,
+       "method.response.header.Access-Control-Allow-Origin": true
+     }
+   }]
+  }
+  },
+
+
+  "IdtRequestlcmputdim": {
+  "DependsOn": "LambdaPermissiondimlightcf",
+  "Type": "AWS::ApiGateway::Method",
+  "Properties": {
+  "AuthorizerId" : {"Ref":"Authorizer"},
+  "AuthorizationType" : "COGNITO_USER_POOLS",
+    "HttpMethod": "PUT",
+    "Integration": {
+      "Type": "AWS_PROXY",
+      "IntegrationHttpMethod": "POST",
+      "Uri": {"Fn::Join" : ["",
+        ["arn:aws:apigateway:",
+         {"Ref": "AWS::Region"},
+         ":lambda:path/2015-03-31/functions/",
+         {"Fn::GetAtt": ["idtlcm16dimlightcf", "Arn"]},
+         "/invocations"]
+      ]},
+       "IntegrationResponses": [{
+        "StatusCode": 200,
+        "ResponseParameters": {
+          "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
+          "method.response.header.Access-Control-Allow-Methods": "'POST,PUT,GET,OPTIONS'",
+          "method.response.header.Access-Control-Allow-Origin": "'*'"
+        }
+      }]
+    },
+    "RequestParameters": {
+      "method.request.header.authToken": true
+    },
+
+    "ResourceId": {"Ref": "IdtResourceLCMIPV6DIM"},
+    "RestApiId": {"Ref": "lampAPIcf"},
+      "MethodResponses": [{
+      "StatusCode": 200,
+      "ResponseModels": { "application/json": "Empty" },
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Methods": true,
+       "method.response.header.Access-Control-Allow-Origin": true
+     }
+   }]
+
+  }
+  },
+
+ "IdtResourceLCMIPV6DIMCorsenable": {
+    "Type": "AWS::ApiGateway::Method",
+    "Properties": {
+      "ResourceId": {"Ref": "IdtResourceLCMIPV6DIM"},
+      "RestApiId":  {"Ref": "lampAPIcf"},
+      "AuthorizationType": "NONE",
+      "HttpMethod": "OPTIONS",
+      "Integration": {
+        "Type": "MOCK",
+        "IntegrationResponses": [
+          {
+            "ResponseParameters": {
+              "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,authToken'",
+              "method.response.header.Access-Control-Allow-Methods": "'GET,PUT,POST,OPTIONS'",
+              "method.response.header.Access-Control-Allow-Origin": "'*'"
+            },
+            "ResponseTemplates": {
+              "application/json": ""
+            },
+            "StatusCode": "200"
+          }
+        ],
+        "PassthroughBehavior": "NEVER",
+        "RequestTemplates": {
+          "application/json": "{\"statusCode\": 200}"
+          }
+        },
+        "MethodResponses": [
+          {
+            "ResponseModels": {
+              "application/json": "Empty"
+            },
+            "ResponseParameters": {
+              "method.response.header.Access-Control-Allow-Headers": true,
+              "method.response.header.Access-Control-Allow-Methods": true,
+              "method.response.header.Access-Control-Allow-Origin": true
+            },
+            "StatusCode": "200"
+          }
+        ]
+      }
+    },
+
+
+  "IdtResourceLCMIPV6DIMRGB": {
+  "Type": "AWS::ApiGateway::Resource",
+  "Properties": {
+    "RestApiId": {"Ref": "lampAPIcf"},
+    "ParentId": {"Ref": "IdtResourceLCMIPV6"},
+    "PathPart": "dim-rgb"
+  }
+  },
+
+
+  "IdtRequestlcmputdimrgb": {
+  "DependsOn": "LambdaPermissiondimrbgputcf",
+  "Type": "AWS::ApiGateway::Method",
+  "Properties": {
+  "AuthorizerId" : {"Ref":"Authorizer"},
+  "AuthorizationType" : "COGNITO_USER_POOLS",
+    "HttpMethod": "PUT",
+    "Integration": {
+      "Type": "AWS_PROXY",
+      "IntegrationHttpMethod": "POST",
+      "Uri": {"Fn::Join" : ["",
+        ["arn:aws:apigateway:",
+         {"Ref": "AWS::Region"},
+         ":lambda:path/2015-03-31/functions/",
+         {"Fn::GetAtt": ["idtlcm17dimrbgputcf", "Arn"]},
+         "/invocations"]
+      ]},
+       "IntegrationResponses": [{
+        "StatusCode": 200,
+        "ResponseParameters": {
+          "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
+          "method.response.header.Access-Control-Allow-Methods": "'POST,PUT,GET,OPTIONS'",
+          "method.response.header.Access-Control-Allow-Origin": "'*'"
+        }
+      }]
+    },
+    "RequestParameters": {
+      "method.request.header.authToken": true
+    },
+
+    "ResourceId": {"Ref": "IdtResourceLCMIPV6DIMRGB"},
+    "RestApiId": {"Ref": "lampAPIcf"},
+      "MethodResponses": [{
+      "StatusCode": 200,
+      "ResponseModels": { "application/json": "Empty" },
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Methods": true,
+       "method.response.header.Access-Control-Allow-Origin": true
+     }
+   }]
+
+  }
+  },
+
+ "IdtResourceLCMIPV6DIMRGBCorsenable": {
+    "Type": "AWS::ApiGateway::Method",
+    "Properties": {
+      "ResourceId": {"Ref": "IdtResourceLCMIPV6DIMRGB"},
+      "RestApiId":  {"Ref": "lampAPIcf"},
+      "AuthorizationType": "NONE",
+      "HttpMethod": "OPTIONS",
+      "Integration": {
+        "Type": "MOCK",
+        "IntegrationResponses": [
+          {
+            "ResponseParameters": {
+              "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,authToken'",
+              "method.response.header.Access-Control-Allow-Methods": "'GET,PUT,POST,OPTIONS'",
+              "method.response.header.Access-Control-Allow-Origin": "'*'"
+            },
+            "ResponseTemplates": {
+              "application/json": ""
+            },
+            "StatusCode": "200"
+          }
+        ],
+        "PassthroughBehavior": "NEVER",
+        "RequestTemplates": {
+          "application/json": "{\"statusCode\": 200}"
+          }
+        },
+        "MethodResponses": [
+          {
+            "ResponseModels": {
+              "application/json": "Empty"
+            },
+            "ResponseParameters": {
+              "method.response.header.Access-Control-Allow-Headers": true,
+              "method.response.header.Access-Control-Allow-Methods": true,
+              "method.response.header.Access-Control-Allow-Origin": true
+            },
+            "StatusCode": "200"
+          }
+        ]
+      }
+    },
+
+
+
+  "IdtResourceLCMIPV6OTAU": {
+    "Type": "AWS::ApiGateway::Resource",
+    "Properties": {
+      "RestApiId": {"Ref": "lampAPIcf"},
+      "ParentId": {"Ref": "IdtResourceLCMIPV6"},
+      "PathPart": "otau"
+    }
+  },
+
+
+  "IdtRequestlcmputotau": {
+  "DependsOn": "LambdaPermissionlcmotauupdatecf",
+  "Type": "AWS::ApiGateway::Method",
+  "Properties": {
+  "AuthorizerId" : {"Ref":"Authorizer"},
+  "AuthorizationType" : "COGNITO_USER_POOLS",
+    "HttpMethod": "PUT",
+    "Integration": {
+      "Type": "AWS_PROXY",
+      "IntegrationHttpMethod": "POST",
+      "Uri": {"Fn::Join" : ["",
+        ["arn:aws:apigateway:",
+         {"Ref": "AWS::Region"},
+         ":lambda:path/2015-03-31/functions/",
+         {"Fn::GetAtt": ["idtlcm18lcmotauupdatecf", "Arn"]},
+         "/invocations"]
+      ]},
+       "IntegrationResponses": [{
+        "StatusCode": 200,
+        "ResponseParameters": {
+          "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
+          "method.response.header.Access-Control-Allow-Methods": "'POST,PUT,GET,OPTIONS'",
+          "method.response.header.Access-Control-Allow-Origin": "'*'"
+        }
+      }]
+    },
+    "RequestParameters": {
+      "method.request.header.authToken": true
+    },
+
+    "ResourceId": {"Ref": "IdtResourceLCMIPV6OTAU"},
+    "RestApiId": {"Ref": "lampAPIcf"},
+      "MethodResponses": [{
+      "StatusCode": 200,
+      "ResponseModels": { "application/json": "Empty" },
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Methods": true,
+       "method.response.header.Access-Control-Allow-Origin": true
+     }
+   }]
+
+  }
+  },
+
+ "IdtResourceLCMIPV6OTAUCorsenable": {
+    "Type": "AWS::ApiGateway::Method",
+    "Properties": {
+      "ResourceId": {"Ref": "IdtResourceLCMIPV6OTAU"},
+      "RestApiId":  {"Ref": "lampAPIcf"},
+      "AuthorizationType": "NONE",
+      "HttpMethod": "OPTIONS",
+      "Integration": {
+        "Type": "MOCK",
+        "IntegrationResponses": [
+          {
+            "ResponseParameters": {
+              "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,authToken'",
+              "method.response.header.Access-Control-Allow-Methods": "'GET,PUT,POST,OPTIONS'",
+              "method.response.header.Access-Control-Allow-Origin": "'*'"
+            },
+            "ResponseTemplates": {
+              "application/json": ""
+            },
+            "StatusCode": "200"
+          }
+        ],
+        "PassthroughBehavior": "NEVER",
+        "RequestTemplates": {
+          "application/json": "{\"statusCode\": 200}"
+          }
+        },
+        "MethodResponses": [
+          {
+            "ResponseModels": {
+              "application/json": "Empty"
+            },
+            "ResponseParameters": {
+              "method.response.header.Access-Control-Allow-Headers": true,
+              "method.response.header.Access-Control-Allow-Methods": true,
+              "method.response.header.Access-Control-Allow-Origin": true
+            },
+            "StatusCode": "200"
+          }
+        ]
+      }
+    },
+
+
+
+
+  "LcmResource": {
+    "Type": "AWS::ApiGateway::Resource",
+    "Properties": {
+      "RestApiId": {"Ref": "lampAPIcf"},
+      "ParentId": {"Fn::GetAtt": ["lampAPIcf", "RootResourceId"]},
+      "PathPart": "lcm"
+    }
+  },
+
+  "lcmcorsenable": {
+    "Type": "AWS::ApiGateway::Method",
+    "Properties": {
+      "ResourceId": {"Ref": "LcmResource"},
+      "RestApiId":  {"Ref": "lampAPIcf"},
+      "AuthorizationType": "NONE",
+      "HttpMethod": "OPTIONS",
+      "Integration": {
+        "Type": "MOCK",
+        "IntegrationResponses": [
+          {
+            "ResponseParameters": {
+              "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,authToken'",
+              "method.response.header.Access-Control-Allow-Methods": "'GET,POST,OPTIONS'",
+              "method.response.header.Access-Control-Allow-Origin": "'*'"
+            },
+            "ResponseTemplates": {
+              "application/json": ""
+            },
+            "StatusCode": "200"
+          }
+        ],
+        "PassthroughBehavior": "NEVER",
+        "RequestTemplates": {
+          "application/json": "{\"statusCode\": 200}"
+          }
+        },
+        "MethodResponses": [
+          {
+            "ResponseModels": {
+              "application/json": "Empty"
+            },
+            "ResponseParameters": {
+              "method.response.header.Access-Control-Allow-Headers": true,
+              "method.response.header.Access-Control-Allow-Methods": true,
+              "method.response.header.Access-Control-Allow-Origin": true
+            },
+            "StatusCode": "200"
+          }
+        ]
+      }
+    },
+
+
+
+  "RegisterResource": {
+    "Type": "AWS::ApiGateway::Resource",
+    "Properties": {
+      "RestApiId": {"Ref": "lampAPIcf"},
+      "ParentId": {"Ref":"LcmResource"},
+      "PathPart": "register"
+    }
+  },
+
+  "RegisterRequestPost": {
+  "DependsOn": "LambdaPermissionregisterlampscf",
+  "Type": "AWS::ApiGateway::Method",
+
+  "Properties": {
+  "AuthorizationType": "NONE",
+    "HttpMethod": "POST",
+    "Integration": {
+      "Type": "AWS_PROXY",
+      "IntegrationHttpMethod": "POST",
+      "Uri": {"Fn::Join" : ["",
+        ["arn:aws:apigateway:",
+         {"Ref": "AWS::Region"},
+         ":lambda:path/2015-03-31/functions/",
+         {"Fn::GetAtt": ["idtlcm19registerlampscf", "Arn"]},
+         "/invocations"]
+      ]},
+      "IntegrationResponses": [{
+        "StatusCode": 200,
+        "ResponseParameters": {
+          "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
+          "method.response.header.Access-Control-Allow-Methods": "'POST,GET,OPTIONS'",
+          "method.response.header.Access-Control-Allow-Origin": "'*'"
+        }
+      }]
+
+    },
+
+    "RequestParameters": {
+      "method.request.header.authToken": true
+    },
+    "ResourceId": {"Ref": "RegisterResource"},
+    "RestApiId": {"Ref": "lampAPIcf"},
+    "MethodResponses": [{
+      "StatusCode": 200,
+      "ResponseModels": { "application/json": "Empty" },
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Methods": true,
+       "method.response.header.Access-Control-Allow-Origin": true
+     }
+   }]
+  }
+  },
+
+  "registercorsenable": {
+  "Type": "AWS::ApiGateway::Method",
+  "Properties": {
+    "ResourceId": {"Ref": "RegisterResource"},
+    "RestApiId":  {"Ref": "lampAPIcf"},
+    "AuthorizationType": "NONE",
+    "HttpMethod": "OPTIONS",
+    "Integration": {
+      "Type": "MOCK",
+      "IntegrationResponses": [
+        {
+          "ResponseParameters": {
+            "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,authToken'",
+            "method.response.header.Access-Control-Allow-Methods": "'GET,POST,OPTIONS'",
+            "method.response.header.Access-Control-Allow-Origin": "'*'"
+          },
+          "ResponseTemplates": {
+            "application/json": ""
+          },
+          "StatusCode": "200"
+        }
+      ],
+      "PassthroughBehavior": "NEVER",
+      "RequestTemplates": {
+        "application/json": "{\"statusCode\": 200}"
+        }
+      },
+      "MethodResponses": [
+        {
+          "ResponseModels": {
+            "application/json": "Empty"
+          },
+          "ResponseParameters": {
+            "method.response.header.Access-Control-Allow-Headers": true,
+            "method.response.header.Access-Control-Allow-Methods": true,
+            "method.response.header.Access-Control-Allow-Origin": true
+          },
+          "StatusCode": "200"
+        }
+      ]
+    }
+  },
+
+
+  "SchedularResource": {
+    "Type": "AWS::ApiGateway::Resource",
+    "Properties": {
+      "RestApiId": {"Ref": "lampAPIcf"},
+      "ParentId": {"Fn::GetAtt": ["lampAPIcf", "RootResourceId"]},
+      "PathPart": "schedular"
+    }
+  },
+
+
+  "SchedularDayResource": {
+    "Type": "AWS::ApiGateway::Resource",
+    "Properties": {
+      "RestApiId": {"Ref": "lampAPIcf"},
+      "ParentId": {"Ref":"SchedularResource"},
+      "PathPart": "day"
+    }
+  },
+
+  "SchedularDayPost": {
+  "DependsOn": "LambdaPermissiondaypostcf",
+  "Type": "AWS::ApiGateway::Method",
+  "Properties": {
+  "AuthorizationType": "NONE",
+    "HttpMethod": "POST",
+    "Integration": {
+      "Type": "AWS_PROXY",
+      "IntegrationHttpMethod": "POST",
+      "Uri": {"Fn::Join" : ["",
+        ["arn:aws:apigateway:",
+         {"Ref": "AWS::Region"},
+         ":lambda:path/2015-03-31/functions/",
+         {"Fn::GetAtt": ["idtlcm21daypostcf", "Arn"]},
+         "/invocations"]
+      ]},
+      "IntegrationResponses": [{
+        "StatusCode": 200,
+        "ResponseParameters": {
+          "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
+          "method.response.header.Access-Control-Allow-Methods": "'POST,GET,OPTIONS'",
+          "method.response.header.Access-Control-Allow-Origin": "'*'"
+        }
+      }]
+
+    },
+
+    "RequestParameters": {
+       "method.request.header.authToken": false
+    },
+    "ResourceId": {"Ref": "SchedularDayResource"},
+    "RestApiId": {"Ref": "lampAPIcf"},
+    "MethodResponses": [{
+      "StatusCode": 200,
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Methods": true,
+       "method.response.header.Access-Control-Allow-Origin": true
+     }
+   }]
+  }
+  },
+
+  "SchedularDayGet": {
+  "DependsOn": "LambdaPermissiondaygetcf",
+  "Type": "AWS::ApiGateway::Method",
+  "Properties": {
+  "AuthorizationType": "NONE",
+    "HttpMethod": "GET",
+    "Integration": {
+      "Type": "AWS_PROXY",
+      "IntegrationHttpMethod": "POST",
+      "Uri": {"Fn::Join" : ["",
+        ["arn:aws:apigateway:",
+         {"Ref": "AWS::Region"},
+         ":lambda:path/2015-03-31/functions/",
+         {"Fn::GetAtt": ["idtlcm20daygetcf", "Arn"]},
+         "/invocations"]
+      ]},
+      "IntegrationResponses": [{
+        "StatusCode": 200,
+        "ResponseParameters": {
+          "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
+          "method.response.header.Access-Control-Allow-Methods": "'POST,GET,OPTIONS'",
+          "method.response.header.Access-Control-Allow-Origin": "'*'"
+        }
+      }]
+
+    },
+
+    "RequestParameters": {
+       "method.request.header.authToken": false
+    },
+    "ResourceId": {"Ref": "SchedularDayResource"},
+    "RestApiId": {"Ref": "lampAPIcf"},
+    "MethodResponses": [{
+      "StatusCode": 200,
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Methods": true,
+       "method.response.header.Access-Control-Allow-Origin": true
+     }
+   }]
+  }
+  },
+
+
+  "schedulardaycorsenable": {
+    "Type": "AWS::ApiGateway::Method",
+    "Properties": {
+      "ResourceId": {"Ref": "SchedularDayResource"},
+      "RestApiId":  {"Ref": "lampAPIcf"},
+      "AuthorizationType": "NONE",
+      "HttpMethod": "OPTIONS",
+      "Integration": {
+        "Type": "MOCK",
+        "IntegrationResponses": [
+          {
+            "ResponseParameters": {
+              "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,authToken'",
+              "method.response.header.Access-Control-Allow-Methods": "'GET,POST,OPTIONS'",
+              "method.response.header.Access-Control-Allow-Origin": "'*'"
+            },
+            "ResponseTemplates": {
+              "application/json": ""
+            },
+            "StatusCode": "200"
+          }
+        ],
+        "PassthroughBehavior": "NEVER",
+        "RequestTemplates": {
+          "application/json": "{\"statusCode\": 200}"
+          }
+        },
+        "MethodResponses": [
+          {
+            "ResponseModels": {
+              "application/json": "Empty"
+            },
+            "ResponseParameters": {
+              "method.response.header.Access-Control-Allow-Headers": true,
+              "method.response.header.Access-Control-Allow-Methods": true,
+              "method.response.header.Access-Control-Allow-Origin": true
+            },
+            "StatusCode": "200"
+          }
+        ]
+      }
+    },
+
+
+
+  "SchedularTimerResource": {
+    "Type": "AWS::ApiGateway::Resource",
+    "Properties": {
+      "RestApiId": {"Ref": "lampAPIcf"},
+      "ParentId": {"Ref":"SchedularResource"},
+      "PathPart": "timer"
+    }
+  },
+
+  "SchedularTimerPost": {
+  "DependsOn": "LambdaPermissiontimedoffcf",
+  "Type": "AWS::ApiGateway::Method",
+  "Properties": {
+  "AuthorizationType": "NONE",
+    "HttpMethod": "POST",
+    "Integration": {
+      "Type": "AWS_PROXY",
+      "IntegrationHttpMethod": "POST",
+      "Uri": {"Fn::Join" : ["",
+        ["arn:aws:apigateway:",
+         {"Ref": "AWS::Region"},
+         ":lambda:path/2015-03-31/functions/",
+         {"Fn::GetAtt": ["idtlcm22timedoffcf", "Arn"]},
+         "/invocations"]
+      ]},
+      "IntegrationResponses": [{
+        "StatusCode": 200,
+        "ResponseParameters": {
+          "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
+          "method.response.header.Access-Control-Allow-Methods": "'POST,GET,OPTIONS'",
+          "method.response.header.Access-Control-Allow-Origin": "'*'"
+        }
+      }]
+
+    },
+
+    "RequestParameters": {
+       "method.request.header.authToken": false
+    },
+    "ResourceId": {"Ref": "SchedularTimerResource"},
+    "RestApiId": {"Ref": "lampAPIcf"},
+    "MethodResponses": [{
+      "StatusCode": 200,
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Methods": true,
+       "method.response.header.Access-Control-Allow-Origin": true
+     }
+   }]
+  }
+  },
+
+  "schedulartimercorsenable": {
+    "Type": "AWS::ApiGateway::Method",
+    "Properties": {
+      "ResourceId": {"Ref": "SchedularTimerResource"},
+      "RestApiId":  {"Ref": "lampAPIcf"},
+      "AuthorizationType": "NONE",
+      "HttpMethod": "OPTIONS",
+      "Integration": {
+        "Type": "MOCK",
+        "IntegrationResponses": [
+          {
+            "ResponseParameters": {
+              "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,authToken'",
+              "method.response.header.Access-Control-Allow-Methods": "'GET,POST,OPTIONS'",
+              "method.response.header.Access-Control-Allow-Origin": "'*'"
+            },
+            "ResponseTemplates": {
+              "application/json": ""
+            },
+            "StatusCode": "200"
+          }
+        ],
+        "PassthroughBehavior": "NEVER",
+        "RequestTemplates": {
+          "application/json": "{\"statusCode\": 200}"
+          }
+        },
+        "MethodResponses": [
+          {
+            "ResponseModels": {
+              "application/json": "Empty"
+            },
+            "ResponseParameters": {
+              "method.response.header.Access-Control-Allow-Headers": true,
+              "method.response.header.Access-Control-Allow-Methods": true,
+              "method.response.header.Access-Control-Allow-Origin": true
+            },
+            "StatusCode": "200"
+          }
+        ]
+      }
+    },
+
+
+  "SchedularWeekResource": {
+    "Type": "AWS::ApiGateway::Resource",
+    "Properties": {
+      "RestApiId": {"Ref": "lampAPIcf"},
+      "ParentId": {"Ref":"SchedularResource"},
+      "PathPart": "week"
+    }
+  },
+
+   "SchedularWeekPost": {
+  "DependsOn": "LambdaPermissionweekpostcf",
+  "Type": "AWS::ApiGateway::Method",
+  "Properties": {
+  "AuthorizationType": "NONE",
+    "HttpMethod": "POST",
+    "Integration": {
+      "Type": "AWS_PROXY",
+      "IntegrationHttpMethod": "POST",
+      "Uri": {"Fn::Join" : ["",
+        ["arn:aws:apigateway:",
+         {"Ref": "AWS::Region"},
+         ":lambda:path/2015-03-31/functions/",
+         {"Fn::GetAtt": ["idtlcm24weekpostcf", "Arn"]},
+         "/invocations"]
+      ]},
+      "IntegrationResponses": [{
+        "StatusCode": 200,
+        "ResponseParameters": {
+          "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
+          "method.response.header.Access-Control-Allow-Methods": "'POST,GET,OPTIONS'",
+          "method.response.header.Access-Control-Allow-Origin": "'*'"
+        }
+      }]
+
+    },
+
+    "RequestParameters": {
+       "method.request.header.authToken": false
+    },
+    "ResourceId": {"Ref": "SchedularWeekResource"},
+    "RestApiId": {"Ref": "lampAPIcf"},
+    "MethodResponses": [{
+      "StatusCode": 200,
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Methods": true,
+       "method.response.header.Access-Control-Allow-Origin": true
+     }
+   }]
+  }
+  },
+
+   "SchedularWeekGet": {
+  "DependsOn": "LambdaPermissionweekgetcf",
+  "Type": "AWS::ApiGateway::Method",
+  "Properties": {
+  "AuthorizationType": "NONE",
+    "HttpMethod": "GET",
+    "Integration": {
+      "Type": "AWS_PROXY",
+      "IntegrationHttpMethod": "POST",
+      "Uri": {"Fn::Join" : ["",
+        ["arn:aws:apigateway:",
+         {"Ref": "AWS::Region"},
+         ":lambda:path/2015-03-31/functions/",
+         {"Fn::GetAtt": ["idtlcm23weekgetcf", "Arn"]},
+         "/invocations"]
+      ]},
+      "IntegrationResponses": [{
+        "StatusCode": 200,
+        "ResponseParameters": {
+          "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
+          "method.response.header.Access-Control-Allow-Methods": "'POST,GET,OPTIONS'",
+          "method.response.header.Access-Control-Allow-Origin": "'*'"
+        }
+      }]
+
+    },
+
+    "RequestParameters": {
+       "method.request.header.authToken": false
+    },
+    "ResourceId": {"Ref": "SchedularWeekResource"},
+    "RestApiId": {"Ref": "lampAPIcf"},
+    "MethodResponses": [{
+      "StatusCode": 200,
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Methods": true,
+       "method.response.header.Access-Control-Allow-Origin": true
+     }
+   }]
+  }
+  },
+
+  "schedularweekcorsenable": {
+    "Type": "AWS::ApiGateway::Method",
+    "Properties": {
+      "ResourceId": {"Ref": "SchedularWeekResource"},
+      "RestApiId":  {"Ref": "lampAPIcf"},
+      "AuthorizationType": "NONE",
+      "HttpMethod": "OPTIONS",
+      "Integration": {
+        "Type": "MOCK",
+        "IntegrationResponses": [
+          {
+            "ResponseParameters": {
+              "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,authToken'",
+              "method.response.header.Access-Control-Allow-Methods": "'GET,POST,OPTIONS'",
+              "method.response.header.Access-Control-Allow-Origin": "'*'"
+            },
+            "ResponseTemplates": {
+              "application/json": ""
+            },
+            "StatusCode": "200"
+          }
+        ],
+        "PassthroughBehavior": "NEVER",
+        "RequestTemplates": {
+          "application/json": "{\"statusCode\": 200}"
+          }
+        },
+        "MethodResponses": [
+          {
+            "ResponseModels": {
+              "application/json": "Empty"
+            },
+            "ResponseParameters": {
+              "method.response.header.Access-Control-Allow-Headers": true,
+              "method.response.header.Access-Control-Allow-Methods": true,
+              "method.response.header.Access-Control-Allow-Origin": true
+            },
+            "StatusCode": "200"
+          }
+        ]
+      }
+    },
+
+
+
+
+
+
+
+
+   "S3Bucket": {
+            "Type": "AWS::S3::Bucket",
+            "Properties": {
+                "AccessControl": "PublicRead",
+                "BucketName" : {"Ref": "staticWebsite"},
+                "WebsiteConfiguration": {
+                    "IndexDocument": "index.html",
+                    "ErrorDocument": "error.html"
+                }
+            },
+            "DeletionPolicy": "Delete"
+        },
+        "BucketPolicy": {
+            "Type": "AWS::S3::BucketPolicy",
+            "Properties": {
+                "PolicyDocument": {
+                    "Id": "MyPolicy",
+                    "Version": "2012-10-17",
+                    "Statement": [
+                        {
+                            "Sid": "PublicReadForGetBucketObjects",
+                            "Effect": "Allow",
+                            "Principal": "*",
+                            "Action": "s3:GetObject",
+                            "Resource": {
+                                "Fn::Join": [
+                                    "",
+                                    [
+                                        "arn:aws:s3:::",
+                                        {
+                                            "Ref": "S3Bucket"
+                                        },
+                                        "/*"
+                                    ]
+                                ]
+                            }
+                        }
+                    ]
+                },
+                "Bucket": {
+                    "Ref": "S3Bucket"
+                }
+            }
+        }
+
+
+  },
+
+  "Outputs": {
+        "WebsiteURL": {
+            "Value": {
+                "Fn::GetAtt": [
+                    "S3Bucket",
+                    "WebsiteURL"
+                ]
+            },
+            "Description": "URL for website hosted on S3"
+        },
+        "S3BucketSecureURL": {
+            "Value": {
+                "Fn::Join": [
+                    "",
+                    [
+                        "https://",
+                        {
+                            "Fn::GetAtt": [
+                                "S3Bucket",
+                                "DomainName"
+                            ]
+                        }
+                    ]
+                ]
+            },
+            "Description": "Name of S3 bucket to hold website content"
+        }
+
+  }
+
+
+}

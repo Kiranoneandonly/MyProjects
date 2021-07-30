@@ -1,0 +1,261 @@
+{% extends "via/theme_base.html" %}
+{% load i18n %}
+{#{% load url from future %}#}
+{% load bootstrap %}
+{% load widget_tweaks %}
+
+{% block title %}{% trans "Quality Defect" %}{% endblock %}
+
+{% block css %}
+    <link rel="stylesheet" href="{{ STATIC_URL }}shared/css/datetimepicker.css" media="screen" />
+{% endblock %}
+
+{% block extra_head %}{% endblock %}
+{% block content_header %}{% endblock %}
+
+{% block content %}
+    {% block content_breadcrumb %}
+        <div class="breadcrumb">
+            <span><i class="fa fa-home"></i></span>
+            <span><a href="{% url 'via_dashboard' %}">{% trans "Home" %}</a></span>
+            <span class="divider"><i class="fa fa-chevron-right"></i></span>
+            <span><a href="{% url 'via_quality_defect_list' %}">{% trans "Quality Defects" %}</a></span>
+            <span class="divider"><i class="fa fa-chevron-right"></i></span>
+            <span class="active">
+                {% if qualitydefect.id %}
+                    {{ qualitydefect.id }} : {{ qualitydefect.title|truncatechars:50 }}
+                {% else %}
+                    {% trans "New" %}
+                {% endif %}
+            </span>
+            {{ block.super }}
+        </div>
+    {% endblock %}
+    {% if qualitydefect.id %}
+        <div id="modal-comments" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+            <h3 id="myModalLabel"><i class="fa fa-comments"></i> {% blocktrans %}Comments for{% endblocktrans %} {{ qualitydefect.title }}</h3>
+          </div>
+          <div class="modal-body">
+            <form novalidate action="" method="post" class="comment_quality_defect_form" data_id="{{qualitydefect.id}}">
+                {% csrf_token %}
+                <div class="form-group">
+                    <div class="row-fluid">
+                        <input type="hidden" id="quality_defect_id" name="quality_defect_id" value="{{ qualitydefect.id }}" />
+                        <textarea class="form-control quality_defect_comment" name="comment" id="quality_defect">{{qualitydefect.comment|default_if_none:""}}</textarea>
+                    </div>
+                    <div class="row-fluid">
+                        <button type="submit" class="btn btn-primary comment_quality_defect_form_submit pull-right">{% trans "Save" %}</button>
+                    </div>
+                </div>
+            </form>
+          </div>
+        </div>
+    {% endif %}
+
+    <div class="container">
+    <div class="row-fluid">
+    <form novalidate action="" method="post" class="form">
+        {% csrf_token %}
+        <div class="row-fluid">
+            <div class="span6">
+                {{ form.title|bootstrap }}
+            </div>
+            <div class="span6">
+                {{ form.quality_defect|bootstrap }}
+            </div>
+        </div>
+        <div class="row-fluid ">
+            <div class="span6">
+                {{ form.assigned_to|bootstrap }}
+            </div>
+            <div class="span6">
+                {{ form.vertical|bootstrap }}
+            </div>
+        </div>
+        <div class="row-fluid ">
+            <div class="span6">
+                {{ form.status|bootstrap }}
+            </div>
+            <div class="span6">
+                {{ form.client|bootstrap }}
+            </div>
+        </div>
+        <div class="row-fluid ">
+            <div class="span6">
+                {{ form.priority|bootstrap }}
+            </div>
+            <div class="span6">
+                {{ form.project|bootstrap }}
+            </div>
+        </div>
+        <div class="row-fluid ">
+            <div class="span6">
+                {{ form.due_date|bootstrap }}
+            </div>
+            <div class="span6">
+                {{ form.task|bootstrap }}
+            </div>
+        </div>
+        <div class="row-fluid ">
+            <div class="span6">
+                {{ form.closed_date|bootstrap }}
+            </div>
+            <div class="span6">
+                {{ form.vendor|bootstrap }}
+            </div>
+        </div>
+        <div class="row-fluid ">
+            <div class="span6">
+                {{ form.root_cause|bootstrap }}
+            </div>
+            <div class="span6">
+            </div>
+        </div>
+        <div class="row-fluid ">
+            <div class="span12">
+                {{ form.root_cause_analysis|bootstrap }}
+            </div>
+        </div>
+        <div class="row-fluid ">
+            <div class="span12">
+                {{ form.resolution|bootstrap }}
+            </div>
+        </div>
+        <div class="row-fluid ">
+            <div class="span6">
+                {{ form.client_consulted|bootstrap }}
+            </div>
+            <div class="span6">
+            </div>
+        </div>
+        <div class="row-fluid ">
+            <div class="span12">
+                {{ form.client_consulted_notes|bootstrap }}
+            </div>
+        </div>
+        <div class="row-fluid ">
+            <div class="span6">
+                {{ form.client_informed|bootstrap }}
+            </div>
+            <div class="span6"></div>
+        </div>
+        <div class="row-fluid">
+            <div class="span12 form-actions">
+                <div class="btn-group pull-right">
+                    <a href="{% url 'via_quality_defect_list' %}" class="btn">
+                        {% trans "Close" %}
+                    </a>
+                    <button type="reset" class="btn">{% trans "Reset" %}</button>
+                    <button type="submit" class="btn btn-primary">{% blocktrans %}Save{% endblocktrans %}</button>
+                </div>
+            </div>
+        </div>
+    </form>
+    </div>
+    <div class="row-fluid">
+        <hr class="soften"/>
+    </div>
+    {% if qualitydefect.id %}
+    <div class="row-fluid">
+        <div class="span6"><h3>{% trans "Comments" %}</h3></div>
+        <div class="span6">
+            <a href="#modal-comments" class="comments-modal-ref pull-right" style="display:inline-block" data-toggle="modal" data_id="{{qualitydefect.id}}">
+                <h3 style="margin:0px" >
+                    {% blocktrans %}Add{% endblocktrans %} <i class="fa fa-comments{% if not comments %}-o{% endif %} fa-2x"  title="{% trans "Add Comments" %}"></i>
+                </h3>
+            </a>
+        </div>
+    </div>
+    {% endif %}
+    <div class="row-fluid">
+        <div class="comment_bod">
+            {% for comment in comments %}
+            <div class=" well">
+                <span class=" sub-text">{% if comment.comment_by  %} {{ comment.comment_by }} -{% endif %} {{ comment.date_created }}</span>
+                {{ comment.comment|safe }}
+            </div>
+            {% empty %}
+            <div class=" well">
+                <h4>{% blocktrans %}No Comments{% endblocktrans %}</h4>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block script %}
+    {{ block.super }}
+    <script>
+        $(document).ready(function () {
+
+            /* select2 doesn't seem to automatically go in to read-only mode when the element's readonly attribute is set. */
+            $('select').select2();
+
+            function json_to_select(url, select_selector) {
+            /*
+             Fill a select input field with data from a getJSON call
+             Inspired by: http://stackoverflow.com/questions/1388302/create-option-on-the-fly-with-jquery
+            */
+                $.getJSON(url, function(data) {
+                var opt=$(select_selector);
+                var old_val=opt.val();
+                    opt.html('');
+                    $.each(data, function () {
+                        opt.append($('<option/>').val(this.id).text(this.value));
+                    });
+                    opt.val(old_val);
+                    opt.change();
+                })
+            }
+
+
+           $(function(){
+             $('#id_client').change(function(){
+               $("#id_project").select2('val', '');
+               json_to_select('/via/client-project-lookup/?client=' + $(this).val(), '#id_project');
+             })
+
+             $('#id_project').change(function(){
+               $("#id_task").select2('val', '');
+               json_to_select('/via/project-task-lookup/?project=' + $(this).val(), '#id_task');
+             })
+            });
+
+
+            $(document).on("submit",".comment_quality_defect_form", function() {
+                $('.comment_quality_defect_form button').attr('disabled','disabled');
+                if(!$('.quality_defect_comment').val()){
+                    alert('{% trans "Quality Defect Comment is empty." %}');
+                    $('.comment_quality_defect_form button').removeAttr('disabled');
+                    return false;
+                }
+                $.post('{{ request.path }}', $(this).serialize(), function(data){
+                    if($.parseJSON(data).message=='Saved'){
+                        location.reload();
+                    }else{
+                        alert('{% trans "Error occurred while saving the data. Please Try again" %}');
+                        $('.comment_quality_defect_form button').removeAttr('disabled');
+                    }
+               }).fail(function() {
+                    alert('{% trans "Error occured while saving the data please try again" %}');
+                    $('.comment_quality_defect_form button').removeAttr('disabled');
+                  });
+                return false;
+            });
+        });
+
+        tinymce.init({
+            selector: '.comment_quality_defect_form textarea.quality_defect_comment',
+            theme: 'modern',
+            plugins: 'advlist lists hr preview codesample contextmenu textcolor colorpicker charmap table code',
+            toolbar1: 'formatselect fontselect fontsizeselect | bold italic underline | removeformat | forecolor backcolor | bullist numlist | alignleft alignright | outdent indent | table | hr | charmap | preview | code ',
+            menubar: false,
+            inline: false,
+            statusbar: true,
+            height: 200,
+        });
+    </script>
+{% endblock %}

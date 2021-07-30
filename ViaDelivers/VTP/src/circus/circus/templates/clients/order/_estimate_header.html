@@ -1,0 +1,10 @@
+{% load i18n %}
+{% if can_access_job %}
+        {% if project.is_phi_secure_job %}
+            <h1 class="start-job alert alert-danger alert-display-always"><i class="fa fa-user-md"></i> {% trans "PHI Estimate" %} : {{ project.job_number }} : {{ project.name|truncatechars:25 }}</h1>
+        {% elif project.is_restricted_job %}
+            <h1 class="start-job alert alert-warning alert-display-always"><i class="fa fa-cloud"></i> {% trans "Restricted Estimate" %} : {{ project.job_number }} : {{ project.name|truncatechars:25 }}</h1>
+        {% else %}
+            <h1 class="start-job alert alert-info alert-display-always"><i class="fa fa-plus-circle fa-white"></i> {% trans "Estimate" %} : {{ project.job_number }} : {{ project.name|truncatechars:25 }}</h1>
+        {% endif %}
+{% endif %}

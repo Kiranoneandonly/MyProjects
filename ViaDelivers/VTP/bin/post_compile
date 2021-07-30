@@ -1,0 +1,3 @@
+#!/bin/sh
+# Heroku deploy hook
+exec src/circus/manage.py migrate --noinput

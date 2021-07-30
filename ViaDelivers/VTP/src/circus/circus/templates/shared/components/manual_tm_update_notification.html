@@ -1,0 +1,9 @@
+{% load i18n %}
+
+<div class="row-fluid">
+    <div class="alert alert-danger">
+    <a class="close" data-dismiss="alert">&times;</a>
+    <i class="fa fa-language" title="{% trans "TM Update" %}"></i>
+        TM Management Files added but <b><a href="{% url 'via_job_detail_dvx' project.id %}">Add to Translation Memory</a></b> has not been completed.
+    </div>
+</div>

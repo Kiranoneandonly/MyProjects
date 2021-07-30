@@ -1,0 +1,13 @@
+{% load humanize %}{% load currency_filter %}
+
+Dear {{ requester }},
+
+Request for accessing Job Number : {{ project.job_number }} has been accepted and provided access.
+
+User ID: {{ project.client_poc.get_full_name|safe }} ({{ project.client_poc.email }}).
+
+For more information, please visit {{ vtp_url }}.
+
+________________________________________
+
+{% include 'notifications/_email_footer.txt' %}

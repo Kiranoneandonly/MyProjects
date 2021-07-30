@@ -1,0 +1,119 @@
+{% extends "via/theme_base.html" %}
+{% load i18n %}
+{% load bootstrap_pagination %}
+{% load currency_filter %}
+{% load manager_exist %}
+
+{% block title %}{% trans "Supplier Ratings by Task Details" %} | VTP{% endblock %}
+{% block content_header %}{% endblock %}
+
+{% block css %}
+    <link rel="stylesheet" href="{{ STATIC_URL }}shared/css/table-cell-dropdown.css" media="screen"/>
+    <link rel="stylesheet" href="{{ STATIC_URL }}via/css/job-list.css" media="screen"/>
+{% endblock %}
+
+{% block script %}
+    <script src="{{ STATIC_URL }}shared/js/filters/table-cell-dropdown.js" type="text/javascript"></script>
+    <script src="{{ STATIC_URL }}shared/js/filters/job-list.js" type="text/javascript"></script>
+{% endblock %}
+
+{% block content %}
+    <div class="job-active job-content">
+        <div class="breadcrumb">
+        <span><i class="fa fa-home"></i></span>
+        <span><a href="{% url 'via_dashboard' %}">{% trans "Home" %}</a></span>
+        <span class="divider"><i class="fa fa-chevron-right"></i></span>
+        <span class="active">{% trans "Reports" %}</span>
+        <span class="divider"><i class="fa fa-chevron-right"></i></span>
+        <span class="active">{% trans "Supplier" %}</span>
+        <span class="divider"><i class="fa fa-chevron-right"></i></span>
+        <span class="active"><a href="{% url 'supplier_ratings_by_task' %}">{% trans "Ratings by Task" %}</a></span>
+        <span class="divider"><i class="fa fa-chevron-right"></i></span>
+        <span class="active">{% trans "Breakdown" %}</span>
+        {{ block.super }}
+    </div>
+
+
+        <div class="job-active-table">
+            <div class="row-fluid list-header">
+                <div class="span2 form-inline job-filters pull-right">
+                    <div class="row-fluid column-display-checkboxes">
+                        <span class="span2 text-right">
+                            <div class="btn-group">
+                                    <a href="{% url 'supplier_ratings_by_task_details_csv_export' assignee_id days %}"
+                                        class="btn"><i class="fa fa-cloud-download fa-white"></i> {% trans "Export" %}
+                                    </a>
+                            </div>
+                        </span>
+                        <span class="span1"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="table-wrapper">
+                <table class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th class="col col-name">{% trans "Supplier Name" %}</th>
+                        <th class="col col-rating">{% trans "Rating" %}</th>
+                        <th class="col col-service">{% trans "Service" %}</th>
+                        <th class="col col-notes">{% trans "Instructions" %}</th>
+                        <th class="col col-vendor_notes">{% trans "Supplier Notes" %}</th>
+                        <th class="col col-via_notes">{% trans "Delivery Notes" %}</th>
+                        <th class="col col-task">{% trans "Task Name" %}</th>
+                        <th class="col col-project">{% trans "Job" %}</th>
+                        <th class="col col-year">{% trans "Year" %}</th>
+                        <th class="col col-month">{% trans "Month" %}</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        {% for task in supplier_ratings_by_task %}
+                                <tr class="">
+                                    <td class="col col-name">
+                                        {{ task.assignee_name }}
+                                    </td>
+                                    <td class="col col-rating">
+                                       {{ task.rating|default:'0' }}
+                                    </td>
+                                    <td class="col col-service">
+                                        {{ task.service_type }}
+                                    </td>
+                                    <td class="col col-notes">
+                                        {{ task.notes|default_if_none:""|truncatechars:30 }}
+                                    </td>
+                                    <td class="col col-vendor_notes">
+                                        {{ task.vendor_notes|default_if_none:""|truncatechars:30 }}
+                                    </td>
+                                    <td class="col col-via_notes">
+                                        {{ task.via_notes|default_if_none:""|truncatechars:30 }}
+                                    </td>
+                                    <td class="col col-task">
+                                        <a href="{% url 'projects_tasks_edit' task.task_id %}">
+                                            <span>{{ task.task_name }}</span>
+                                        </a>
+                                    </td>
+                                    <td class="col col-project">
+                                        <a href="{% url 'via_job_detail_overview' task.project_id %}">
+                                            <span>{{ task.job_number }}</span>
+                                        </a>
+                                    </td>
+                                    <td class="col col-year">
+                                        {{ task.year|floatformat:0 }}
+                                    </td>
+                                    <td class="col col-month">
+                                        {{ task.month|month_name }}
+                                    </td>
+
+                                </tr>
+                        {% empty %}
+                            <tr><td colspan="100%" style="text-align: left">{% trans "No Rates" %}</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+  
+{% endblock %}
+

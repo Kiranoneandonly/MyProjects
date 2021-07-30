@@ -1,0 +1,99 @@
+{% extends "via/theme_base.html" %}
+{% load i18n %}
+{% load tz %}
+
+{% block title %}{% trans "Background Tasks" %}{% endblock %}
+
+{% block extra_head %}
+    <meta http-equiv="refresh" content="{{ refresh_page_content }}" />
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row-fluid">
+        <div class="span12">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th width="20%">{% trans "Queued" %}</th>
+                        <th width="20%">{% trans "Completed" %}</th>
+                        <th width="20%">{% trans "Project" %}</th>
+                        <th width="20%">{% trans "Task Type" %}</th>
+                        <th width="10%">{% trans "Action" %}</th>
+                        <th width="10%"><span id="timer">{% trans "Refesh in ..." %}</span></th>
+                    </tr>
+                </thead>
+                <tbody>{% for bgtask in background_tasks %}
+                    <tr>
+                        <td>{{ bgtask.created|date:"D d M Y H:i:s O" }}</td>
+                        <td>
+                            {% if bgtask.completed  %}
+                                {{ bgtask.completed|date:"D d M Y H:i:s O"  }}
+                            {% else %}
+                                <i class="fa fa-spinner fa-spin"></i>
+                            {% endif %}
+                        </td>
+                        <td><a href="{% url 'via_job_detail_estimate' bgtask.project.id %}">{{ bgtask.project }}</a></td>
+                        <td class="bg_task_type {{ bgtask.name }}">{{ bgtask.get_name_display }}  {% if bgtask.name == "PREP_KIT" or bgtask.name == "IMPORT_TRANSLATION"  %}<span class='TLANG_JSON hide'>{{ bgtask.callback_sig }}{% endif %}</span> </td>
+                        <!-- {{ bgtask.celery_task_id  }} -->
+                        <td>
+                             {% if not bgtask.completed %}
+                                <form novalidate action="{% url 'complete_background_task' bgtask.id %}" method="post" class="pull-right">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn small-btn btn-danger">
+                                        <i class="fa fa-check-circle-o"></i>&nbsp;{% trans "Complete" %}
+                                    </button>
+                                </form>
+                            {% endif %}
+                        </td>
+                        <td>&nbsp;</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block script %}
+    <script type="text/javascript">
+        $(document).ready(function () {
+           $('.TLANG_JSON').each(function(){
+               callback_obj = jQuery.parseJSON( $(this).text() )
+               //console.log($(this).text());
+           		if ( typeof(callback_obj.tlang) != undefined && callback_obj.tlang ){
+           			$(this).text('-- '+callback_obj.tlang).show();
+           		}else{
+           			$(this).remove();
+           		}
+           });
+        });
+
+        function checklength(i) {
+            'use strict';
+            if (i < 10) {
+                i = "0" + i;
+            }
+            return i;
+        }
+
+        var minutes, seconds, count, counter, timer;
+        count = {{ refresh_page_content }}; //seconds
+        counter = setInterval(timer, 1000);
+
+        function timer() {
+            'use strict';
+            count = count - 1;
+            minutes = checklength(Math.floor(count / 60));
+            seconds = checklength(count - minutes * 60);
+            if (count < 0) {
+                clearInterval(counter);
+                return;
+            }
+            document.getElementById("timer").innerHTML = '{% trans 'Auto refresh: ' %}' + minutes + ':' + seconds + ' ';
+            if (count === 0) {
+                location.reload();
+            }
+        }
+    </script>
+{% endblock %}

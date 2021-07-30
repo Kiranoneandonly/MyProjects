@@ -1,0 +1,295 @@
+{% extends "shared/external/theme_base.html" %}
+{% load i18n %}
+{% load humanize %}
+{% load currency_filter %}
+
+{% block css %}
+    <link rel="stylesheet" href="{{ STATIC_URL }}shared/css/table-cell-dropdown.css" media="screen"/>
+    <link rel="stylesheet" href="{{ STATIC_URL }}clients/css/job-delivery.css" type="text/css" media="all"/>
+{% endblock %}
+
+
+{% block content_breadcrumb %}
+    <div class="breadcrumb">
+        <span><i class="fa fa-home"></i></span>
+        <span><a href="{% url 'client_dashboard' %}">{% trans "Home" %}</a></span>
+        <span class="divider"><i class="fa fa-chevron-right"></i></span>
+        {% if project.is_phi_secure_job %}
+        <span class="active"><a href="{% url 'client_project_detail' project.id %}"><i class="fa fa-user-md"></i> {% trans "PHI Job" %} : {{ project.job_number }}</a></span>
+        {% elif project.is_restricted_job %}
+        <span class="active"><a href="{% url 'client_project_detail' project.id %}"><i class="fa fa-user-md"></i> {% trans "Restricted Job" %} : {{ project.job_number }}</a></span>
+        {% else %}
+        <span class="active"><a href="{% url 'client_project_detail' project.id %}"><i class="fa fa-truck"></i> {% trans "Job" %} : {{ project.job_number }}</a></span>
+        {% endif %}
+        <span class="divider"><i class="fa fa-chevron-right"></i></span>
+        <span class="active">{% blocktrans %} Delivery{% endblocktrans %}</span>
+        {{ block.super }}
+    </div>
+{% endblock %}
+
+{% block content_header %}
+    {% include "clients/projects/_project_header.html" %}
+{% endblock %}
+
+{% block content %}
+{% if can_access_job %}
+{% if project.is_phi_secure_client_job %}
+       {% include 'shared/components/phi_secure_client_job_notification.html' %}
+{% endif %}
+<div class="job-delivery-container">
+    <div class="job-delivery-header">
+        <div class="row-fluid">
+            <div class="span4">
+                <h2>{{ project.source_locale }} <small>to</small> {{ delivery_vm.target }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="job-delivery-payload-header well">
+        <div class="row-fluid ">
+            <h3 class="span2">
+                <i class="fa fa-globe"></i>
+                <span>{% trans "Source" %}</span>
+            </h3>
+            <h3 class="span2">
+                <i class="fa fa-language"></i>
+                <span>{% trans "Translation" %}</span>
+            </h3>
+{#            <h3 class="span2">#}
+{#                <i class="fa fa-download"></i>#}
+{#                <span>{% trans "Size" %}</span>#}
+{#            </h3>#}
+            <h3 class="span2">
+                <i class="fa fa-magic"></i>
+                <span>{% trans "Delivered" %}</span>
+            </h3>
+            <h3 class="span2">
+                <i class="fa fa-flag-checkered"></i>
+                <span>{% trans "Completed" %}</span>
+            </h3>
+            <h3 class="span2">
+                <i class="fa fa-pencil-square-o"></i>
+                <span>{% blocktrans %}Client Edits{% endblocktrans %}</span>
+            </h3>
+
+        </div>
+    </div>
+    {% with delivery_vm.bulk_delivery as bulk %}
+    {% if bulk.total_files > 1 %}
+    <div class="job-delivery-payload-all">
+        <div class="row-fluid job-delivery-divider">
+            <div></div>
+            <div class="job-delivery-divider-text" style="width:50px;">{% blocktrans %}All Files{% endblocktrans %}</div>
+        </div>
+        <div class="row-fluid">
+            <div class="span12 well">
+                <div class="span2">
+                    <a class="btn" href="{% url 'project_source_files_zip' project.id %}">
+                        <i class="fa fa-download"></i>
+                        {% blocktrans %}Download Source{% endblocktrans %} ({{ bulk.source_asset_name|safe }})
+                    </a>
+                </div>
+                <div class="span2">
+                    <a class="btn btn-success" href="{% url 'project_target_delivery_zip' project.id delivery_vm.target.lcid %}">
+                        <i class="fa fa-download"></i>
+                        {% blocktrans %}Download Translation{% endblocktrans %} ({{ bulk.out_file_name|safe }})
+                    </a>
+                </div>
+{#                <div class="span2">#}
+{#                    <i class="fa fa-fullscreen"></i>#}
+{#                    {{ bulk.size|filesizeformat }}#}
+{#                </div>#}
+                <div class="span2">
+                    <i class="fa fa-magic"></i>
+                    {{ bulk.created|default_if_none:"--" }}
+                </div>
+                <div class="span2">
+                    <i class="fa fa-flag-checkered"></i>
+                    {{ bulk.downloaded|default_if_none:"--" }}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    {% endwith %}
+
+    <div class="job-delivery-payload-individual">
+        <div class="row-fluid">
+            <div class="job-delivery-divider">
+                <div></div>
+                <div class="job-delivery-divider-text" style="width:90px;">Individual Files</div>
+            </div>
+        </div>
+        {% for delivery in delivery_vm.deliveries %}
+        <div class="row-fluid">
+            <div class="span12 well">
+                <div class="span2">
+                    {% if delivery.source_asset %}
+                        <a href="{% url 'download_asset' project.id delivery.source_asset.id %}" title="{{ delivery.source_asset.orig_name }}">
+                            <i class="fa fa-download"></i>
+                            {{ delivery.source_asset.orig_name|truncatechars:75 }}
+                        </a>
+                    {% else %}
+                        {% blocktrans %}--{% endblocktrans %}
+                    {% endif %}
+                </div>
+                <div class="span2">
+                    <a href="{% url 'download_tasklocalizedasset_out_file' delivery.task.id delivery.id %}" title="{{ delivery.output_file_name }}">
+                        <i class="fa fa-download"></i>
+                        {{ delivery.output_file_name|truncatechars:75 }}
+                    </a>
+                </div>
+{#                <div class="span2">#}
+{#                    <i class="fa fa-fullscreen"></i>#}
+{#                    {{ delivery.output_file.size|filesizeformat }}#}
+{#                </div>#}
+                <div class="span2">
+                    <i class="fa fa-magic"></i>
+                    {{ delivery.created|date:"M d Y" }}
+                </div>
+                <div class="span2">
+                    <i class="fa fa-flag-checkered"></i>
+                    {{ delivery.downloaded|date:"M d Y" }}
+                </div>
+
+                <div class="span2">
+                    {% if delivery.post_delivery_file %}
+                    <div class="row-fluid">
+                        <div class="span12">
+                            <form novalidate name="DELETE_POST_DELIVERY{{ delivery.id }}" action="" method="post">
+                                {% csrf_token %}
+                                <div class="row-fluid">
+                                    <div class="span8">
+                                        <a  href="{% url 'download_tasklocalizedasset_post_delivery_file' delivery.task.id delivery.id %}" title="{{ delivery.post_delivery_file_name }}">
+                                            <i class="fa fa-pencil-square-o"></i>
+                                            {{ delivery.post_delivery_file_name|truncatechars:30 }}
+                                        </a>
+                                        <input type="hidden" name="task_loc_asset_id" value="{{ delivery.id }}">
+                                        <input type="hidden" name="delete_post_delivery_edit_file" value="{{ delivery.id }}">
+                                    </div>
+                                    <div class="span2 pull-right">
+                                        <a type="submit" class="remove-asset-link"
+                                                     href="javascript:document.DELETE_POST_DELIVERY{{ delivery.id }}.submit()"
+                                                     data-confirm="{% trans "Are you sure you want to delete Client Edits File?" %}">
+                                        <i class="fa fa-times"></i>
+                                    </a>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    {% endif %}
+                    <div class="row-fluid">
+                        <div class="span8">
+                            <a id="replace-btn-{{ delivery.id }}" class="btn btn-info upload-btn pull-left" href="#" style="width: 155px" TITLE="{% blocktrans %}Please upload file if you made Post-Delivery Edits.{% endblocktrans %}">
+                                <i class="fa fa-upload fa-white"></i> {% blocktrans %}Upload Edits{% endblocktrans %}
+                            </a>
+                            {% include "clients/projects/_upload_form_post_delivery_file.html" %}
+                        </div>
+                        <div class="span2 pull-right">
+                            <a href="#modal{{delivery.id}}"  class="comments-modal-ref" style="display:inline-block" data-toggle="modal" id="{{delivery.task.id}}" data_id="{{delivery.id}}">
+                                {% if delivery.post_delivery_notes %}
+                                    <i class="fa fa-comments" title="{% trans "Edit Client Post-Delivery Comments" %}"></i>
+                                {% else %}
+                                    <i class="fa fa-comments-o" title="{% trans "Add Client Post-Delivery Comments" %}"></i>
+                                {% endif %}
+                            </a>
+                            <div id="modal{{delivery.id}}" data_id="{{delivery.id }}" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+                                    <h3 id="myModalLabel"><i class="fa fa-comments"></i> {% blocktrans %}Comments for Client Post-Delivery Edits{% endblocktrans %}</h3>
+                                </div>
+                                <div class="modal-body">
+                                    <form novalidate action="" method="post" class="client_notes_form " >
+                                        {% csrf_token %}
+                                        <div class="form-group">
+                                            <div class="row-fluid">
+                                                <input type="hidden" id="tla_task_id" name="tla_task_id" value="{{ delivery.task.id }}"/>
+                                                <input type="hidden" id="tla_id" name="tla_id" value="{{ delivery.id }}"/>
+                                                <textarea class="form-control client_notes_comment" name="client_notes">{{delivery.post_delivery_notes|default_if_none:""}}</textarea>
+                                            </div>
+                                            <div class="row-fluid">
+                                                <hr/>
+                                            </div>
+                                            <div class="row-fluid">
+                                                <button type="submit" class="btn btn-primary client_notes_form_submit pull-right">{% trans "Save" %}</button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="row-fluid">
+            <div class="well">
+                <div class="span12">{% blocktrans %}No deliveries yet! Check back later.{% endblocktrans %}</div>
+            </div>
+        </div>
+        {% endfor %}
+
+        {% if delivery_vm.delivery_note %}
+        <div class="row-fluid">
+            <div class="well">
+                <div class="row-fluid">
+                    <div class="span12">
+                        <h2><i class="fa fa-comments-o"></i> {% blocktrans %}Delivery Notes{% endblocktrans %}</h2>
+                    </div>
+                </div>
+                <div class="row-fluid">
+                    <div class="span12">
+                        {{ delivery_vm.delivery_note|safe }}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% else %}
+    {% include "clients/projects/_project_permissions_notice.html" %}
+{% endif %}
+{% endblock %}
+
+{% block script %}
+    <script src="{{ STATIC_URL }}shared/js/jquery.lightbox_me.js"></script>
+    <script>
+
+        $('.upload-btn').click(function(e) {
+            var task_id = $(this).attr('id').split('-').pop();
+            $('#delivery-upload-' + task_id).lightbox_me({
+                centered: true,
+                onLoad: function() {
+                    //
+                }
+            });
+            e.preventDefault();
+        });
+
+        $(document).ready(function(){
+            $(document).on("submit",".client_notes_form", function() {
+                $('.client_notes_form button').attr('disabled','disabled');
+                if(!$('.client_notes_comment').val() || $('.client_notes_comment').val()=='None'){
+                        alert('{% trans "Comments for Client Post-Delivery Edits are empty." %}');
+                        $('.client_notes_form button').removeAttr('disabled');
+                        return false;
+                    }
+            });
+
+        });
+
+        tinymce.init({
+            selector: '.client_notes_form textarea.client_notes_comment',
+            theme: 'modern',
+            plugins: 'advlist lists hr preview codesample contextmenu textcolor colorpicker charmap table code',
+            toolbar1: 'formatselect fontselect fontsizeselect | bold italic underline | removeformat | forecolor backcolor | bullist numlist | alignleft alignright | outdent indent | table | hr | charmap | preview | code ',
+            menubar: false,
+            inline: false,
+            statusbar: true,
+            height: 200,
+        });
+
+    </script>
+{% endblock %}

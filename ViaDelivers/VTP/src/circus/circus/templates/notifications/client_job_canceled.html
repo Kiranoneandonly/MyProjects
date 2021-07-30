@@ -1,0 +1,39 @@
+{% load humanize %}{% load currency_filter %}
+
+{% include 'notifications/_email_base_top.html' %}
+
+<table style="font-family: Helvetica, Verdana, Tahoma, Arial, sans-serif; font-size: 100%; line-height: 1.5; width: 100%; margin: 0; padding: 1px;">
+    <tr style="font-family: Helvetica, Verdana, Tahoma, Arial, sans-serif; font-size: 100%; line-height: 1.5; margin: 0; padding: 1px;">
+        <td style="font-family: Helvetica, Verdana, Tahoma, Arial, sans-serif; font-size: 100%; line-height: 1.5; margin: 0; padding: 1px;">
+            <p style="font-family: Helvetica, Verdana, Tahoma, Arial, sans-serif; font-size: 14px; line-height: 1.5; font-weight: normal; margin: 0 0 10px; padding: 1px;">
+                Hi {{ project.client_poc.first_name|safe }},
+            </p>
+            <p style="font-family: Helvetica, Verdana, Tahoma, Arial, sans-serif; font-size: 14px; line-height: 1.5; font-weight: normal; margin: 0 0 10px; padding: 1px;">
+                Our records show that you recently canceled a job through the VIA Translation Platform (VTP). We’ve included the details below for your reference. We hope you found the system easy to use and look forward to working with you again soon.
+            </p>
+            <p style="font-family: Helvetica, Verdana, Tahoma, Arial, sans-serif; font-size: 14px; line-height: 1.5; font-weight: normal; margin: 0 0 10px; padding: 1px;">
+                With VTP you have secure access to hand-picked content translation services professionals in over 125 languages 24/7. So you can upload and retrieve your translation jobs, anywhere, anytime.
+            </p>
+            <p style="font-family: Helvetica, Verdana, Tahoma, Arial, sans-serif; font-size: 14px; line-height: 1.5; font-weight: normal; margin: 0 0 10px; padding: 1px;">
+                Have questions or feedback? We’d love to hear them. Please email us at info@viadelivers.com.
+            </p>
+            <p style="font-family: Helvetica, Verdana, Tahoma, Arial, sans-serif; font-size: 14px; line-height: 1.5; font-weight: normal; margin: 0 0 10px; padding: 1px;">
+                Sincerely,
+            </p>
+            <p style="font-family: Helvetica, Verdana, Tahoma, Arial, sans-serif; font-size: 14px; line-height: 1.5; font-weight: normal; margin: 0 0 10px; padding: 1px;">
+                The VIA Team
+            </p>
+            <p style="font-family: Helvetica, Verdana, Tahoma, Arial, sans-serif; font-size: 14px; line-height: 1.5; font-weight: normal; margin: 0 0 10px; padding: 1px;">
+            <ul style="font-family: Helvetica, Verdana, Tahoma, Arial, sans-serif; font-size: 12px; line-height: 1.5; font-weight: normal; margin: 0 20px 10px; padding: 1px;">
+                <li style="list-style-type:none;">Job Number: {{ project.job_number }}</li>
+                <li style="list-style-type:none;">User ID: {{ project.client_poc.get_full_name|safe }} ({{ project.client_poc.email }})</li>
+            </ul>
+            </p>
+            <p style="font-family: Helvetica, Verdana, Tahoma, Arial, sans-serif; font-size: 14px; line-height: 1.5; font-weight: normal; margin: 0 0 10px; padding: 1px;">
+                For more information or to restart the job, please visit {{ vtp_url }}.
+            </p>
+        </td>
+    </tr>
+</table>
+
+{% include 'notifications/_email_base_bottom.html' %}

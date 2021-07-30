@@ -1,0 +1,239 @@
+{% load i18n %}
+{% load bootstrap %}
+{% load humanize %}
+{#{% load url from future %}#}
+{% load currency_filter %}
+{% load get_item %}
+
+<div class="row-fluid">
+    <div class="span12 accordion" id="task_details_accordion">
+        {% if not project_target_tasks.items %}
+            <div>
+                <span>{% blocktrans %}No Pricing generated{% endblocktrans %}</span>
+            </div>
+        {% else %}
+            {% for target in project.target_locales.all %}
+                <div class="accordion-group">
+                    <div class="accordion-heading clearfix">
+                        <h5 class="estimate-target-locale-accordion-heading">
+                            <div class="estimate-target-locale-accordion-toggle">
+                                <a class="accordion-toggle" data-parent="#task_details_accordion" data-toggle="collapse" href="#tasks_collapse{{ target.id }}">
+                                    <span class="accordion-icon">{% if project.target_locales.all|length == 1 %}-{% else %}+{% endif %}</span>
+                                    <span>{{ project.source_locale }} {% trans "to" %} {{ target }}</span>
+                                </a>
+                            </div>
+                            {% if project.target_locales.all|length > 1 %}
+                            {% with target_quote=project.target_price_details|get_item:target.id %}
+                            <span class="sum last"><!-- last due to float: right -->
+                                <span>{% blocktrans %}Exp GM:{% endblocktrans %} </span>
+                                <span>{{ target_quote.target_express_gross_margin|percent }}</span>
+                            </span>
+                            <span class="sum">
+                                <span>{% blocktrans %}Exp Price:{% endblocktrans %} </span>
+                                <span>{{ target_quote.target_express_price|currency }}</span>
+                            </span>
+                            <span class="sum">
+                                <span>{% blocktrans %}Std GM:{% endblocktrans %} </span>
+                                <span>{{ target_quote.target_gross_margin|percent }}</span>
+                            </span>
+                            <span class="sum">
+                                <span>{% blocktrans %}Std Price:{% endblocktrans %} </span>
+                                <span>{{ target_quote.target_price|currency }}</span>
+                            </span>
+                            <span class="sum">
+                                <span>{% trans "Cost:" %} </span>
+                                <span>{{ target_quote.target_cost|currency }}</span>
+                            </span>
+                            {% endwith %}
+                            {% endif %}
+                            <span class="sum">
+                                <span><abbr title=
+                                    "{% trans "Turnaround Time" %}">
+                                    {% trans "TAT" context "Turnaround Time" %}</abbr>:
+                                </span>
+
+                                {% with target_quote=project.target_price_details|get_item:target.id %}
+                                    {% if due_date_flag %}
+                                        <span title="{% trans "Turnaround Time" %}">
+                                                {{ days_between }}
+                                        </span>
+                                    {% else %}
+                                        <span title="{% trans "Standard / Express days" %}">
+                                            {{ target_quote.target_standard_tat  }} /
+                                            {{ target_quote.target_express_tat }}
+                                        </span>
+                                    {% endif %}
+                                {% endwith %}
+                            </span>
+                        </h5>
+                    </div>
+                    <div class="accordion-body collapse {% if project.target_locales.all|length == 1 %}in{%endif%}"
+                         id="tasks_collapse{{ target.id }}">
+                        <div class="accordion-inner table-responsive">
+                            <table class="table table-bordered">
+                            <thead>
+                            <tr>
+                                <th><i class="fa fa-cog" title="{% trans "Service" %}"></i> {% trans "Service" %}</th>
+                                <th><i class="fa fa-globe" title="{% trans "Source" %}"></i> {% trans "Source" %}</th>
+                                <th><i class="fa fa-crosshairs" title="{% trans "Target" %}"></i> {% trans "Target" %}</th>
+                                <th><i class="fa fa-user" title="{% trans "Assigned To" %}"></i> {% trans "Assigned To" %}</th>
+                                <th><i class="fa fa-truck" title="{% trans "Standard" %}"></i> / <i class="fa fa-rocket" title="{% trans "Express" %}"></i></th>
+                                <th><i class="fa fa-key" title="{% trans "Unit of Measure" %}"></i> {% trans "UoM" %}</th>
+                                <th><i class="fa fa-flask" title="{% trans "Quantity" %}"></i> {% trans "Quantity" %}</th>
+                                <th><i class="fa fa-cube" title="{% trans "Unit Cost" %}"></i> {% trans "Unit Cost" %}</th>
+                                <th><i class="fa fa-cubes" title="{% trans "Total Cost" %}"></i> {% trans "Total Cost" %}</th>
+                                <th><i class="fa fa-tag" title="{% trans "Unit Price" %}"></i> {% trans "Unit Price" %}</th>
+                                <th><i class="fa fa-tags" title="{% trans "Raw Price" %}"></i> {% trans "Raw Price" %}</th>
+                                <th><i class="fa fa-level-down" title="{% trans "Memory Bank Discount" %}"></i> <abbr title="{% trans "Memory Bank Discount" %}">{% trans "MBD" context "Memory Bank Discount" %}</abbr></th>
+                                <th><i class="fa fa-truck" title="{% trans "Standard Price" %}"></i> <i class="fa fa-money" title="{% trans "Standard Price" %}"></i></th>
+                                <th><i class="fa fa-truck" title="{% trans "Standard GM" %}"></i>  <i class="fa fa-bullseye" title="{% trans "Standard GM" %}"></i></th>
+                                <th><i class="fa fa-rocket" title="{% trans "Express Price" %}"></i> <i class="fa fa-money" title="{% trans "Express Price" %}"></i></th>
+                                <th><i class="fa fa-rocket" title="{% trans "Express GM" %}"></i> <i class="fa fa-bullseye" title="{% trans "Express GM" %}"></i></th>
+                                {% if project.is_created_status %}
+                                {# delete button column #}
+                                    <th><i class="fa fa-trash-o" title="{% trans "Delete" %}"></i> </th>
+                                {% endif %}
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% if not project_target_tasks.items %}
+                                <tr>
+                                    <td colspan="100%">{% blocktrans %}No tasks generated{% endblocktrans %}</td>
+                                </tr>
+                            {% else %}
+                                {% for service_category, task_values in project_target_tasks.items %}
+                                    <tr><th colspan="100%">{{ service_category }}</th></tr>
+
+                                    {% for task in task_values %}
+                                        {% if task.service.target == target %}
+                                        <tr class="{% if task.is_valid and task.assigned_to %}success{% else %}error{% endif %}">
+                                            <td>
+                                                {% if task.billable %}
+                                                    <i class="fa fa-tag" title="{% trans "billable" %}"></i>
+                                                {% else %}
+                                                    <i class="fa fa-ban" title="{% trans "not billable" %}"></i>
+                                                {% endif %}
+                                                {% if project.is_created_status and task.id %}
+                                                    <a href="{% url 'projects_tasks_edit' task.id %}">{{ task.service.service_type }}</a>
+                                                {% else %}
+                                                    {{ task.service.service_type }}
+                                                {% endif %}
+                                            </td>
+                                            <td>{{ task.service.source }}</td>
+                                            <td>{{ task.service.target }}</td>
+                                            <td>{{ task.assigned_to }}</td>
+                                            <td>{{ task.standard_days }} / {{ task.express_days }}</td>
+                                            <td>{{ task.service.unit_of_measure }}</td>
+                                            <td class="number-cell">{{ task.quantity|floatformat:-2|intcomma }}</td>
+                                            <td class="number-cell">
+                                                {% if task.is_translation %}
+                                                    {{ task.translationtask.vendor_rates.word_rate|currency }}
+                                                {% else %}
+                                                    {% if task.percentage_based %}
+                                                        {{ task.unit_cost|percent }}
+                                                    {% else %}
+                                                        {{ task.unit_cost|floatformat:2 }}
+                                                    {% endif %}
+                                                {% endif %}
+                                            </td>
+                                            <td class="number-cell">
+                                                {% if task.billable %}
+                                                    {{ task.quote_total_cost|currency }}
+                                                {% else %}
+                                                    --
+                                                {% endif %}
+                                            </td>
+                                            <td class="number-cell">
+                                                {% if task.is_translation %}
+                                                    {{ task.translationtask.client_price.word_rate|currency }}
+                                                {% else %}
+                                                    {% if task.percentage_based %}
+                                                        {{ task.unit_price|percent }}
+                                                    {% else %}
+                                                        {{ task.unit_price|currency }}
+                                                    {% endif %}
+                                                {% endif %}
+                                            </td>
+                                            <td class="number-cell">
+                                                {% if task.billable and task.is_translation %}
+                                                    {{ task.raw_price|currency }}
+                                                {% else %}
+                                                    --
+                                                {% endif %}
+                                            </td>
+                                            <td class="number-cell">
+                                                {% if task.billable and task.is_translation %}
+                                                    {{ task.mbd|percent }}
+                                                {% else %}
+                                                    --
+                                                {% endif %}
+                                            </td>
+                                            <td class="number-cell">
+                                                {% if task.billable %}
+                                                    {{ task.net_price|currency }}
+                                                {% else %}
+                                                    --
+                                                {% endif %}
+                                            </td>
+
+                                            <td class="number-cell">{{ task.gm|percent }}</td>
+                                            <td class="number-cell">
+                                                {% if task.billable %}
+                                                    {{ task.express_net_price|currency }}
+                                                {% else %}
+                                                    --
+                                                {% endif %}
+                                            </td>
+
+                                            <td class="number-cell">{{ task.express_gm|percent }}</td>
+                                            {% if project.is_created_status and task.id %}
+                                                <td>
+                                                    <a class="btn btn-danger" href="{% url 'projects_tasks_delete' task.id %}" data-confirm="{% trans "Are you sure you want to delete?" %}">
+                                                      <i class="fa fa-trash-o" title="{% trans "Delete" %}" aria-hidden="true"></i>
+                                                      <span class="sr-only">{% trans "Delete" %}</span>
+                                                    </a>
+                                                </td>
+                                            {% endif %}
+                                        </tr>
+                                         {% endif %}
+                                    {% endfor %}
+                                {% endfor %}
+                            {% endif %}
+                            </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+            <div class="estimate-grand-total accordion-group clearfix">
+                <h5 class="estimate-target-locale-accordion-heading">
+
+                    <span class="sum last">{% trans "Exp GM:" %} {{ project.project_pricequote.express_gm|percent }}</span>
+                    <span class="sum">{% trans "Exp Price:" %} {{ project.project_pricequote.express_price|currency }}</span>
+                    <span class="sum">{% trans "Std GM:" %} {{ project.project_pricequote.gm|percent }}</span>
+                    <span class="sum">{% trans "Std Price:" %} {{ project.project_pricequote.price|currency }}</span>
+                    <span class="sum">{% trans "Cost:" %} {{ project.project_pricequote.cost|currency }}</span>
+                    <span class="sum">
+                        <span>
+                            <abbr title="{% trans "Turnaround Time" %}">{% trans "TAT" context "Turnaround Time" %}</abbr>:
+                        </span>
+                        <span title="{% trans "Standard / Express days" %}">
+                            {{ project.project_pricequote.standard_tat }} / {{ project.project_pricequote.express_tat }}
+                        </span>
+                    </span>
+                    <span class="sum">{% trans "Grand Total" %}</span>
+
+                    <!--Button for estimation file download-->
+                    {% if is_sow_available %}
+                    <span class="sum"><a class="btn btn-primary" href="{% url 'download_sow' project.id %}" title="{% trans "Download Statement of Work" %}"><i class="fa fa-file-word-o"></i></a></span>
+                    {% endif %}
+
+                    {% if project.price_per_document and is_sow_available %}
+                    <span class="sum"><a href="{% url 'price_per_document' project.id %}"  class="btn btn-primary" data-toggle="modal"><h4 style="margin:0px" ><i class="fa fa-file-text"  title="{% trans "Price per Document" %}"></i></h4></a></span>
+                    {% endif %}
+                </h5>
+            </div>
+        {% endif %}
+    </div>
+</div>
+<br/><br/>

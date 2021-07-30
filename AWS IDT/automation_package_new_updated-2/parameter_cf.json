@@ -1,0 +1,31 @@
+{
+  "parameters": [{
+      "ParameterKey":"DLTestBucketName",
+      "ParameterValue":"deeplearning-test-bucket"
+   },
+   {
+      "ParameterKey":"sunrise",
+      "ParameterValue":"11 30"
+   },
+   {
+      "ParameterKey":"iotEndPoint",
+      "ParameterValue":"a2aoegwed86tb9-ats.iot.us-west-2.amazonaws.com"
+   },
+   {
+      "ParameterKey":"ModelAndCodeBucket",
+      "ParameterValue":"aws-test-buckt-13042020-code"
+   },
+   {
+      "ParameterKey":"WeatherBundleObjectKey",
+      "ParameterValue":"weather-bundle.zip"
+   },
+   {
+      "ParameterKey":"sunset",
+      "ParameterValue":"23 30"
+   },
+   {
+      "ParameterKey":"staticWebsite",
+      "ParameterValue":"aws-test-buckt-13042020"
+   }
+]
+}

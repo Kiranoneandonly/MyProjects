@@ -1,0 +1,13 @@
+{% load humanize %}{{ join_request.user.get_full_name }} ({{ join_request.user.email }}) has signed up as a user on the {{ app_full_name }}.
+
+Is {{ join_request.user.get_full_name }} a member of your team at {{ join_request.account }}?
+
+You can confirm or reject this user at {{ manage_url }}.
+
+Thanks,
+
+The VIA Team
+
+________________________________________
+
+{% include 'notifications/_email_footer.txt' %}

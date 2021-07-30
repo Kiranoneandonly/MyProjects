@@ -1,0 +1,91 @@
+{% extends template %}
+{% load i18n %}
+{% load bootstrap %}
+{% load static %}
+
+{% block title %}{% blocktrans %}Reporting Dashboard{% endblocktrans %}{% endblock title %}
+
+
+{% block head %}
+    {{ block.super }}
+{% endblock head %}
+
+
+{% block content %}
+
+    <link media="all" href="{% static 'nvd3/src/nv.d3.css' %}" type="text/css" rel="stylesheet" />
+    <link rel="stylesheet" href="{{ STATIC_URL }}shared/css/datetimepicker.css" media="screen"/>
+    <script type="text/javascript" src='{% static 'd3/d3.min.js' %}'></script>
+    <script type="text/javascript" src='{% static 'nvd3/nv.d3.min.js' %}'></script>
+
+    <div class="breadcrumb">
+        <span><i class="fa fa-home"></i></span>
+        <span><a href="{% url dash_board %}">{% trans "Home" %}</a></span>
+        <span class="divider"><i class="fa fa-chevron-right"></i></span>
+        <span class="active">{% trans "Reports" %}</span>
+        <span class="divider"><i class="fa fa-chevron-right"></i></span>
+        <span class="active"><a href="{% url 'clients_gross_margin_report' %}">{% trans "Gross Margin Analysis - Clients" %}</a></span>
+        <span class="divider"><i class="fa fa-chevron-right"></i></span>
+        <span class="active">{% trans "Gross Margin Analysis - Jobs" %}</span>
+        {{ block.super }}
+    </div>
+
+    <div id="date_period_id" >
+    <form novalidate action="" method="post" class="form-horizontal">
+        {% csrf_token %}
+        <div class="span12">
+            <div class="span3">
+                <input name="start_date" type="text" class="span2" value="Select start date" data-date-format="yyyy-mm-dd" id="start_date" />
+                <div>&nbsp;</div>
+                <input name="end_date" type="text" class="span2" value="Select end date" data-date-format="yyyy-mm-dd" id="end_date" />
+                <div>&nbsp;</div>
+                <button type="submit" class="btn btn-primary report_ajax" >{% blocktrans %}Check the Report{% endblocktrans %}</button>
+            </div>
+        </div>
+    </form>
+    </div>
+
+    <div class="row-fluid" style="float: left">
+    {% load nvd3_tags %}
+    {% include_chart_jscss %}
+    {% if date_tag %}
+        {% load_chart charttype chartdata chartcontainer  True "%d %b %Y %H" %}
+    {% else %}
+        {% load_chart charttype chartdata chartcontainer extra  %}
+    {% endif %}
+    {% include_container chartcontainer 400 1200 %}
+    </div>
+    
+
+    <script>
+        $(document).ready(function() {
+            $('#start_date,#end_date').on('changeDate', function() {
+                $(this).datepicker('hide');
+            });
+
+            var startDate=null;
+		    var endDate=null;
+			$('#start_date').datepicker()
+				.on('changeDate', function(ev){
+					startDate=new Date(ev.date.getFullYear(),ev.date.getMonth(),ev.date.getDate(),0,0,0);
+					if(endDate!=null&&endDate!='undefined'){
+						if(endDate<startDate){
+								alert("End Date is less than Start Date");
+								$("#start_date").val("");
+						}
+					}
+				});
+			$("#end_date").datepicker()
+				.on("changeDate", function(ev){
+					endDate=new Date(ev.date.getFullYear(),ev.date.getMonth(),ev.date.getDate(),0,0,0);
+					if(startDate!=null&&startDate!='undefined'){
+						if(endDate<startDate){
+							alert("End Date is less than Start Date");
+							$("#end_date").val("");
+						}
+					}
+				});
+
+        }); 
+    </script>
+{% endblock %}

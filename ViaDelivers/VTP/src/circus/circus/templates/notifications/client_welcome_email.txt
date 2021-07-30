@@ -1,0 +1,23 @@
+{% load humanize %}{% load currency_filter %}Hi {{ user.first_name|safe }},
+
+Thank you for registering for the VIA Translation Platform (or VTP, as we like to call it). I think you’ll find that it’s a great way to save time in ordering and managing your translation projects.
+
+Here are a few resources to help you get started:
+
+•	Quick video overview - http://www.viadelivers.com/what-we-do/technology/translation-portal/user-guide
+•	Step-by-Step User Guide - http://www.viadelivers.com/wp-content/uploads/2016/05/VIA-Translation-Platform-User-Guide.pdf
+•	Translation Platform FAQS - http://www.viadelivers.com/translation-portal-faq/?_ga=1.201954321.1235853631.1459897302
+
+Have any questions? Just shoot me an email! My team and I look forward to working with you.
+
+Sincerely,
+Nic
+
+Nic McMahon
+COO and General Manager
+nmcmahon@viadelivers.biz
+503-243-2007
+________________________________________
+
+Give 10. Get 10.
+If you know others who would benefit from using the VIA Translation Platform let us know (http://www2.viadelivers.com/l/17482/2017-03-08/7yy7vs) and we will give you each a 10% discount on your next translation project.

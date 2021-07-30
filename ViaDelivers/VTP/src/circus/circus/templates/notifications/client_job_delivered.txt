@@ -1,0 +1,26 @@
+{% load humanize %}{% load currency_filter %}Hi {{ project.client_poc.first_name|safe }},
+
+Our records show that you completed a job through the VIA Translation Platform (VTP). We’ve included the details below for your reference. We hope you found the system easy to use and look forward to working with you again soon.
+
+With VTP you have secure access to hand-picked content translation services professionals in over 125 languages 24/7. So you can upload and retrieve your translation jobs, anywhere, anytime.
+
+Have questions or feedback? We’d love to hear them. Please email us at info@viadelivers.com.
+
+Sincerely,
+
+The VIA Team
+
+Give 10. Get 10.
+If you know others who would benefit from using the VIA Translation Platform let us know (http://www2.viadelivers.com/l/17482/2017-03-08/7yy7vs) and we will give you each a 10% discount on your next translation project.
+
+________________________________________
+
+The Job ordered by {{ project.client_poc.get_full_name|safe }} of {{ project.client.name|safe }} is ready for you to download.
+
+•	Job Number: {{ project.job_number }}
+
+For more information, please visit {{ vtp_url }}.
+
+________________________________________
+
+{% include 'notifications/_email_footer.txt' %}

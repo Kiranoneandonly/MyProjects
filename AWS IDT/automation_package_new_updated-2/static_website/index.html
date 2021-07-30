@@ -1,0 +1,112 @@
+<!doctype html>
+<html class="no-js" lang="en" dir="ltr">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IDT Renesas - ICE</title>
+  <link rel="shortcut icon" href="images/favicon.ico" />
+  <link rel="stylesheet" href="css/foundation.css">
+  <link rel="stylesheet" href="css/app.css">
+
+  <!--<link rel="stylesheet" href="https://unpkg.com/leaflet@1.5.1/dist/leaflet.css"
+   integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
+   crossorigin=""/> -->
+
+   <!--<script src="https://unpkg.com/leaflet@1.5.1/dist/leaflet.js"
+   integrity="sha512-GffPMF3RvMeYyc1LWMHtK8EbPv0iNZ8/oTtHPx9/cc2ILxQ+u905qIwdpULaqDkyBKgOaB57QTMg7ztg8Jm2Og=="
+   crossorigin=""></script> -->
+
+  <script src="js/vendor/aws-cognito-sdk.min.js"></script>
+  <script src="js/vendor/amazon-cognito-identity.min.js"></script>
+</head>
+
+<body>
+  <!-- Menu Bar -->
+  <div id="main-bar" class="top-bar">
+    <div class="top-bar-left">
+      <button type="button" data-toggle="offCanvasLeft1"><img class="side-menu-img" alt="Side Menu"
+          src="images/icons8_sidebar_menu_64px_1.png"></button>
+      <a href="https://www.idt.com/"><img class="menu-logo" alt="IDT - Integrated device Technology"
+          src="images/new_idt.png"></a>
+    </div>
+    <div class="top-bar align-center show-for-medium">
+        <a class="idt-heading">ICE</a>
+    </div>
+    <div class="top-bar-right show-for-medium">
+        <ul class="dropdown menu" data-dropdown-menu>
+            <li>
+              <a href="#"><img class="side-menu-img" alt="User"
+                  src="images/icons8_gender_neutral_user_96px.png"></a>
+              <ul class="menu">
+                <li>
+                  <a onClick="route('signin')" type="button"><img class="dropdown-menu-img" alt="signout"
+                    src="images/icons8_exit_96px.png">  Signout</a>
+                </li>
+                <li>
+                    <a onClick="route('changePassword')" type="button"><img class="dropdown-menu-img" alt="changePassword"
+                      src="images/change_Password.png">  Change Password</a>
+                  </li>
+              </ul>
+            </li>
+        </ul>
+    </div>
+  </div>
+
+  <!-- Off Canvase Content-->
+  <div class="cell">
+    <div class="off-canvas-wrapper">
+      <div class="off-canvas position-left sideCanvas" id="offCanvasLeft1" data-off-canvas>
+        <!-- Your Left menu content goes here -->
+        <div data-toggle="offCanvasLeft1" class="canvas-bar  float-center show-for-small-only">
+          <button class="idt-heading submenu-heading" type="button" style="padding-top: 0.5em;">ICE</button>
+        </div>
+        <button onClick="route('group')" data-toggle="offCanvasLeft1" class="clear button primary expanded left-menu-button"  type="button"><b>Groups</b></button>
+        <button onClick="route('lcmdim')" data-toggle="offCanvasLeft1" class="clear button primary expanded left-menu-button"  type="button"><b>Luminaires</b></button>
+        <button onClick="route('lcmMonitor')" data-toggle="offCanvasLeft1" class="clear button primary expanded left-menu-button"  type="button"><b>Monitor Luminaires</b></button>
+        <button onClick="route('schedular')" data-toggle="offCanvasLeft1" class="clear button primary expanded left-menu-button"  type="button"><b>Scheduler</b></button>
+        <button onClick="route('loadLcm')" data-toggle="offCanvasLeft1" class="clear button primary expanded left-menu-button"  type="button"><b>Load Certified Luminaires</b></button>
+        <button onClick="route('registerlcm')" data-toggle="offCanvasLeft1" class="clear button primary expanded left-menu-button"  type="button"><b>Register Luminaire</b></button>
+        <button onClick="route('addGroup')" data-toggle="offCanvasLeft1" class="clear button primary expanded left-menu-button"  type="button"><b>Create Group</b></button>
+        <button onClick="route('validateApp')" data-toggle="offCanvasLeft1" class="clear button primary expanded left-menu-button"  type="button"><b>Validate App</b></button>
+        <button onClick="route('signin')" data-toggle="offCanvasLeft1" class=" button expanded left-menu-button show-for-small-only"  type="button" style="vertical-align: bottom">Sign out</button>
+      </div>
+      <div class="off-canvas position-right sideCanvas" id="offCanvasRight1" data-off-canvas>
+        <!-- Your Right menu Off-canvas content goes here -->
+        <div data-toggle="offCanvasRight1" class="canvas-bar  float-center">
+          <span class="idt-heading submenu-heading"aria-hidden="true">Credits</span>
+        </div>
+        <br/>
+        <span>
+          These icons are used from <a target="_blank" rel="noopener noreferrer" href="https://icons8.com/">icons8</a>
+        </span>
+        <hr>
+        
+        <div id="right-side-notification">
+        </div>
+
+      </div>
+      <div id="ice-content" class="off-canvas-content" data-off-canvas-content>
+          <!-- Code here -->
+      </div>
+      <div id="css-spinner" style="display: block;">
+        <img class="centered-spinner" alt="Budy" src="images/805_anticlock.gif">
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div  class="large-12">
+      <button class="button primary tiny" type="button" data-toggle="offCanvasRight1">Credits</button>
+    </div>
+  </footer>
+
+  <script src="js/vendor/js.cookie.js"></script>
+  <script type="text/javascript" src="./js/vendor/ZXing.js"></script>
+
+  <script data-main="js/main.js" src="js/require.js"></script>
+
+</body>
+
+</html>

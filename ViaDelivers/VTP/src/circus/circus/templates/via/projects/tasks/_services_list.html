@@ -1,0 +1,129 @@
+{% load i18n %}
+{% load bootstrap %}
+
+<div class="row-fluid">
+    <div class="span12">
+        <div class="dashWidget chooseLanguageWidget noPadding">
+            <div class="row-fluid">
+                <div class="span6">
+                    <ul class="nav nav-tabs">
+                          <li class="active"><a href="#service_options" data-toggle="tab"><h4>{% trans "Service Options" %}</h4></a></li>
+                    </ul>
+                    <div class="tab-content">
+                          <div class="tab-pane active" id="service_options">
+                            <form novalidate action="" method="post">
+                            {% csrf_token %}
+                                {% if can_edit_job and project.can_edit_tasks %}
+                                    <div class="row-fluid">
+                                        <div class="span3 pull-right">
+                                            <button type="reset" class="btn">{% trans "Reset" %}</button>
+                                            <button name="add_services" type="submit" class="btn btn-primary">{% trans "Save" %}</button>
+                                        </div>
+                                    </div>
+                                    <div class="row-fluid"><br></div>
+                                {% endif %}
+                                <div class="row-fluid">
+                                    <div class="span12">
+                                        <div class="well">
+                                        <div class="control-group">
+                                            <div class="controls availableServices">
+                                            {% if project.can_edit_tasks %}
+                                                {{ form.services|bootstrap }}
+                                            {% else %}
+                                                {% for service in project.services.all %}
+                                                    <label class="checkbox">
+                                                        <input type="checkbox" onclick="return false" onkeydown="return false" checked="checked" disabled />
+                                                        <span>{{ service.description }}</span>
+                                                    </label>
+                                                {% endfor %}
+                                            {% endif %}
+                                            </div>
+                                        </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                          </div>
+                        </div>
+                </div>
+                {% if can_edit_job and project.can_edit_tasks %}
+                <div class="span6" title="{% trans "Values based on the Job Language with highest Word Count" %}">
+                    <ul class="nav nav-tabs">
+                          <li class="active"><a href="#service_globals" data-toggle="tab"><h4>{% trans "Service Global Quantity" %}</h4></a></li>
+                    </ul>
+                    <div class="tab-content">
+                          <div class="tab-pane active" id="service_globals">
+                              <form novalidate action="" method="post">
+                                  {% csrf_token %}
+                                  {% if services %}
+                                  <div class="row-fluid">
+                                    <div class="span5 pull-right">
+                                        <button type="reset" class="btn">{% trans "Reset" %}</button>
+                                        <button name="save_global_services_defaults" type="submit" class="btn btn-inverse">{% trans "Defaults" %}</button>
+                                        <button name="save_global_services" type="submit" class="btn btn-warning">{% trans "Save" %}</button>
+                                        <button name="apply_tasks_global_services" type="submit" class="btn btn-primary">{% trans "Apply Tasks" %}</button>
+                                    </div>
+                                  </div>
+                                  {% endif %}
+                                  <div class="row-fluid"><br></div>
+                                  <div class="row-fluid">
+                                      <table class="table table-bordered table-hover table-responsive">
+                                    <thead>
+                                    <tr>
+                                        <th width="60%">{% blocktrans %}Service{% endblocktrans %}</th>
+                                        <th width="20%">{% blocktrans %}Global Quantity{% endblocktrans %}</th>
+                                        <th width="10%">{% blocktrans %}Standard Days{% endblocktrans %}</th>
+                                        <th width="10%">{% blocktrans %}Express Days{% endblocktrans %}</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for service in services %}
+                                        <tr>
+                                            <td>{{ service }}</td>
+                                            {% if service_value %}
+                                                {% for d in service_value%}
+                                                    {% if d.servicetype_id == service.id %}
+                                                        <td> <input type="number" step="0.01" class="global_quantity" name="{{ service.code }}" value="{{ d.quantity|default_if_none:0 }}" /> </td>&nbsp;<span id="_errmsg"></span></td>
+                                                        <td> <input type="number" step="0.01" class="global_quantity" name="{{ service.code }}" value="{{ d.standard_days|default_if_none:0 }}" /> </td>&nbsp;<span id="_errmsg"></span></td>
+                                                        <td> <input type="number" step="0.01" class="global_quantity" name="{{ service.code }}" value="{{ d.express_days|default_if_none:0 }}" /> </td>&nbsp;<span id="_errmsg"></span></td>
+                                                    {% endif %}
+                                                {% endfor %}
+                                            {% else %}
+                                                <td> <input type="number" step="0.01" class="global_quantity" id="{{ service.id }}" name="{{ service.code }}" value="" />&nbsp;<span id="_errmsg"></span></td>
+                                                <td> <input type="number" step="0.01" class="global_quantity" id="{{ service.id }}" name="{{ service.code }}" value="" />&nbsp;<span id="_errmsg"></span></td>
+                                                <td> <input type="number" step="0.01" class="global_quantity" id="{{ service.id }}" name="{{ service.code }}" value="" />&nbsp;<span id="_errmsg"></span></td>
+                                            {% endif %}
+                                        </tr>
+                                    {% empty %}
+                                        <tr><td colspan="100%" style="text-align: left">{% trans "No Hourly Tasks Selected" %}</td></tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                                  </div>
+                              </form>
+                          </div>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block script %}
+    <script>
+$(document).ready(function () {
+  //called when key is pressed in textbox
+  $(".global_quantity").keydown(function (e) {
+     //if the letter is not digit then display error and don't type anything
+     if (e.which >= 65 && e.which < 91) {
+{#     if (e.which != 8 && e.which != 0 && e.which != 9 && (e.which < 48 || e.which > 57) && (e.which < 96 || e.which > 105)) {#}
+        //display error message
+         $("#_errmsg").css("color","red");
+        $("#_errmsg").html("Please enter the numbers").show().fadeOut('slow');
+         return false;
+    }
+   });
+     });
+    </script>
+{% endblock %}

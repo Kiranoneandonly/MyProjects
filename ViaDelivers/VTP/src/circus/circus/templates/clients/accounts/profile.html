@@ -1,0 +1,76 @@
+{% extends "shared/external/theme_base.html" %}
+{% load i18n %}
+{% load bootstrap %}
+
+{% block title %}{% trans "My Profile" %}{% endblock %}
+
+{% block css %}{% endblock %}
+
+{% block content_breadcrumb %}
+    <ul class="breadcrumb">
+        <li><i class="fa fa-home"></i> <a href="/">{% trans "Home" %}</a> <span class="divider"><i class="fa fa-chevron-right"></i></span></li>
+        <li class="active">{% trans "My Profile" %}</li>
+    </ul>
+{% endblock %}
+
+{% block content_header %}
+    <div class="row-fluid">
+        <div class="span6"><h1 class="manage-users-header">{% blocktrans %}My Profile{% endblocktrans %}</h1></div>
+    </div>
+{% endblock %}
+
+{% block content %}
+    <div class="alert alert-warning">
+    <a href="#" class="close" data-dismiss="alert">&times;</a>
+    <strong>Warning!</strong> There was a problem with your network connection.
+</div>
+    <div class="row-fluid">
+        {% include "clients/accounts/_manager_menu.html" with current='profile' %}
+        <div class="span4">
+            <div class="row-fluid">
+                <div class="span12">
+                    <h2 class="dashHead no-margin"><i class="fa fa-user"></i> {% trans "Profile" %}</h2>
+                    <div class="dashWidget">
+                        <form novalidate class="form-horizontal portlet-form" method="POST" target="">
+                            {% csrf_token %}
+                            <fieldset>
+                                {{ profile_form|bootstrap }}
+                            </fieldset>
+                            <br>
+                            <button type="submit" name="update_profile" class="btn btn-primary pull-right">
+                                {% trans "Update" %}
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="span4">
+            <div class="row-fluid">
+                <div class="span12">
+                    <h2 class="dashHead no-margin"><i class="fa fa-lock"></i> {% trans "Change Password" %}</h2>
+                    <div class="dashWidget">
+                        <form novalidate class="form-horizontal portlet-form" method="POST" target="">
+                            {% csrf_token %}
+                            <fieldset>
+                                {{ password_form|bootstrap }}
+                            </fieldset>
+                            <br>
+                            <button type="submit" name="update_password" class="btn btn-primary pull-right">
+                                {% trans "Update" %}
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block script %}
+    {{ block.super }}
+    <script>
+        $(document).ready(function () {
+            $('#id_profile-user_timezone').select2();
+        });
+    </script>
+{% endblock %}

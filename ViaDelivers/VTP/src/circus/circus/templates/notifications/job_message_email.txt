@@ -1,0 +1,11 @@
+{% load humanize %}Here's what you missed...
+{% for cmt in comments %}
+      JOB # {{ cmt.content_object.job_number }} -- {{ cmt.user.get_full_name }}
+      {{ cmt.comment|truncatechars:100 }}
+{% endfor %}
+
+For more information, please visit {{ vtp_url }}.
+
+________________________________________
+
+{% include 'notifications/_email_footer.txt' %}

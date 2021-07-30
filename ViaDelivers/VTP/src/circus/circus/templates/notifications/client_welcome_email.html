@@ -1,0 +1,53 @@
+{% load humanize %}{% load currency_filter %}
+
+{% include 'notifications/_email_base_top.html' %}
+
+<table style="font-family: Helvetica, Verdana, Tahoma, Arial, sans-serif; font-size: 100%; line-height: 1.5; width: 100%; margin: 0; padding: 0;">
+    <tr style="font-family: Helvetica, Verdana, Tahoma, Arial, sans-serif; font-size: 100%; line-height: 1.5; margin: 0; padding: 0;">
+        <td style="font-family: Helvetica, Verdana, Tahoma, Arial, sans-serif; font-size: 100%; line-height: 1.5; margin: 0; padding: 0;">
+            <p style="font-family: Helvetica, Verdana, Tahoma, Arial, sans-serif; font-size: 14px; line-height: 1.5; font-weight: normal; margin: 0 0 10px; padding: 1px;">
+                Hi {{ user.first_name|safe }},
+            </p>
+            <p style="font-family: Helvetica, Verdana, Tahoma, Arial, sans-serif; font-size: 14px; line-height: 1.5; font-weight: normal; margin: 0 0 10px; padding: 1px;">
+                Thank you for registering for the VIA Translation Platform (or VTP, as we like to call it). I think you’ll find that it’s a great way to save time in ordering and managing your translation projects.
+            </p>
+            <p style="font-family: Helvetica, Verdana, Tahoma, Arial, sans-serif; font-size: 14px; line-height: 1.5; font-weight: normal; margin: 0 0 10px; padding: 1px;">
+                Here are a few resources to help you get started:
+            </p>
+            <p style="font-family: Helvetica, Verdana, Tahoma, Arial, sans-serif; font-size: 14px; line-height: 1.5; font-weight: normal; margin: 0 0 10px; padding: 1px;">
+            <ul style="font-family: Helvetica, Verdana, Tahoma, Arial, sans-serif; font-size: 12px; line-height: 1.5; font-weight: normal; margin: 0 20px 10px; padding: 1px;">
+                <li><a href="http://www.viadelivers.com/what-we-do/technology/translation-portal/user-guide/" target="_blank">Quick video overview</a></li>
+                <li><a href="http://www.viadelivers.com/wp-content/uploads/2016/05/VIA-Translation-Platform-User-Guide.pdf" target="_blank">Step-by-Step User Guide</a></li>
+                <li><a href="http://www.viadelivers.com/translation-portal-faq/?_ga=1.201954321.1235853631.1459897302" target="_blank">Translation Platform FAQS</a></li>
+            </ul>
+            </p>
+            <p style="font-family: Helvetica, Verdana, Tahoma, Arial, sans-serif; font-size: 14px; line-height: 1.5; font-weight: normal; margin: 0 0 10px; padding: 1px;">
+                Have any questions? Just shoot me an email! My team and I look forward to working with you.
+            </p>
+            <p style="font-family: Helvetica, Verdana, Tahoma, Arial, sans-serif; font-size: 14px; line-height: 1.5; font-weight: normal; margin: 0 0 10px; padding: 1px;">
+                Sincerely,
+            </p>
+            <p style="font-family: Helvetica, Verdana, Tahoma, Arial, sans-serif; font-size: 14px; line-height: 1.5; font-weight: normal; margin: 0 0 10px; padding: 1px;">
+                Nic
+            </p>
+            <p style="font-family: Helvetica, Verdana, Tahoma, Arial, sans-serif; font-size: 14px; line-height: 1.5; font-weight: normal; margin: 0 0 10px; padding: 1px;">
+            <ul style="font-family: Helvetica, Verdana, Tahoma, Arial, sans-serif; font-size: 12px; line-height: 1.5; font-weight: normal; margin: 0 20px 10px; padding: 1px;">
+                <li style="list-style-type:none;"><img src="{{ via_logo_image_url }}" height="22" width="22"></li>
+                <li style="list-style-type:none;">Nic McMahon</li>
+                <li style="list-style-type:none;">COO and General Manager</li>
+                <li style="list-style-type:none;"><a href="mailto:nmcmahon@viadelivers.biz?Subject=Welcome%20to%20VTP%20question" target="_blank">nmcmahon@viadelivers.biz</a></li>
+                <li style="list-style-type:none;">503-243-2007</li>
+            </ul>
+            </p>
+            <hr/>
+            <p style="font-family: Helvetica, Verdana, Tahoma, Arial, sans-serif; font-size: 16px; line-height: 1.5; font-weight: normal; margin: 0 0 10px; padding: 1px;">
+               <b>Give 10. Get 10.</b>
+            </p>
+            <p style="font-family: Helvetica, Verdana, Tahoma, Arial, sans-serif; font-size: 12px; line-height: 1.5; font-weight: normal; margin: 0 0 10px; padding: 1px;">
+               If you know others who would benefit from using the VIA Translation Platform <a href="http://www2.viadelivers.com/l/17482/2017-03-08/7yy7vs" target="_blank">let us know</a> and we will give you each a 10% discount on your next translation project.
+            </p>
+        </td>
+    </tr>
+</table>
+
+{% include 'notifications/_email_base_bottom.html' %}

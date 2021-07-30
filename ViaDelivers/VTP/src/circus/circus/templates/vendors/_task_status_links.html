@@ -1,0 +1,18 @@
+{% load i18n %}
+{% url 'vendor_dashboard' as url %}
+<li class="unit-border {% if request.path == url %}active{% endif %}">
+    <a href="{{ url }}">
+        <i class="fa fa-home"></i>
+        {% trans "Dashboard" %}
+    </a>
+</li>
+{% for status, status_detail in vendor_tasks.statuses.iteritems %}
+    {% url 'vendor_tasks_status' status=status as url %}
+    <li class="unit-border {% if request.path == url %}active{% endif %}">
+        <a href="{{ url }}">
+            <i class="{{ status_detail.icon }}"></i>
+            {{ status|capfirst }} {% trans "Tasks" %}
+            ({{ status_detail.tasks.count }})
+        </a>
+    </li>
+{% endfor %}

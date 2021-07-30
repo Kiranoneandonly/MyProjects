@@ -1,0 +1,29 @@
+{% load i18n %}
+
+
+<div class="row-fluid">
+    <div class="assets">
+        <table class="table table-bordered table-striped table-condensed asset-table">
+            <tr>
+                <th>{% blocktrans %}<i class="fa fa-file"></i> Source Files{% endblocktrans %}</th>
+                <th>{% blocktrans %}Total WordCount{% endblocktrans %}</th>
+                <th>{% blocktrans %}Quantity{% endblocktrans %}</th>
+            </tr>
+        {% if not project.kit.source_files %}
+            <tr>
+                <td colspan=100%>{% blocktrans %}No source files{% endblocktrans %}</td>
+            </tr>
+        {% else %}
+            {% for asset, wordcount in asset_dict.iteritems %}
+                <tr>
+                    <td>
+                        <a href="{% url 'download_asset' project.id asset.id %}">{{ asset.orig_name }} <i class="fa fa-download"></i></a>
+                    </td>
+                        <td>{{ wordcount }}</td>
+                    <td>{{ task.quantity }}</td>
+                </tr>
+            {% endfor %}
+        {% endif %}
+        </table>
+    </div>
+</div>

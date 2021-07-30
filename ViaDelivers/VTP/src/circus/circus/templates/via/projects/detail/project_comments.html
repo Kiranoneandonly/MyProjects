@@ -1,0 +1,37 @@
+{% extends "via/projects/detail/base.html" %}
+{% load i18n %}
+
+{% block content %}
+{% if can_access_secure_job %}
+    <div class="row-fluid">
+        <div class="tabbable tabs-left span12">
+          <ul class="nav nav-tabs">
+          {% if show_client_messenger %}
+            <li{% if active_tab == 'client_comments' %} class="active"{% endif %}><a href="#tabClientComments" data-toggle="tab">{% trans "Client" %}</a></li>
+          {% endif %}
+            <li{% if active_tab == 'vendor_comments' %} class="active"{% endif %}><a href="#tabVendorComments" data-toggle="tab">{% trans "Supplier" %}</a></li>
+          </ul>
+          <div class="tab-content">
+          {% if show_client_messenger %}
+            <div class="tab-pane{% if active_tab == 'client_comments' %} active{% endif %}" id="tabClientComments">
+                {% include 'via/projects/detail/project_comments_clients.html' with comment_user_type="client" %}
+            </div>
+          {% endif %}
+            <div class="tab-pane{% if active_tab == 'vendor_comments' %} active{% endif %}" id="tabVendorComments">
+                {% include 'via/projects/detail/project_comments_vendors.html' with comment_user_type="vendor" %}
+            </div>
+          </div>
+        </div>
+    </div>
+{% endif %}
+{% endblock %}
+
+{% block script %}
+    <script type="text/javascript" src="{{ STATIC_URL }}shared/js/jquery.lightbox_me.js"></script>
+    {{ block.super }}
+    <script type="text/javascript" src="{{ STATIC_URL }}shared/js/filters/accordion-icon-switch.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}via/js/estimate.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}via/js/transitions_header.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}shared/js/disable_after_click.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}shared/js/data-confirm.js"></script>
+{% endblock %}

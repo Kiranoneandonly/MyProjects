@@ -1,0 +1,16 @@
+<div class="span1">
+    <ul class="nav nav-tabs nav-stacked">
+         {% url 'via_job_accounting_summary' project.id as url %}
+          <li{% if request.path == url %} class="active"{% endif %}>
+              <a href="{{url}}">Summary</a>
+          </li>
+         {% url 'via_job_accounting_invoice_list' project.id as url %}
+          <li{% if request.path == url %} class="active"{% endif %}>
+              <a href="{{ url }}">Invoices</a>
+          </li>
+         {% url 'via_job_accounting_purchase_order_list' project.id as url %}
+          <li{% if request.path == url %} class="active"{% endif %}>
+              <a href="{{ url }}">Purchase Orders</a>
+          </li>
+    </ul>
+</div>

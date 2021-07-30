@@ -1,0 +1,221 @@
+{% load i18n %}
+{% load reports_available %}
+{% load manager_exist %}
+{% load avatar_tags %}
+{% load new_messages_notification_check %}
+
+<!doctype html>
+<!-- paulirish.com/2008/conditional-stylesheets-vs-css-hacks-answer-neither/ -->
+<!--[if lt IE 7]> <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
+<!--[if IE 7]>    <html class="no-js lt-ie9 lt-ie8 ie7" lang="en"> <![endif]-->
+<!--[if IE 8]>    <html class="no-js lt-ie9 ie8" lang="en"> <![endif]-->
+<!--[if gt IE 8]><!--> <html lang="en"> <!--<![endif]-->
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <title>{% block title %}{{ APP_FULL_NAME }}{% endblock %}</title>
+
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ STATIC_URL }}shared/img/via_favi_V-16.png" />
+
+    {% block css_base %}
+        <link rel="stylesheet" href="{{ STATIC_URL }}shared/css/normalize.css" type="text/css" media="all"/>
+        <link rel="stylesheet" href="{{ STATIC_URL }}shared/css/bootstrap.min.css" type="text/css" media="all"/>
+        <link rel="stylesheet" href="{{ STATIC_URL }}shared/css/bootstrap-responsive.min.css" media="all" />
+        <link rel="stylesheet" href="{{ STATIC_URL }}shared/css/font-awesome.min.css" media="all" />
+        <link rel="stylesheet" href="{{ STATIC_URL }}shared/css/jquery-ui-1.12.1.min.css" type="text/css" media="all"/>
+        <link rel="stylesheet" href="{{ STATIC_URL }}shared/css/core.css" type="text/css" media="all"/>
+        <link rel="stylesheet" href="{{ STATIC_URL }}shared/css/select2.min.css" type="text/css" media="all"/>
+        <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Lato:400,700,700italic" type="text/css">
+        {% block css %}{% endblock %}
+    {% endblock %}
+
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+    <script src="{{ STATIC_URL }}shared/js/html5shiv.js" type="text/javascript"></script>
+    <![endif]-->
+    <script type="text/javascript" src="{{ STATIC_URL }}shared/js/jquery-1.12.4.min.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}shared/js/tinymce/tinymce.min.js" ></script>
+</head>
+<body>
+
+<div class="wrapper" id="wrap">
+    <div class="navbar navbar-fixed-top topbar">
+        <div class="navbar-inner">
+            <div class="content">
+                <div class="nav-img">
+                    {% block top_nav_img %}
+                    <a href="/">
+                        <img class="brand powered" src="{{ STATIC_URL }}shared/img/via.png" alt="{{ APP_FULL_NAME }}" title="{{ APP_FULL_NAME }}">
+                        <h1>{{ APP_NAME }}</h1>
+                    </a>
+                    {% endblock %}
+                </div>
+                {% block navbar_menu %}
+                    {% reports_available request.user.account_id as user_reports_available %}
+                    {% get_available_reports request.user.account_id as reports  %}
+                    {% if user_reports_available and reports %}
+                    <ul class="nav">
+                        <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" style="width:70px">{% trans "Reports" %} <b class="caret" ></b></a>
+                            <ul class="dropdown-menu reports-menu">
+                            {% for report in reports %}
+                                <li><a href="{% url report.client_report.report_url_reverse %}">{% trans report.client_report.report_name %}</a></li>
+                            {% empty %}
+                            {% endfor %}
+                            </ul>
+                      </li>
+                    </ul>
+                    {% endif %}
+                {% endblock %}
+            </div>
+            <div class="nav-collapse collapse">
+                <ul class="nav">
+
+                    {% block search_menu %}
+                    {% if request.user.id and request.user.is_authenticated and not hide_search %}
+                    <div id="search" class="nav-search">
+                        <input type="text" class="search-query" value="{{ search_query }}" />
+                        <a class="btn btn-primary search-submit"><i class="fa fa-search"></i></a>
+                    </div>
+                    {% endif %}
+                    {% endblock %}
+                    {% block login_menu %}
+                    {% if user.is_impersonate %}
+                     <li class="nav-right">
+                        <div id="messages" class="nav-messages">
+                            <a href="/impersonate/stop" class="btn btn-danger job-messages-button"  title="Impersonate: {{ request.user }} ({{ request.impersonator }})"><i class="fa fa-bug"></i></a>
+                        </div>
+                     </li>
+                    {% endif %}
+                    {% if request.user.country and request.user.user_timezone %}
+                     <li class="nav-right">
+                         <a href="#" title="Logged in from {{ request.user.country }}, TimeZone is {{ request.user.user_timezone }}"><i class="fa fa-map-marker"></i></a>
+                     </li>
+                    {% endif %}
+                    {% if show_client_messenger %}
+                    {# Bell icon for job comments #}
+                    <li class="nav-right">
+                        <div id="notifications" class="nav-messages" style="padding: 5px 5px 5px 0">
+                            <a id="notification-bell" class="btn btn-inverse job-notification-button" href="{% url 'job_notification_list_page_client' %}" title="{% trans "Notifications" %}">
+                                <i class="fa fa-bell"></i></a>
+                            {% if client_notification_unread_count %}
+                            <span class="badge badge-notify" style="position:relative;top: -10px;left: -15px;">{{ client_notification_unread_count }}</span>
+                            {% endif %}
+                        </div>
+                    </li>
+                    <li class="nav-right">
+                        <div id="messages" class="nav-messages">
+                            <a id="message-bell" class="btn btn-inverse job-messages-button" onclick="this.addClass(active)" href="{% url 'job_messages_list_page_client' %}" title="{% trans "Job Messages" %}">
+                                <i class="fa fa-comment"></i></a>
+                            {% if client_message_unread_count_all %}
+                            <span class="badge badge-notify" style="position:relative;top: -10px;left: -15px;">{{ client_message_unread_count_all }}</span>
+                            {% endif %}
+                        </div>
+                    </li>
+                    {% endif %}
+
+                    <li class="dropdown" id="menu1">
+                        <a class="dropdown-toggle" data-toggle="dropdown" href="#menu1">
+                            {% avatar request.user %} <span>Hello, {{ request.user.first_name|truncatechars:12 }}</span>
+                            <i class="fa fa-caret-down"></i>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a href="{% url 'edit_profile' %}">{% trans "My Profile" %}</a></li>
+                            {% if perms.people.change_account and request.user.is_client %}
+                                <li><a href="{% url 'update_client_organization' request.user.account.id %}">
+                                    {% blocktrans with client_type=user.account.client_type|capfirst %}
+                                        My {{ client_type }}
+                                    {% endblocktrans %}
+                                </a></li>
+                            {% endif %}
+                            {% if can_manage_users %}
+                                <li><a href="{% url 'client_manage_users' %}">{% trans "Manage Users" %}</a></li>
+                            {% endif %}
+                            {% if can_access_users_groups_options %}
+                                <li {% if current == 'groups' %}class="active"{% endif %}><a href="{% url 'client_manage_groups' %}">
+                                    {% if request.user.is_client_organization_administrator %}
+                                        {% blocktrans %}Manage Groups{% endblocktrans %}
+                                    {% else %}
+                                        {% blocktrans %}View Groups{% endblocktrans %}
+                                    {% endif %}
+                                </a></li>
+                            {% endif %}
+                            <li class="divider"></li>
+                            <li><a href="{% url 'logout' %}">{% trans "Logout" %}</a></li>
+                        </ul>
+                    </li>
+                    {% endblock %}
+                </ul>
+            </div>
+            {% include 'shared/components/notification_area.html' %}
+        </div>
+    </div><!-- /.navbar -->
+    {% block content_base %}
+        <div id="content">
+            <div class="container-fluid">
+                {% block content_breadcrumb %}
+                {% endblock %}
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }}">
+                            <button type="button" class="close" data-dismiss="alert">&times;</button>
+                            {% if 'safe' in message.tags %}{{ message|safe }}{% else %}{{ message }}{% endif %}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+
+                {% block content_header %}{% endblock %}
+                {% block content %}{% endblock %}
+                <br/>
+            </div><!-- container-fluid -->
+        </div><!-- content -->
+    {% endblock %}
+{#    <div id="push"></div>#}
+</div> <!-- #wrapper -->
+
+{% block footer %}
+    {% include "shared/_footer.html" %}
+{% endblock %}
+
+{# It's important that this template is not in a fixed-position div like the navbar. #}
+{% include "shared/components/notification_template.html" %}
+
+{% block script_base %}
+    <script type="text/javascript" src="{{ STATIC_URL }}shared/js/jquery-migrate-1.4.1.min.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}shared/js/jquery-ui-1.12.1.custom.min.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}shared/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}shared/js/css3-mediaqueries.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}shared/js/data-confirm.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}shared/js/alert-fadeout.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}shared/js/search.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}shared/js/jquery.cookie.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}shared/js/underscore-min.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}shared/js/notifications.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}shared/js/google_analytics.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}shared/js/select2.min.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}shared/js/bootstrap-datetimepicker.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}shared/js/bootstrap-datepicker.js"></script>
+    <script type="text/javascript">
+        $(function() {
+            search_setup("{% url 'client_project_search' %}");
+            VTP_Notifications.analysis_status_url = "{% url 'check_analysis_status' %}";
+            VTP_Notifications.start();
+
+            {% new_messages_notification_check request as new_messages_check %}
+            {% if show_client_messenger and new_messages_check %}
+                $('#message-bell').removeClass().addClass('btn btn-danger');
+            {% endif %}
+            {% if client_notification_unread_count %}
+                $('#notification-bell').removeClass().addClass('btn btn-danger');
+            {% endif %}
+         });
+    </script>
+    {% block script %}{% endblock %}
+{% endblock %}
+
+{% block googletagmanager %}
+    {% include "shared/_gtm.html" %}
+{% endblock %}
+
+</body>
+</html>

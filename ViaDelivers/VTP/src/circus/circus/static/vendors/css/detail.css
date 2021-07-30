@@ -1,0 +1,65 @@
+.section-title {
+    margin-bottom: 5px;
+}
+
+.translation-action-row .section-content {
+    min-height: 120px;
+}
+
+i, i.fa-file {
+    margin-right: 5px;
+    padding: 0;
+}
+
+
+.roomy-well > div {
+    padding: 5px;
+}
+
+.btn-group {
+    width: 100%;
+}
+
+.btn-width-full {
+    min-width: 100px;
+    margin: 5px 0;
+}
+
+/* section lockout and complete */
+
+.translation-action-row .locked-out, .translation-action-row .task-stage-complete {
+    min-height: 96px;
+}
+
+.locked-out {
+    background: #cccccc;
+}
+
+.section-replace-icon {
+    text-align: center;
+    margin-top: 20px;
+    display: block;
+    font-size: 70px;
+    color: #808080;
+}
+
+.task-stage-complete {
+    padding: 32px 0;
+    background: #cccccc;
+}
+@media (max-width: 767px) {
+    /* make table-list-item backgrounds fill screen */
+    .well.table-list {
+        padding: 0;
+    }
+
+    .table-list > .table-list-item > * {
+        padding: 0 20px;
+    }
+    .table-list > .table-list-item .btn {
+        margin-top: 5px;
+    }
+    .table-list > .table-list-item:nth-child(odd) {
+        background: #d2d2d2;
+    }
+}

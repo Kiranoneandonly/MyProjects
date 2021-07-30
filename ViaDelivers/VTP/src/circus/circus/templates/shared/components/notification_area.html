@@ -1,0 +1,22 @@
+{% load i18n %}
+
+<div id="notification_area">
+    <div class="analysis_notification analysis_processing" style="display: none;">
+    {% blocktrans %}
+        <p><i class="fa fa-spinner fa-pulse"></i> Your job is being analyzed. This may take some time, so we'll let you know when it's ready.</p>
+    {% endblocktrans %}
+    </div>
+    {# link target to be overwritten by javascript to the #}
+    {# specific job page, but this is a sane default. #}
+    {%  if portal == 'via' %}
+        {% url 'via_jobs_status_list' 'queued' as queued_jobs %}
+    {% else %}
+        {% url 'client_project_status_list' 'queued' as queued_jobs %}
+    {% endif %}
+    <div class="analysis_notification analysis_complete" style="display: none;">{% blocktrans with queued_jobs=queued_jobs%}
+        <p>
+            <i class="fa fa-check-circle"></i> Your Estimate is ready.
+            <a href="{{ queued_jobs }}" class="btn btn-primary btn-small analysis_result_link">View Results</a>
+        </p>
+    {% endblocktrans %}</div>
+</div>

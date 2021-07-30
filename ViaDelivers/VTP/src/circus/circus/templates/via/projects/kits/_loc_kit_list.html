@@ -1,0 +1,147 @@
+{% load i18n %}
+{% load bootstrap %}
+{% load humanize %}
+{% load circus_loc_kit %}
+
+{% if not project.can_edit_kit %}
+<div class="row-fluid">
+    <p>{% trans "Current project state doesn't allow editing the localization kit" %}</p>
+</div>
+<br/>
+{% endif %}
+
+<div class="row-fluid">
+    <div class="span12">
+        {% if project.kit %}
+            {% if project.kit.pretranslating_or_prepping %}
+                <div class="row-fluid">
+                    <p><i class="fa fa-refresh fa-spin"></i> {% trans "Refreshing Loc Kit" %}</p>
+                </div>
+                <br/>
+            {% endif %}
+
+            <table class="table table-bordered table-hover">
+                <thead>
+                <tr>
+                    <th>{% blocktrans %}Loc Kit Target{% endblocktrans %}</th>
+                    <th>{% blocktrans %}Loc Kit File{% endblocktrans %}</th>
+                    <th>{% blocktrans %}Loc Kit Code{% endblocktrans %}</th>
+                    <th>{% blocktrans %}Loc Kit Reference{% endblocktrans %}</th>
+                    {% if can_edit_job and project.can_edit_kit and project.kit.analysis_code and not project.kit.pretranslating_or_prepping %}
+                    <th>{% blocktrans %}Loc Kit Refresh{% endblocktrans %}</th>
+                    {% endif %}
+                </tr>
+                </thead>
+                <tbody>
+                {% for ltk in project.kit.localetranslationkit_files %}
+                    <tr>
+                        <td>{{ ltk.target_locale }}</td>
+                        <td>
+                            {% if can_edit_job and project.can_edit_kit %}
+                                {% if not project.kit.pretranslating_or_prepping  %}
+                                    {% if ltk.translation_file %}
+                                        <form novalidate action="" method="post" class="pull-right">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="ltk_id" value="{{ ltk.id }}">
+                                            <button name="delete_translation_file" type="submit" class="btn btn-danger"><i class="fa fa-times"></i>&nbsp;{% trans "Delete" %}</button>
+                                        </form>
+                                        <button class="btn small-btn btn-success upload-btn pull-right"
+                                             data-lightbox="translation-file-upload-{{ ltk.id }}"
+                                                ><i class="fa fa-undo fa-white"></i>
+                                            {% blocktrans %}Replace{% endblocktrans %}
+                                        </button>
+                                    {% else %}
+                                        <button class="btn small-btn btn-warning upload-btn pull-right"
+                                            data-lightbox="translation-file-upload-{{ ltk.id }}"
+                                            ><i class="fa fa-upload fa-white"></i>
+                                            {% blocktrans %}Upload{% endblocktrans %}
+                                        </button>
+                                    {% endif %}
+                                    {% include "via/projects/kits/_loc_kit_trans_file_upload_form.html" %}
+                                {% endif %}
+                            {% endif %}
+                            {% if ltk.translation_file %}
+                                <a href="{% url 'download_localetranslationkit_translation_file' ltk.id %}">{{ ltk.translation_file_name }} <i class="fa fa-download"></i></a>
+                                - <span class="filesize">{{ ltk.modified | date:"M d Y" }} {{ ltk.modified |time:"H:i" }}</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if ltk.analysis_code %}
+                                <small>
+                                    <code class="analysis_code">{{ ltk.analysis_code|default_if_none:"" }}</code>
+                                </small>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if ltk.reference_file %}
+                                <form novalidate action="" method="post" class="pull-right">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="ltk_id" value="{{ ltk.id }}">
+                                    <button name="delete_reference_file" type="submit" class="btn btn-danger"><i class="fa fa-times"></i>&nbsp;{% trans "Delete" %}</button>
+                                </form>
+                                <button class="btn small-btn upload-btn pull-right" data-lightbox="reference-file-upload-{{ ltk.id }}">
+                                    <i class="fa fa-upload fa-white"></i>
+                                    {% trans "Replace" %}
+                                </button>
+                                <a href="{{ ltk.reference_file.url }}">{{ ltk.reference_file_name }} <i class="fa fa-download"></i></a>
+{#                                <span class="filesize">({{ ltk.reference_file.size | filesizeformat }})</span>#}
+                            {% else %}
+                                <button class="btn small-btn upload-btn pull-right" data-lightbox="reference-file-upload-{{ ltk.id }}">
+                                    <i class="fa fa-upload fa-white"></i>
+                                    {% trans "Upload" %}
+                                </button>
+                            {% endif %}
+                            <div id="reference-file-upload-{{ ltk.id }}" class="delivery-form">
+                                <h3>{% trans "Upload Loc Kit Reference" %}</h3>
+                                <p>{% blocktrans with target=ltk.target_locale lcid=ltk.target_locale.lcid %}
+                                    Provide a file for the supplier to reference for target {{ target }} ({{ lcid }}).
+                                {% endblocktrans %}</p>
+                                {% reference_file_upload_form ltk %}
+                            </div>
+                        </td>
+                        {% if can_edit_job and project.can_edit_kit and project.kit.analysis_code and not project.kit.pretranslating_or_prepping %}
+                        <td>
+                            <form novalidate action="" method="post">
+                                {% csrf_token %}
+                                <input type="hidden" name="ltk_id" value="{{ ltk.id }}">
+                                <button name="refresh_translation_file" type="submit" class="btn small-btn btn-info pull-right"><i class="fa fa-language"></i>&nbsp;{% trans "Refresh" %}</button>
+                            </form>
+                        </td>
+                        {% endif %}
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="100%">
+                            <p>{% blocktrans %}No Translation file{% endblocktrans %}</p>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            <div class="row-fluid">
+                <div class="span2">
+                    <small>{% trans "Analysis Code:" %}
+                        <code class="analysis_code">{{ project.kit.analysis_code|default_if_none:"None Recorded" }}</code>
+                    </small>
+                </div>
+                {% if can_edit_job and project.can_edit_kit and project.kit.analysis_code and not project.kit.pretranslating_or_prepping %}
+                <div class="span2 pull-right">
+                    <form novalidate action="" method="post">
+                        {% csrf_token %}
+                        <button name="create_loc_kits" type="submit" class="btn small-btn btn-info pull-right"><i class="fa fa-language"></i>&nbsp;{% trans "Create All Loc Kits" %}</button>
+                    </form>
+                </div>
+                <div class="span2 pull-right">
+                    <form novalidate action="" method="post">
+                        {% csrf_token %}
+                        <button name="delete_loc_kits" type="submit" class="btn small-btn btn-danger pull-right"><i class="fa fa-remove"></i>&nbsp;{% trans "Delete All Loc Kits" %}</button>
+                    </form>
+                </div>
+                {% endif %}
+            </div>
+        {% else %}
+            <p>{% blocktrans %}No localization kit{% endblocktrans %}</p>
+        {% endif %}
+    </div>
+</div>
+<br/><br/>

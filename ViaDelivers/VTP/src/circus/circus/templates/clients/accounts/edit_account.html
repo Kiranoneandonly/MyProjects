@@ -1,0 +1,115 @@
+{% extends "shared/external/theme_base.html" %}
+{% load i18n %}
+{% load bootstrap %}
+
+{% block title %}{% trans "Edit Account" %}{% endblock %}
+
+{% block css %}{% endblock %}
+
+{% block content_breadcrumb %}
+    <ul class="breadcrumb">
+        <li><i class="fa fa-home"></i> <a href="/>{% trans "Home" %}</a> <span class="divider"></span><i class="fa fa-chevron-right"></i></li>
+        <li class="active">{% trans "Edit Account" %}</li>
+    </ul>
+{% endblock %}
+
+{% block content_header %}
+  <div class="row-fluid">
+      <div class="span4"><h1 class="manage-users-header">{% blocktrans %}Edit Account{% endblocktrans %}</h1></div>
+  </div>
+{% endblock %}
+{% block content %}
+    <div class="row">
+        <div class="span2 well">
+            <ul class="nav nav-list">
+                <li><a href="/accounts/profile">Edit Profile</a></li>
+                <li class="active"><a href="/client/client/{{user.account_id}}/edit">Edit Organization</a></li>
+                <li><a href="/client/users/manage">Manage Users</a></li>
+            </ul>
+        </div>
+        <div class="span5">
+            <div class="row-fluid">
+                <div class="span12">
+                    <h2 class="dashHead no-margin" ><i class="fa fa-user"></i> {% trans "Account Details" %}</h2>
+                    <div class="dashWidget">
+                        <form novalidate class="form-horizontal portlet-form" method="POST" target="">
+                          <label>Organization Name</label>
+                          <input type="text" value="{{client.account}}">
+
+                          <label>Department Name</label>
+                          <input type="text" value="{{client.department}}">
+
+                          <label>Vertical</label>
+                          <input type="text" value="{{client.manifest.vertical}}">
+
+                          <label>Pricing</label>
+                          <input type="text" value="{{client.manifest.pricing_scheme}}">
+
+                          <label>Website address</label>
+                          <input type="text" value="{{client.account.website}}">
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="span5">
+            <div class="row-fluid">
+                <div class="span12">
+                    <h2 class="dashHead no-margin"><i class="fa fa-lock"></i> {% trans "Billing Details" %}</h2>
+                    <div class="dashWidget">
+                        <form novalidate class="form-horizontal portlet-form" method="POST" target="">
+                          <!-- TODO -->
+                          <label>Billing Mode</label>
+                          <select>
+                            <option>Corporate Account</option>
+                          </select>
+
+                          <label>Address</label>
+                          <input type="text" value="{{client.mailing_street}}">
+
+                          <label>City</label>
+                          <input type="text" value="{{client.mailing_city}}">
+
+                          <label>State</label>
+                          <select name="city" value="{{client.mailing_state}}">
+                            <option>District of Columbia</option>
+                          </select>
+
+                          <label>Zip/Postal Code</label>
+                          <input type="text" name="zip" value="{{client.mailing_postal_code}}">
+
+                          <label>Country/Region</label>
+                          <select name="country" value="{{client.mailing_country}}">
+                            <option>USA</option>
+                          </select>
+
+                          <label>Telephone</label>
+                          <input name="country" value="{{client.phone}}" type="text">
+
+                          <label>Fax</label>
+                          <input name="country" value="{{client.fax}}" type="text">
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="span3 offset9">
+            <div class="row-fluid">
+                <div class="span12">
+                      <!-- TODO: Add more fields? -->
+                      <div>
+                        <a href="/client/users/manage" class="btn btn-large cancel-button" href="index.html">Cancel</a>
+                        <button class="btn-primary btn btn-large" type="submit">Submit</button>
+                      </div>
+                    
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block script %}
+{% endblock %}

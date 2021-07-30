@@ -1,0 +1,60 @@
+{% extends "via/projects/detail/base.html" %}
+{% load i18n %}
+{% load bootstrap %}
+
+{% block content %}
+<div class="row-fluid">
+    {% include "via/projects/accounting/_base.html" %}
+    <div class="span11">
+        <div class="widget-box">
+            <div class="widget-title">
+                <h4>{% trans "Purchase Orders" %}</h4>
+            </div>
+            <div class="widget-content">
+                <table class="table table-bordered table-hover">
+                    <thead>
+                    <tr>
+                        <th>{% trans "PO #" %}</th>
+                        <th>{% blocktrans %}Supplier{% endblocktrans %}</th>
+                        <th>{% blocktrans %}Due Date{% endblocktrans %}</th>
+                        <th>{% trans "PO Total" %}</th>
+                        <th>{% blocktrans %}Status{% endblocktrans %}</th>
+                        <th>{% blocktrans %}DL{% endblocktrans %}</th>
+                        <th>{% blocktrans %}Email{% endblocktrans %}</th>
+                        <th>{% trans "Paid" %}</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+{#                                        {% for invoices in project.invoices.all %}#}
+                        <tr>
+{#                                                <td>{{ asset.orig_name }}</td>#}
+{#                                                <td>{{ analysis.target_locale }}</td>#}
+{#                                                <td>{{ analysis.total }}</td>#}
+                            <td><a href="#">71194</a></td>
+                            <td>Omni Technologies</td>
+                            <td>2013-05-01</td>
+                            <td>67.700</td>
+                            <td><a href="#">New</a> <a href="#"><i class="fa fa-share-alt"></i></a></td>
+                            <td><a href="#"><i class="fa fa-download"></i></a></td>
+                            <td><a href="#"><i class="fa fa-envelope"></i></a></td>
+                            <td><input type="checkbox" value="ok" id="po_paid_checkbox1" disabled="true"></td>
+                            <td>
+                                <a href="#"><i class="fa fa-edit"></i></a>
+                                <a href="#"><i class="fa fa-times"></i></a>
+                            </td>
+                        </tr>
+
+{#                                        {% empty %}#}
+{#                                            <tr>#}
+{#                                                <td>Add first Invoice</td>#}
+{#                                            </tr>#}
+{#                                        {% endfor %}#}
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

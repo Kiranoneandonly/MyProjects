@@ -1,0 +1,129 @@
+{% load i18n %}
+{% load bootstrap %}
+{% load circus_loc_kit %}
+
+{% if not project.can_edit_source_files %}
+<div class="row-fluid">
+    <p>{% trans "Current project state doesn't allow editing the Source Files" %}</p>
+</div>
+<br/>
+{% endif %}
+
+<div class="row-fluid">
+    <div class="span12">
+        <table class="table table-bordered table-hover">
+        <thead>
+        <tr>
+            <th>{% blocktrans %}Source File{% endblocktrans %}</th>
+            <th>{% blocktrans %}Prepared File{% endblocktrans %}</th>
+            {% if project.can_edit_source_files %}
+                <th colspan="100%"></th>
+            {% endif %}
+        </tr>
+        </thead>
+        <tbody>
+        {% for asset in project.kit.source_files.all %}
+            <tr>
+                <td width="40%">
+                    {% if asset.file_exists %}
+                        <a href="{% url 'download_asset' project.id asset.id %}">
+                            {{ asset.orig_name }} <i class="fa fa-download"></i></a>
+{#                        <span class="filesize">({{ asset.orig_file.size | filesizeformat }})</span>#}
+                    {% else %}
+                        {{ asset.orig_name }}
+                    {% endif %}
+                </td>
+                <td width="40%">
+                    {% if asset.prepared_file %}
+                    <a href="{{ asset.prepared_file.url }}">
+                        {{ asset.prepared_name }} <i class="fa fa-download"></i></a>
+{#                        <span class="filesize">({{ asset.prepared_file.size | filesizeformat }})</span>#}
+                    {% endif %}
+
+                    {% if project.can_edit_source_files %}
+                        {% if asset.prepared_file %}
+                            <form novalidate action="{% url 'prepared_file_remove' asset.id %}" method="post" class="pull-right">
+                                {% csrf_token %}
+                                <button type="submit" class="btn small-btn btn-danger">
+                                    <i class="fa fa-times"></i>&nbsp;{% trans "Remove" %}
+                                </button>
+                            </form>
+                            <button type="button" class="btn small-btn upload-btn pull-right"
+                                data-lightbox="prepared-file-upload-{{ asset.id }}">
+                                <i class="fa fa-upload fa-white"></i>&nbsp;{% trans "Replace" %}
+                            </button>
+                        {% elif asset.file_exists %}
+                            <button type="button" class="btn small-btn upload-btn" data-lightbox="prepared-file-upload-{{ asset.id }}">
+                            <i class="fa fa-upload fa-white"></i>
+                                {% trans "Upload Prepared File" %}</button>
+                        {% endif %}
+                        <div id="prepared-file-upload-{{ asset.id }}" class="delivery-form">
+                            <h3>{% trans "Upload Prepared File" %}</h3>
+                            {% prepared_file_upload_form asset %}
+                        </div>
+                    {% endif %}
+                </td>
+                {% if asset.file_exists and project.can_edit_source_files %}
+                <td width="10%">
+                    <form novalidate name="DELETE_ASSET{{ asset.id }}" action="" method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="asset_id" value="{{ asset.id }}">
+                        <input type="hidden" name="kits_asset_analysis_delete" value="{{ asset.id }}">
+                        <a type="submit"
+                           class="btn btn-danger pull-right"
+                           href="javascript:document.DELETE_ASSET{{ asset.id }}.submit()"
+                           data-confirm="{% trans "Are you sure you want to DELETE Source File?" %}">
+                            <i class="fa fa-times"></i>&nbsp;{% trans "Delete" %}
+                        </a>
+                    </form>
+                </td>
+                <td width="10%">
+                    <form novalidate name="MOVE_ASSET{{ asset.id }}" action="" method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="asset_id" value="{{ asset.id }}">
+                        <input type="hidden" name="kits_asset_move_from_source_to_reference" value="{{ asset.id }}">
+                        <a type="submit"
+                           class="btn small-btn upload-btn pull-right"
+                           href="javascript:document.MOVE_ASSET{{ asset.id }}.submit()"
+                           data-confirm="{% trans "Are you sure you want to move this file to a Job Reference File?" %}">
+                            <i class="fa fa-arrows-alt"></i>&nbsp;{% trans "Move Reference" %}
+                        </a>
+                    </form>
+                </td>
+                {% else %}
+                    <td width="20%">&nbsp;</td>
+                {% endif %}
+            </tr>
+        {% empty %}
+            <tr>
+                <td colspan="100%">
+                    <p>{% blocktrans %}No Source file{% endblocktrans %}</p>
+                </td>
+            </tr>
+        {% endfor %}
+        {% if project.kit.source_files.all|length > 1 %}
+            <tr>
+                <td colspan="100%">
+                    <a class="btn btn-primary"
+                       href="{% url 'project_source_files_zip' project.id %}">
+                        <i class="fa fa-download"></i>
+                        {% blocktrans %}Download All{% endblocktrans %}
+                    </a>
+                </td>
+            </tr>
+        {% endif %}
+        </tbody>
+        </table>
+        {% if project.can_edit_source_files %}
+        <button data-lightbox="source-file-upload-{{ project.kit.id }}"
+           class="btn small-btn btn-success upload-btn"
+                ><i class="fa fa-upload fa-white"></i>
+            {% blocktrans %}Upload Source File{% endblocktrans %}
+        </button>
+        <div id="source-file-upload-{{ project.kit.id }}" class="delivery-form">
+            <h3>{% trans "Upload Source File" %}</h3>
+            {% source_upload_form project.kit %}
+        </div>
+        {% endif %}
+    </div>
+</div>

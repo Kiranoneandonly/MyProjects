@@ -1,0 +1,17 @@
+{% load humanize %}A vendor has not responded to a job assignment.
+
+Vendor: {{ vendor|safe }}.
+Job: {{ project.job_number }}.
+Client: {{ project.client.name|safe }} ({{ project.client_poc.get_full_name }})
+Due Date: {{ project.due|date:"r" }}.
+
+Vendor notified at: {{ project.started_timestamp }}.
+Time elapsed: {{ project.started_timestamp|timesince }}.
+
+Note: The task can be reassigned by VIA and if it has been it will not be present on VTP.
+
+For more information, please visit {{ vtp_url }}.
+
+________________________________________
+
+{% include 'notifications/_email_footer.txt' %}

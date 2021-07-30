@@ -1,0 +1,90 @@
+.stat-boxes {
+    display: inline-block;
+    list-style: none outside none;
+    margin: 0 0 10px;
+    text-align: center;
+}
+
+.stat-boxes li {
+    display: inline-block;
+    line-height: 18px;
+    padding: 0 20px;
+}
+
+.stat-boxes .left, .stat-boxes .right {
+    text-shadow: 0 1px 0 #ffffff;
+    float: left;
+}
+.stat-boxes .left {
+    margin-right: 12px;
+    padding: 10px 14px 6px 4px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.stat-boxes .right {
+    font-size: 14px;
+    padding: 19px 10px 7px 0;
+    text-align: center;
+    width: 75px;
+    color: #666666;
+}
+.stat-boxes .left span, .stat-boxes .right strong {
+    display: block;
+}
+.stat-boxes .right strong {
+    font-size: 28px;
+    margin-bottom: 3px;
+    margin-top: 6px;
+}
+
+.stat-boxes .peity_bar_queued, .stat-boxes .peity_line_queued  {
+    color: #4555DB;
+}
+
+.stat-boxes .peity_bar_inestimate, .stat-boxes .peity_line_inestimate  {
+    color: #3498DB;
+}
+
+.stat-boxes .peity_bar_estimated, .stat-boxes .peity_line_estimated  {
+    color: #34495E;
+}
+
+.stat-boxes .peity_bar_hold, .stat-boxes .peity_line_hold  {
+    color: #8B4513;
+}
+
+.stat-boxes .peity_bar_unassigned, .stat-boxes .peity_line_unassigned  {
+    color: #88D3AB;
+}
+
+.stat-boxes .peity_bar_active, .stat-boxes .peity_line_active  {
+    color: #27AE60;
+}
+
+.stat-boxes .peity_bar_overdue, .stat-boxes .peity_line_overdue  {
+    color: #C0392B;
+}
+
+.stat-boxes .peity_bar_unapproved_pos, .stat-boxes .peity_line_unapproved_pos  {
+    color: #216c2a;
+}
+
+.stat-boxes .peity_bar_delivered, .stat-boxes .peity_bar_delivered  {
+    color: #706e9b;
+}
+
+.stat-boxes .peity_bar_completed, .stat-boxes .peity_line_completed  {
+    color: #7F8C8D;
+}
+
+form#filter-form {
+    display: inline-block;
+    margin-bottom: 0;
+}
+
+#content {
+	position: absolute;
+    margin-top: 30px;
+}
+

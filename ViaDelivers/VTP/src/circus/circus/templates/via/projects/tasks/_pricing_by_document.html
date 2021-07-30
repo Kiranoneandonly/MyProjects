@@ -1,0 +1,132 @@
+{% load i18n %}
+{% load bootstrap %}
+{% load humanize %}
+{% load currency_filter %}
+{% load get_item %}
+
+{% block css %}
+        <link rel="stylesheet" href="{{ STATIC_URL }}shared/css/bootstrap.min.css" type="text/css" media="all" />
+        <link rel="stylesheet" href="{{ STATIC_URL }}shared/css/jquery-ui-1.12.1.min.css" type="text/css" media="all"/>
+        <link rel="stylesheet" href="{{ STATIC_URL }}via/css/via.css" type="text/css" media="all"  />
+{% endblock %}
+
+
+<div id="modal" class="modal hide fade in" style="display: block" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="false">
+    <div class="modal-header">
+        <h3 id="myModalLabel">Price per Document</h3>
+    </div>
+    <div class="modal-body">
+        <div class="comment_bod">
+            {% block content %}
+                <div class="tabbable"> <!-- Only required for left/right tabs -->
+                  <ul class="nav nav-tabs">
+                    <li class="active"><a href="#tabDocument" data-toggle="tab"><i class="fa fa-cog"></i> Language >> Documents</a></li>
+                    <li><a href="#tabLanguage" data-toggle="tab"><i class="fa fa-th"></i> Documents >> Language</a></li>
+                  </ul>
+
+                  <div class="tab-content">
+                      <div class="tab-pane active" id="tabDocument">
+                          <table class="table table-bordered table-fixed">
+                            <thead>
+                            <tr>
+                                <th>{% trans "File" %}</th>
+                                <th>{% trans "Price" %} <span class="currency-code">(USD)</span></th>
+                                <th>{% trans "Word Count" %}</th>
+                            </tr>
+                            </thead>
+                              {% for target in project.target_locales.all %}
+                                {% with target_details=project.target_price_details|get_item:target.id %}
+                                    <tr class="target-summary-row-group" id="targetRow{{target.id}}">
+                                        <td class="sub" colspan="100%">{{ target }}</td>
+                                    </tr>
+
+                                    <tbody id="taskGroup{{target.id}}">
+                                        {% for document in project.kit.source_files %}
+                                            {% asset_target_price document.id target.id as targetobject%}
+                                        <tr>
+                                            <td>{{ document.orig_name }}</td>
+                                            {% if project.kit.source_files|length == 1 %}
+                                                {% if project.is_standard_speed %}
+                                                    <td>{{ target_details.target_price|currency }}</td>
+                                                {% else %}
+                                                    <td>{{ target_details.target_express_price|currency }}</td>
+                                                {% endif %}
+                                            {% else %}
+                                                {% if project.is_standard_speed %}
+                                                    <td>{{ targetobject.asset_net_price|currency }}</td>
+                                                {% else %}
+                                                   <td>{{ targetobject.asset_express_net_price|currency }}</td>
+                                                {% endif %}
+                                            {% endif %}
+                                        <td>{{ targetobject.asset_wordcount|default_if_none:'' }}</td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                {% endwith %}
+                            {% endfor %}
+                        </table>
+                      </div>
+
+                      <div class="tab-pane{% if active_tab == 'language' %} active{% endif %}"  id="tabLanguage">
+                        <table class="table table-bordered table-fixed">
+                        <thead>
+                        <tr>
+                            <th>{% trans "Target Language" %}</th>
+                            <th>{% trans "Price" %} <span class="currency-code">(USD)</span></th>
+                            <th>{% trans "Word Count" %}</th>
+                        </tr>
+                        </thead>
+
+                        {% for document in project.kit.source_files %}
+                            {% for target in project.target_locales.all %}
+                                {% with target_details=project.target_price_details|get_item:target.id %}
+                                    {% if forloop.counter == 1 %}
+                                    <tr class="target-summary-row-group" id="targetRow{{target.id}}">
+                                        <td class="sub" colspan="100%">{{ document.orig_name }}</td>
+                                    </tr>
+                                    {% endif %}
+                                    <tr class="target-summary-row" id="targetRow{{target.id}}">
+                                        <td>{{ target }}</td>
+                                        {% asset_target_price document.id target.id as targetobject%}
+                                        {% if project.kit.source_files|length == 1 %}
+                                            {% if project.is_standard_speed %}
+                                                <td>{{ target_details.target_price|currency }}</td>
+                                            {% else %}
+                                                <td>{{ target_details.target_express_price|currency }}</td>
+                                            {% endif %}
+                                        {% else %}
+                                            {% if project.is_standard_speed %}
+                                                <td>{{ targetobject.asset_net_price|currency }}</td>
+                                            {% else %}
+                                               <td>{{ targetobject.asset_express_net_price|currency }}</td>
+                                            {% endif %}
+                                        {% endif %}
+                                        <td>{{ targetobject.asset_wordcount|default_if_none:'' }}</td>
+                                    </tr>
+                                {% endwith %}
+                            {% endfor %}
+                        {% endfor %}
+                        </table>
+                        </div>
+                    </div>
+                </div>
+            {% endblock %}
+        </div>
+    </div>
+    <div class="modal-footer">
+        <div class="row-fluid">
+            <div class="span3">
+                <a href="{% url 'price_per_document_export' project.id %}" class="btn"><i class="fa fa-cloud-download fa-white"></i> {% trans "Export" %}</a>
+            </div>
+            <div class="span7"></div>
+            <div class="span2">
+                 <a href="{% url 'via_job_detail_estimate' project.id %}" class="btn"><i class="fa fa-times"></i> {% trans "Close" %}</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block script %}
+    <script type="text/javascript" src="{{ STATIC_URL }}shared/js/jquery-1.12.4.min.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}shared/js/bootstrap.min.js"></script>
+{% endblock %}

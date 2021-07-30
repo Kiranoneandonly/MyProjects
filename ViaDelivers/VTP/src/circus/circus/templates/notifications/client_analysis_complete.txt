@@ -1,0 +1,17 @@
+{% load humanize %}{% load currency_filter %}The initial analysis of your job is complete. View the results and proceed with your order here:
+
+{{ vtp_url }}{% url 'client_quote' project.id %}
+
+Requested by {{ project.client_poc.get_full_name|safe }} of {{ project.client.name|safe }}.
+Notification e-mail: {{ project.client_poc.email }}.
+Phone: {{ project.client_poc.phone }}.
+
+Job Name: {{ project.name|safe }}.
+Source Language : {{ project.source_locale }}.
+Target Language(s) : {{ project.get_target_locale_name_list }}.
+
+For more information, please visit {{ vtp_url }}.
+
+________________________________________
+
+{% include 'notifications/_email_footer.txt' %}

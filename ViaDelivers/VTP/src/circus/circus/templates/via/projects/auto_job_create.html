@@ -1,0 +1,111 @@
+{% extends "via/theme_base.html" %}
+{% load i18n %}
+{#{% load url from future %}#}
+{% load bootstrap %}
+{% load widget_tweaks %}
+
+{% block title %}{% trans "New Job" %}{% endblock %}
+
+{% block css %}
+    <link rel="stylesheet" href="{{ STATIC_URL }}shared/css/datetimepicker.css" media="screen" />
+{% endblock %}
+
+{% block extra_head %}{% endblock %}
+
+{% block content_header %}{% endblock %}
+
+{% block content %}
+
+<ul class="breadcrumb">
+    <li><i class="fa fa-home"></i> <a href="{% url 'via_dashboard' %}">{% trans "Home" %}</a> <span class="divider"><i class="fa fa-chevron-right"></i></span></li>
+    <li><a href="{% url 'via_jobs_list' %}">{% trans "Jobs" %}</a> <span class="divider"><i class="fa fa-chevron-right"></i></span></li>
+    <li class="active">{% trans "New Auto Estimate" %}</li>
+</ul>
+
+<div class="container">
+
+  <div class="row-fluid">
+    <div class="span12">
+        <form novalidate action="" method="post" class="form-horizontal">
+            {% csrf_token %}
+            <div class="row-fluid">
+                <div class="span6">
+                    <h2><i class="fa fa-magic"></i> {% trans "New Auto Estimate" %}</h2>
+                </div>
+
+                <div class="span6 form-actions">
+                    <div class="row-fluid">
+                        <div class="span4">
+                            <i class="fa fa-globe fa-2x" title="{{ TIMEZONE_BLURB_TEXT }}"></i>
+                        </div>
+                        <div class="span8">
+                            <span class="pull-right">
+                                <a href="{% url 'via_dashboard' %}" class="btn"><i class="fa fa-times-circle"></i> {% trans "Cancel" %}</a>
+                                <button type="submit" class="btn btn-primary"><i class="fa fa-check-circle-o"></i> {% trans "Continue" %}</button>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row-fluid">
+                <div class="span6">
+                    {{ form.job_number|bootstrap }}
+                    {{ form.name|bootstrap }}
+                    {{ form.client|bootstrap }}
+                    {{ form.client_poc|bootstrap }}
+                    {{ form.project_reference_name|bootstrap }}
+                    {{ form.internal_via_project|bootstrap }}
+                </div>
+            </div>
+        </form>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block script %}
+    <script>
+        $(document).ready(function(){
+            $('#id_project_speed').select2();
+            $('#id_status').select2();
+            $('#id_industry').select2();
+            $('#id_source_locale').select2({
+                placeholder: "{% trans 'Select Source' %}"
+            });
+            $('#id_target_locales').select2({
+                placeholder: "{% trans 'Select Target(s)' %}"
+            });
+            $('#id_client').select2();
+            $('#id_client_poc').select2();
+            $('#id_account_executive').select2();
+            $('#id_project_manager').select2();
+            $('#id_estimator').select2();
+        });
+
+        function json_to_select(url, select_selector) {
+        /*
+         Fill a select input field with data from a getJSON call
+         Inspired by: http://stackoverflow.com/questions/1388302/create-option-on-the-fly-with-jquery
+        */
+            $.getJSON(url, function(data) {
+            var opt=$(select_selector);
+            var old_val=opt.val();
+                opt.html('');
+                $.each(data, function () {
+                    opt.append($('<option/>').val(this.id).text(this.value));
+                });
+                opt.val(old_val);
+                opt.change();
+            })
+        }
+
+
+       $(function(){
+         $('#id_client').change(function(){
+           json_to_select('/via/client-poc-lookup/?client=' + $(this).val(), '#id_client_poc');
+         })
+        });
+
+    </script>
+{% endblock %}

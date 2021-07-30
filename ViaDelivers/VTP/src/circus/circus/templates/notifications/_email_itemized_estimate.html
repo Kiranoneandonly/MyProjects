@@ -1,0 +1,83 @@
+{% load currency_filter %}
+{% load get_item %}
+{# this contains prices for both standard and express speeds #}
+<table style="width:100%; border-collapse: collapse; border: thin solid #666666;">
+    {% if show_subtotals %}
+        <tr>
+            <th colspan="3" style="background-color: #CCCCCC;">&nbsp;</th>
+
+            <th style="background-color: #cccccc; text-align: right; font-family: Verdana, Tahoma, Arial, sans-serif; font-size: 12px; line-height: 1.5; padding-right: 2ex;">Standard</th>
+            {% if not project.no_express_option %}
+                <th style="background-color: #cccccc; text-align: right; font-family: Verdana, Tahoma, Arial, sans-serif; font-size: 12px; line-height: 1.5; padding-right: 2ex;">Express</th>
+            {% endif %}
+
+        </tr>
+    {% endif %}
+    {% for target in project_target_tasks.targets %}
+        <tr>
+            <th colspan="3" style="background-color: #cccccc; text-align: left; font-family: Verdana, Tahoma, Arial, sans-serif; font-size: 12px; line-height: 1.5;">{{ target }}</th>
+
+            {% if show_subtotals %}
+                {% with target_details=project.target_price_details|get_item:target.id %}
+                <td style="background-color: #CCCCCC; text-align: right; font-family: monospace; font-size: 12px; font-weight: bold; padding-left: 1em; padding-right: 1ex">
+                      {{ target_details.target_price|currency }}</td>
+                {% if not project.no_express_option %}
+                <td style="background-color: #CCCCCC; text-align: right; font-family: monospace; font-size: 12px; font-weight: bold; padding-left: 1em; padding-right: 1ex">
+                    {{ target_details.target_express_price|currency }}</td>
+                {% endif %}
+                {% endwith %}
+            {% else %}
+                {% if forloop.first %}
+                    <th style="background-color: #cccccc; text-align: right; font-family: Verdana, Tahoma, Arial, sans-serif; font-size: 12px; line-height: 1.5;">Standard</th>
+                    {% if not project.no_express_option %}
+                    <th style="background-color: #cccccc; text-align: right; font-family: Verdana, Tahoma, Arial, sans-serif; font-size: 12px; line-height: 1.5;">Express</th>
+                    {% endif %}
+                {% else %}
+                    <th style="background-color: #cccccc; text-align: right; font-family: Verdana, Tahoma, Arial, sans-serif; font-size: 12px; line-height: 1.5;"></th>
+                    {% if not project.no_express_option %}
+                    <th style="background-color: #cccccc; text-align: right; font-family: Verdana, Tahoma, Arial, sans-serif; font-size: 12px; line-height: 1.5;"></th>
+                    {% endif %}
+                {% endif %}
+            {% endif %}
+
+        </tr>
+        {% for task in target.tasks %}
+            {% if task.billable %}
+            <tr>
+                <td>&nbsp;</td>
+                <td style="font-family: Helvetica, Verdana, Tahoma, Arial, sans-serif; font-size: 12px; line-height: 1.5;">{{ task.service.service_type.description }}</td>
+                <td>&nbsp;</td>
+                <td style="text-align: right; font-family: monospace; font-size: 12px; font-weight: bold; padding-left: 1em; padding-right: 1ex;">{{ task.net_price|currency }}</td>
+                {% if not project.no_express_option %}
+                    <td style="text-align: right; font-family: monospace; font-size: 12px; font-weight: bold; padding-left: 1em; padding-right: 1ex;">{{ task.express_net_price|currency }}</td>
+                {% endif %}
+            </tr>
+            {% endif %}
+        {% endfor %}
+    {% endfor %}
+    <tr style="background-color: #a8a8a8; border-top: solid thin #222222">
+        <th colspan="3" style="text-align: right; font-family: Verdana, Tahoma, Arial, sans-serif; font-size: 12px;">Total Price</th>
+         <td style="text-align: right; font-size: 12px; font-family: monospace; font-weight: bold; padding-right: 1ex;">{{ project.project_pricequote.price|currency }}</td>
+        {% if not project.no_express_option %}
+            <td style="text-align: right; font-size: 12px; font-family: monospace; font-weight: bold; padding-right: 1ex;">{{ project.project_pricequote.express_price|currency }}</td>
+        {% endif %}
+    </tr>
+
+    {% if client_discount_flag %}
+     <tr style="background-color: #a8a8a8; border-top: solid thin #222222">
+        <th colspan="3" style="text-align: right; font-family: Verdana, Tahoma, Arial, sans-serif; font-size: 12px; font-style: italic; color: #888888">Original Price</th>
+        <td style="text-align: right; font-size: 12px; font-family: monospace; font-weight: bold; font-style: italic; padding-right: 1ex; color: #888888">{{ original_price_standard|currency }}</td>
+        {% if not project.no_express_option %}
+            <td style="text-align: right; font-size: 12px; font-family: monospace; font-weight: bold; font-style: italic; padding-right: 1ex; color: #888888">{{ original_price_express|currency }}</td>
+        {% endif %}
+    </tr>
+    {% endif %}
+
+    <tr style="background-color: #cccccc; border-top: solid thin #222222">
+        <th colspan="3" style="text-align: right; font-family: Verdana, Tahoma, Arial, sans-serif; font-size: 12px;">Delivery Time (Business Days)</th>
+        <td style="text-align: right; font-size: 12px; font-family: monospace; font-weight: bold; padding-right: 1ex;">{{ project.project_pricequote.standard_tat|floatformat:0 }} day{{ project.project_pricequote.standard_tat|pluralize }}</td>
+        {% if not project.no_express_option %}
+            <td style="text-align: right; font-size: 12px; font-family: monospace; font-weight: bold; padding-right: 1ex;">{{ project.project_pricequote.express_tat|floatformat:0 }} day{{ project.project_pricequote.express_tat|pluralize }}</td>
+        {% endif %}
+    </tr>
+</table>

@@ -1,0 +1,119 @@
+{% extends "via/projects/detail/base.html" %}
+{% load bootstrap %}
+{% load i18n %}
+
+{% block content %}
+    {% if can_edit_job and project.show_transitions_header_task %}
+        {% include 'via/projects/detail/_transitions_header.html' %}
+    {% endif %}
+    <div class="tabbable tabs-left"> <!-- Only required for left/right tabs -->
+        {% for service in service_list %}
+            {% if forloop.first %}
+            <ul class="nav nav-tabs">
+                {% url 'via_job_detail_tasks_view' project.id 0 as url %}
+                <li><a href="{{ url }}"><i class="fa fa-tasks"></i> <b>{% trans "Tasks" %}</b></a></li>
+            {% endif %}
+                {% url 'via_job_detail_tasks_view' project.id service.id as url %}
+                <li {% if request.path == url %} class="active"{% endif %}><a href="{{ url }}" title="{{ service }}">{{ service }}</a></li>
+            {% if forloop.last %}
+                <li>
+                    <a class="btn-inverse" href="{% url 'via_job_detail_tasks' project.id %}"><i class="fa fa-tasks"></i> {% trans "Group by Language" %}</a>
+                </li>
+            </ul>
+            {% endif %}
+        {% endfor %}
+
+        <div class="tab-content">
+            <div>
+                {% if not service_tasks %}
+                    <div class="row-fluid widget-row">
+                        <div class="span3">
+                            <div class="row-fluid">
+                                <!--Job Tasks Counts-->
+                                <div class="dashWidget noPadding">
+                                    <div class="table-list unit-border table-hover">
+                                        <div class="row-fluid table-list-header">
+                                            <div class="span10">
+                                                <i class="fa fa-tasks" title="{% trans "Status" %}"></i>
+                                            </div>
+                                            <div class="span2">
+                                                <i class="fa fa-tachometer" title="{% trans "Count" %}"></i>
+                                            </div>
+                                        </div>
+                                        {% for status, status_detail in my_tasks.statuses.iteritems %}
+                                            <div class="row-fluid" style="font-size: 15px;">
+                                                <div class="span10">
+                                                    <i class="{{ status_detail.icon }}"></i> <b title="{{ status_detail.description }}">{{ status_detail.name }} {% trans "Tasks" %}</b>
+                                                </div>
+                                                <div class="span2" style="font-size: 20px;">
+                                                    {{ status_detail.tasks.count }}
+                                                </div>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% else %}
+                    {% for task in service_tasks %}
+                        <h4><i class="fa fa-language"></i> {{ task.service.target }}</h4>
+                        {% include "via/projects/tasks/_task_block.html" %}
+                    {% empty %}
+                        <li class="list-box">
+                            <p>{% trans "No Tasks" %}</p>
+                        </li>
+                    {% endfor %}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <br/><br/>
+{% endblock %}
+
+{% block script %}
+    <script src="{{ STATIC_URL }}shared/js/jquery.lightbox_me.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}via/js/transitions_header.js"></script>
+    <script src="{{ STATIC_URL }}shared/js/bootstrap-rating-input.js"></script>
+
+    {{ block.super }}
+    <script>
+        $(document).ready(function () {
+            $('.cancel-task-btn').click(function(e) {
+                var task_id = $(this).attr('id').split('-').pop();
+                $('#cancel-task-' + task_id).lightbox_me({
+                    centered: true,
+                    onLoad: function() {
+                        //
+                    }
+                });
+                e.preventDefault();
+            });
+            $('.reassign-task-btn').click(function(e) {
+                var task_id = $(this).attr('id').split('-').pop();
+                $('#reassign-task-' + task_id).lightbox_me({
+                    centered: true,
+                    onLoad: function() {
+                        //
+                    }
+                });
+                e.preventDefault();
+            });
+            $('.dismiss-lightbox').click(function(e) {
+                $(this).parent().trigger('close');
+            });
+            $('input.rating').each(function(){
+            	$(this).on('change',function(){
+            		var formd = $(this.form);
+            		$.post('{{ request.path }}', formd.serialize(), function(data){
+            		if($.parseJSON(data).message=='Saved'){
+            			$('<span class="task_rating_message label label-success ">{% trans "Saved" %}</span>' ).insertBefore( formd.children().find('.rating') ).fadeOut(1000,function(){ $(this).remove(); });
+            		}else{
+            			$('<span class="task_rating_message label label-danger ">{% trans "Error" %}</span>' ).insertBefore( formd.children().find('.rating') ).fadeOut(1000,function(){ $(this).remove(); });
+            		}
+			       });
+            	});
+            });
+        });
+    </script>
+{% endblock %}

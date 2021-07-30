@@ -1,0 +1,8 @@
+{% load bootstrap %}
+{% load i18n %}
+{% load circus_loc_kit %}
+
+<div id="translation-file-upload-{{ ltk.id }}" class="delivery-form">
+    <h3>{% trans "Upload Loc Kit File" %}</h3>
+    {% translation_file_upload_form ltk %}
+</div>

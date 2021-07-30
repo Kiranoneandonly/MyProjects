@@ -1,0 +1,49 @@
+{% load i18n %}
+{% load humanize %}
+
+<div class="row-fluid">
+    <div class="span12">
+        {% for transition in project.valid_transitions %}
+            <div style="display: inline-block;">
+                <form novalidate action="{% url 'projects_perform_transition' project.id transition.target.name %}" method="post">
+                    {% csrf_token %}
+                    {# confirm_submit buttons are bound by transitions_header.js #}
+                    <button type="button" class="btn btn-primary confirm_submit">{{ transition.label }}</button>
+                </form>
+            </div>
+        {% endfor %}
+
+    {% if project.delay_job_po %}
+        <div style="display: inline-block;">
+            <form novalidate action="" method="post">
+                {% csrf_token %}
+                <input id="id_mbd" name="create_po_manually" type="hidden" value={{ project.job_number }}>
+                <button type="submit" class="btn btn-primary">{% blocktrans %}Generate POs{% endblocktrans %}</button>
+            </form>
+        </div>
+    {% endif %}
+    </div>
+</div>
+
+<div class="row-fluid">
+    {% for transition in project.invalid_transitions %}
+        {% if forloop.first %}
+            <ul>
+        {% endif %}
+    <li>
+        {% blocktrans with transition.target as x and transition.validator_description as y %}Can't move to {{ x }}
+            because {{ y }}{% endblocktrans %}
+    </li>
+    {% if forloop.last %}
+        </ul>
+    {% endif %}
+    {% endfor %}
+</div>
+
+<div class="row-fluid">
+    {% for action in project.actions %}
+        <a href="{% url 'projects_perform_project_action' project.id action.slug %}" class="btn">{{ action.label }}</a>
+    {% endfor %}
+</div>
+
+<hr/>

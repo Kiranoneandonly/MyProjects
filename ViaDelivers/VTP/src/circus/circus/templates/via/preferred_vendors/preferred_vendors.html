@@ -1,0 +1,114 @@
+{% extends "via/theme_base.html" %}
+{% load i18n %}
+{% load bootstrap %}
+{#{% load url from future %}#}
+{% load widget_tweaks %}
+
+{% block title %}{% trans "Preferred Suppliers" %}{% endblock %}
+
+{% block css %}
+{% endblock %}
+
+{% block content_header %}
+    <h1>{% trans "Preferred Suppliers" %}</h1>
+{% endblock %}
+
+{% block content %}
+    <form novalidate action="" method="post" class="form-horizontal">
+        <div class="row-fluid">
+            {{ filter_form.non_field_errors }}
+            <div class="row-fluid">
+                <div class="span4">
+                    {{ filter_form.service_type.label_tag }}
+                    {{ filter_form.service_type.errors }}
+                    {{ filter_form.service_type }}
+                </div>
+                <div class="span4">
+                    {{ filter_form.vertical.label_tag }}
+                    {{ filter_form.vertical.errors }}
+                    {{ filter_form.vertical }}
+                    {% trans "Leave blank to set default vendors." %}
+                </div>
+                <div class="span4">
+                    {{ filter_form.client.label_tag }}
+                    {{ filter_form.client.errors }}
+                    {{ filter_form.client }}
+                    {% trans "Leave blank to set default vendors." %}
+                </div>
+            </div>
+            <div class="row-fluid">
+                <div class="span4">
+                    {{ filter_form.source.label_tag }}
+                    {{ filter_form.source.errors }}
+                    {{ filter_form.source }}
+                </div>
+                <div class="span4">
+                    {{ filter_form.target.label_tag }}
+                    {{ filter_form.target.errors }}
+                    {{ filter_form.target }}
+                </div>
+            </div>
+            <br/>
+            <button type="submit" class="btn btn-primary">{% trans "Show Preferred Suppliers" %}</button>
+            <hr/>
+            <div class="row-fluid">
+                <div class="span12">
+                    <div class="widget-box">
+                        <div class="widget-content">
+                            {% csrf_token %}
+                            {{ preferred_vendors_formset.management_form }}
+                            {% for form in preferred_vendors_formset %}
+                                {{ form.id }}
+                                <div class="row-fluid form-row inline {{ preferred_vendors_formset.prefix }}">
+                                    <div class="span4">
+                                        {{ form.vendor.label_tag }}
+                                        {{ form.vendor.errors }}
+                                        {{ form.vendor }}
+                                    </div>
+                                    <div class="span4">
+                                        {{ form.priority.label_tag }}
+                                        {{ form.priority.errors }}
+                                        {{ form.priority }}
+                                    </div>
+                                    <div style="display:none">
+                                        {{ form.vertical }}
+                                        {{ form.client }}
+                                        {{ form.source }}
+                                        {{ form.target }}
+                                        {{ form.service_type }}
+                                        {{ form.DELETE }}
+                                    </div>
+                                </div>
+                            {% endfor %}
+                            {% if preferred_vendors_formset %}
+                                <div class="form-actions">
+                                    <button type="submit" class="btn btn-primary" name="save-vendors">{% trans "Save" %}</button>
+                                    <a href="{% url 'preferred_vendors_edit' %}" class="btn">{% trans "Cancel" %}</a>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+{% endblock %}
+
+{% block script %}
+    <script src="{{ STATIC_URL }}shared/js/jquery.formset.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $('#id_vertical').select2();
+            $('#id_source').select2();
+            $('#id_target').select2();
+            $('#id_client').select2();
+            $('#id_service_type').select2();
+            $('.form-row.inline.{{ preferred_vendors_formset.prefix }}').formset({
+                prefix: '{{ preferred_vendors_formset.prefix }}',
+                deleteText: 'Delete',
+                addText: 'Add',
+                addCssClass: 'add-row btn btn-success'
+            })
+        });
+    </script>
+{% endblock %}

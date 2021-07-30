@@ -1,0 +1,153 @@
+{% load i18n %}
+{% load humanize %}
+
+{% block content %}
+{% if tasks_fa %}
+<table class="table table-bordered table-hover">
+        <thead>
+        <tr class="table-em-row">
+            <th>{% blocktrans %}Target Locale{% endblocktrans %}</th>
+            <th>{% blocktrans %}Delivery{% endblocktrans %}</th>
+            <th>{% blocktrans %}Post-Delivery Edits{% endblocktrans %}</th>
+            <th>{% blocktrans %}Post-Delivery Comments{% endblocktrans %}</th>
+            <th colspan="100%"></th>
+        </tr>
+        </thead>
+{% else %}
+    <div>{% blocktrans %}No Final Delivery Files{% endblocktrans %}</div>
+{% endif %}
+{% for task in tasks_fa %}
+        <tbody>
+        {% for la in task.localized_assets.all %}
+        <tr>
+            <td>
+                {{ task.service.target }}
+            </td>
+            <td>
+                {% if la.output_file %}
+                    <a id="via_output_file-{{ la.id }}" href="{% url 'download_tasklocalizedasset_out_file' task.id la.id %}" title="{{ la.output_file_name }}">{{ la.output_file_name|truncatechars:50 }} <i class="fa fa-download"></i></a>
+                {% else %}
+                    {% blocktrans %}(not generated){% endblocktrans %}
+                {% endif %}
+            </td>
+
+            {#Post Delivery Files#}
+            <td>
+                {% if la.post_delivery_file %}
+                    <a id="output_file-{{ la.id }}" href="{% url 'download_tasklocalizedasset_post_delivery_file' task.id la.id %}" title="{{ la.post_delivery_file_name }}">{{ la.post_delivery_file_name|truncatechars:50 }} <i class="fa fa-download"></i></a>
+                {% else %}
+                    {% blocktrans %}(not generated){% endblocktrans %}
+                {% endif %}
+
+            </td>
+            <td>
+               {% if la.post_delivery_file %}
+                   <a href="#modal{{la.id}}"  class="comments-modal-ref" style="display:inline-block" data-toggle="modal" id="{{la.task.id}}" data_id="{{la.id}}">
+                   {% if la.post_delivery_notes %}
+                       <i class="fa fa-comments fa-2x" title="{% trans "Edit Post-Delivery Comments" %}"></i>
+                   {% else %}
+                       <i class="fa fa-comments-o fa-2x" title="{% trans "Add Post-Delivery Comments" %}"></i>
+                   {% endif %}
+                   </a>
+
+                    <div id="modal{{la.id}}" data_id="{{la.id }}" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+                            <h3 id="myModalLabel"><i class="fa fa-comments"></i> {% blocktrans %}Comments for Post-Delivery Edits{% endblocktrans %}</h3>
+                        </div>
+                        <div class="modal-body">
+                            <form novalidate action="" method="post" class="client_notes_form" >
+                                {% csrf_token %}
+                                <div class="form-group">
+                                    <div class="row-fluid">
+                                        <input type="hidden" id="tla_task_id" name="tla_task_id" value="{{ la.task.id }}"/>
+                                        <input type="hidden" id="tla_id" name="tla_id" value="{{ la.id }}"/>
+                                        <textarea class="form-control client_notes_comment" name="client_notes">{{la.post_delivery_notes|default_if_none:""}}</textarea>
+                                    </div>
+                                    <div class="row-fluid">
+                                        <hr/>
+                                    </div>
+                                    <div class="row-fluid">
+                                        <button type="submit" class="btn btn-primary client_notes_form_submit pull-right">{% trans "Save" %}</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+               {% endif %}
+            </td>
+
+            <td width="15%">
+                {% if task.project.is_completed_status %}
+                    <a id="replace-btn-{{ la.id }}" class="btn small-btn btn-success upload-btn" href="#" TITLE="{% blocktrans %}Use this if you need to replace the final file you are delivering.{% endblocktrans %}">
+                        <i class="fa fa-upload fa-white"></i>
+                        {% if la.post_delivery_file %}
+                            {% blocktrans %}Replace Post-Delivery{% endblocktrans %}
+                        {% else %}
+                            {% blocktrans %}Add Post-Delivery{% endblocktrans %}
+                        {% endif %} </a>
+                    {% include "via/projects/tasks/_upload_form_post_delivery_file.html" %}
+                {% endif %}
+            </td>
+            <td width="10%">
+                {% if la.post_delivery_file %}
+                    <form novalidate name="DELETE_POST_DELIVERY{{ la.id }}" action="" method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="task_loc_asset_id" value="{{ la.id }}">
+                        <input type="hidden" name="delete_post_delivery_edit_file" value="{{ la.id }}">
+                        <a type="submit"
+                           class="btn btn-danger center"
+                           href="javascript:document.DELETE_POST_DELIVERY{{ la.id }}.submit()"
+                           data-confirm="{% trans "Are you sure you want to Delete File?" %}">
+                            <i class="fa fa-times"></i>&nbsp;{% trans "Delete" %}
+                        </a>
+                    </form>
+                {% endif %}
+            </td>
+
+        </tr>
+    {% endfor %}
+    </tbody>
+{% endfor %}
+   </table>
+{% endblock %}
+
+
+{% block script %}
+    <script src="{{ STATIC_URL }}shared/js/jquery.lightbox_me.js"></script>
+    <script>
+
+        $('.upload-btn').click(function(e) {
+            var task_id = $(this).attr('id').split('-').pop();
+            $('#delivery-upload-' + task_id).lightbox_me({
+                centered: true,
+                onLoad: function() {
+                    //
+                }
+            });
+            e.preventDefault();
+        });
+
+        $(document).ready(function(){
+            $(document).on("submit",".client_notes_form", function() {
+            $('.client_notes_form button').attr('disabled','disabled');
+            if(!$('.client_notes_comment').val() || $('.client_notes_comment').val()=='None'){
+                    alert('{% trans "Comments for Post-Delivery Edits are empty." %}');
+                    $('.client_notes_form button').removeAttr('disabled');
+                    return false;
+                }
+            });
+        });
+
+        tinymce.init({
+            selector: '.client_notes_form textarea.client_notes_comment',
+            theme: 'modern',
+            plugins: 'advlist lists hr preview codesample contextmenu textcolor colorpicker charmap table code',
+            toolbar1: 'formatselect fontselect fontsizeselect | bold italic underline | removeformat | forecolor backcolor | bullist numlist | alignleft alignright | outdent indent | table | hr | charmap | preview | code ',
+            menubar: false,
+            inline: false,
+            statusbar: true,
+            height: 200,
+        });
+    </script>
+{% endblock %}

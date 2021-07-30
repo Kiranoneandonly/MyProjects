@@ -1,0 +1,11 @@
+{% load humanize %}{% load currency_filter %}Job completed:
+
+•	User ID: {{ project.client_poc.get_full_name|safe }} ({{ project.client_poc.email }})
+•	Job Number: {{ project.job_number }}
+•	Pick-up Date: {{ project.completed|date:"r" }}
+
+For more information, please visit {{ vtp_url }}.
+
+________________________________________
+
+{% include 'notifications/_email_footer.txt' %}

@@ -1,0 +1,197 @@
+{% extends "via/theme_base.html" %}
+{% load i18n %}
+{#{% load url from future %}#}
+{% load bootstrap %}
+{% load widget_tweaks %}
+{% load circus_loc_kit %}
+
+{% block title %}{% trans "New Job" %}{% endblock %}
+
+{% block css %}
+    <link rel="stylesheet" href="{{ STATIC_URL }}shared/css/datetimepicker.css" media="screen" />
+    <link rel="stylesheet" href="{{ STATIC_URL }}shared/css/select2.min.css" type="text/css" media="all"/>
+    <link rel="stylesheet" href="{{ STATIC_URL }}shared/css/fine-uploader.min.css" type="text/css" media="all"/>
+    <link rel="stylesheet" href="{{ STATIC_URL }}shared/css/fine-uploader-custom.css" type="text/css" media="all"/>
+{% endblock %}
+
+{% block extra_head %}{% endblock %}
+
+{% block content_header %}
+    <h2 class="start-job">{{ project }}</h2>
+    <hr class="soften"/>
+{% endblock %}
+
+{% block content %}
+<script>
+     {% if project.is_queued_status and project.is_manual_estimate %}
+        $(window).load(function() {
+            var redirect = confirm('{% trans "This requires a manual estimation. If you would like to create a Manual Estimate, press OK?" %}');
+            if(redirect)
+                window.location = "{% url 'manual_estimate_job' project.id %}";
+        });
+     {% endif %}
+</script>
+
+<ul class="breadcrumb">
+    <li><i class="fa fa-home"></i> <a href="{% url 'via_dashboard' %}">{% trans "Home" %}</a> <span class="divider"><i class="fa fa-chevron-right"></i></span></li>
+    <li><a href="{% url 'via_jobs_list' %}">{% trans "Jobs" %}</a> <span class="divider"><i class="fa fa-chevron-right"></i></span></li>
+    <li class="active">{% trans "New Auto Estimate" %}</li>
+</ul>
+
+ <form novalidate accept-charset="UTF-8" action="" method="post">
+        {% csrf_token %}
+    <div class="row-fluid">
+        <div class="span3">
+            <h4 class="dashHead">
+                <span>{% trans "1. Upload Content" %}</span>
+            </h4>
+            <div class="dashWidget uploadContentWidget noPadding">
+                <div>
+                    {% if form.non_field_errors %}
+                        <div class="alert alert-error">
+                            <a class="close" data-dismiss="alert">&times;</a>
+                            {% for e in form.non_field_errors %}
+                                {{ e }}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                    {% with project.kit.source_files as files %}
+                    {% include 'shared/util/_uploader.html' %}
+                    {% endwith %}
+                </div>
+
+            </div>
+        </div>
+        <div class="span3">
+            <h4 class="dashHead">{% trans "2. Choose Languages and Industry" %}</h4>
+            <div class="dashWidget chooseLanguageWidget noPadding">
+                <div>
+                    {{ form.industry|bootstrap }}
+                    {{ form.source_locale|bootstrap }}
+                    {{ form.target_locales|bootstrap }}
+                </div>
+            </div>
+        </div>
+        <div class="span3">
+            <h4 class="dashHead">
+                <span>{% trans "3. Add Services" %}</span>
+            </h4>
+            <div class="dashWidget chooseServiceWidget noPadding">
+                <div class="row-fluid">
+                    <div class="span12">
+                        {{ form.services|bootstrap }}
+                    </div>
+                </div>
+                <hr class="soften">
+                <div class="row-fluid">
+                    <div class="span8">{{ form.is_restricted_job|bootstrap }}</div>
+                    <div class="span4 pull-right">
+                        <div class="pull-right">
+                            <a data-toggle="popover" class="restrict_access_help"><i class="fa fa-question"></i></a>
+                        </div>
+                    </div>
+                </div>
+                <hr class="soften">
+                <div class="row-fluid">
+                    <div class="span8">{{ form.is_secure_job|bootstrap }}</div>
+                    <div class="span4 pull-right">
+                        <div class="pull-right">
+                            <a data-toggle="popover" class="secure_job_help"><i class="fa fa-question"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="span3">
+            <h4 class="dashHead">{% trans "4. Create Estimate" %}</h4>
+            <div class="dashWidget reviewEstimateWidget noPadding">
+                <div>
+                    <p>{% trans "Ready for an estimate? Click 'Create Estimate' below." %}</p>
+                    <div class="row submit">
+                        <button class="btn btn-primary disable_after_click">{% trans "Create Estimate" %}
+                            &nbsp;<i class="fa fa-fw fa-chevron-right"></i>
+                        </button>
+                    </div>
+                    <p>&nbsp;&nbsp;</p>
+            </form>
+                <div class="row submit pull-right">
+                <form novalidate action="{% url 'projects_perform_transition' project.id 'canceled' %}" method="post">
+                    {% csrf_token %}
+                    {# confirm_submit buttons are bound by transitions_header.js #}
+                    <button type="button" class="btn btn-primary confirm_submit"><i class="fa fa-times-circle"></i> {% blocktrans %}Cancel Job{% endblocktrans %}</button>
+                </form>
+                </div>
+
+            </div>
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}
+
+{% block script %}
+    <script type="text/javascript" src="{{ STATIC_URL }}shared/js/select2.min.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}shared/js/disable_after_click.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}via/js/transitions_header.js"></script>
+    <script type='text/javascript'>
+        $(document).ready(function(){
+            $('#id_industry').select2();
+            $('#id_is_restricted_job').select2();
+            $('#id_is_secure_job').select2();
+            $('#id_source_locale').select2();
+            $('#id_target_locales').select2({
+                placeholder: "{% trans 'Select Target(s)' %}"
+            });
+
+            $("i").popover({
+                trigger: 'hover'
+            });
+
+            $('.remove-asset-link').click(remove_asset);
+            $('button.btn-primary').click(function(e){
+                var lis = $(".select2-choices li");
+                lis.each(function(index) {
+                        var thi = $(this);
+                        var child_a = thi.children('div');
+                        var source_loc = $('#select2-chosen-2').text();
+                        var target_locs = child_a.text();
+
+                        if(source_loc == target_locs){
+                            var conf = confirm('Seems we have same Source Locale and Target Locale.\nAre you sure you want that combination?');
+                            if (conf)
+                                return true;
+
+                            e.preventDefault();
+                            $('button.btn-primary').removeClass('disabled')
+                            $('button.btn-primary').removeAttr('style')
+                            $('i.fa').removeClass('fa-spinner fa-spin')
+                        }
+                        return true;
+                });
+            });
+        });
+
+        $(function () {
+            $('.file_help').popover({
+                html: true,
+                title: "FAQ: Automatic Estimate / File Types / Reference Files?",
+                content: '{% blocktrans %}In order to obtain an Automatic Estimate, the Upload Content should be editable file formats (i.e. xlsx, xls, docx, doc, txt).  <p/><font color="red">Please note that any content in <b>Red Text color</b> could be ignored by the VTP Automatic Estimate system.</font>  If VIA PM finds there is missed content, then VIA reserves the right to contact you about your job and price may vary if more content is added. <p/>If you are uploading uneditable files like PDF, or require formatting/Comprehensive DTP, on next page you will have the ability to upload supporting items as a Reference file. Please include all necessary files as a single compressed file like .ZIP, including the original editable source file(s) if available (e.g. Adobe InDesign / PhotoShop / Illustrator, QuarkXPress, MS Publisher), and fonts and images/links if needed.{% endblocktrans %}'
+            });
+            $('.restrict_access_help').popover({
+                html: true,
+                title: "What is Restricted Access?",
+                content: '{% blocktrans %}<p><b>Restricted Access</b> notifies VIA that this job requires VIA to limit the users that have access to the job, content and files. VIA will maintain the Restricted Access throughout the entire process of handling and completing the job.</p><p><b>Unrestricted Access</b> notifies VIA that this job does not require limited access to the job, content and files. Standard security processes remain in place.</p>{% endblocktrans %}'
+            });
+            $('.secure_job_help').popover({
+                html: true,
+                title: "What is a Secure Job?",
+                content: '{% blocktrans %}<p><b>Limit Team</b> Limit the access of job only to Secure Job Team users.</p><p> <b>Full Team</b> Access Given to all department users.</p>{% endblocktrans %}'
+            });
+        });
+
+    </script>
+    {% with "source" as asset_type %}
+        {% include 'shared/util/_uploader_script.html' %}
+    {% endwith %}
+{% endblock %}

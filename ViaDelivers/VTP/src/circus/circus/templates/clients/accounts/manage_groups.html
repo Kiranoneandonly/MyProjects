@@ -1,0 +1,171 @@
+{% extends "shared/external/theme_base.html" %}
+{% load i18n %}
+{% load bootstrap %}
+
+{% block title %}{% trans "Manage Groups" %}{% endblock %}
+
+{% block css %}{% endblock %}
+
+{% block content_breadcrumb %}
+    <ul class="breadcrumb">
+        <li><i class="fa fa-home"></i> <a href="/">{% trans "Home" %}</a> <span class="divider"><i class="fa fa-chevron-right"></i></span></li>
+        <li class="active">{% trans "Manage Groups" %}</li>
+    </ul>
+{% endblock %}
+
+{% block content_header %}
+{% if can_access_users_groups_options %}
+    <div class="row-fluid">
+        <div class="span4">
+            <h1 class="manage-users-header">
+            {% if request.user.is_client_organization_administrator %}
+                {% blocktrans %}Manage Groups / Permissions{% endblocktrans %}
+            {% else %}
+                {% blocktrans %}View Groups / Permissions{% endblocktrans %}
+            {% endif %}
+            </h1>
+        </div>
+        {% if request.user.is_client_organization_administrator %}
+        <div class="span2 offset4">
+            <a class="btn btn-success" href="{% url 'client_create_group' %}" style="margin-top: 40px;"><i class="fa fa-plus-circle fa-white"></i> {% trans "Add Group" %}</a>
+        </div>
+        {% endif %}
+    </div>
+ {% endif %}
+{% endblock %}
+
+{% block content %}
+{% if can_access_users_groups_options %}
+    <div class="row">
+        {% include "clients/accounts/_manager_menu.html" with current='groups' %}
+        <div class="span12 center">
+            <div class="row-fluid">
+                <div class="span12" id="angular-app" ng-app="app1">
+                    <div class="span10 center notifytable" ng-controller="ManageGroupsCtrl" ng-show="loaded" style="display:none;">
+                        <table class="table table-striped">
+                            <thead>
+                            <tr>
+                                <th>{% trans "Name" %}</th>
+                                {% if secure_hierarchy %}
+                                    <th>{% trans "Permissions" %}</th>
+                                {% endif %}
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr ng-repeat="group in groups" class="tr-user">
+                                <td>((group.name))</td>
+                                <td><a href="" ng-click="showPermissionRoles(group)" class="fa fa-users permissions-btn"
+                                       data-has-users="((group.has_users))" id="permission-btn-(( group.id ))"
+                                       title="{% trans "Assign permissions to this Group" %}"></a>
+                                    {% include "clients/accounts/_set_group_permissions_form.html" %}
+                                </td>
+                                {% if user.is_client_organization_administrator %}
+                                    <td><a href="" id="rename-group-btn-(( group.id ))" class="rename-group-btn">
+                                        <i class="fa fa-edit" title="{% trans "Edit Group" %}"></i></a>
+                                        {% include "clients/accounts/_client_rename_group_form.html" %}
+                                    </td>
+                                    <td><a href="/client/groups/((group.id))/delete/edit" data-confirm="{% trans "Are you sure you want to delete this Group?" %}"><i class="fa fa-trash-o" title="{% trans "Delete Group" %}"></i></a></td>
+                                {% endif %}
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% else %}
+    <h2>{% trans "You don't have permission to access this page" %}</h2>
+{% endif %}
+{% endblock %}
+
+{% block script %}
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.5/angular.min.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}shared/js/ui-bootstrap-custom-0.3.0-SNAPSHOT.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}shared/js/ui-bootstrap-custom-tpls-0.3.0-SNAPSHOT.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}shared/js/data-confirm.js"></script>
+    <script src="{{ STATIC_URL }}shared/js/jquery.lightbox_me.js"></script>
+    <script type="text/javascript">
+    $(document).ready(function(){
+
+        $('input.group_toggle').click(function(){
+            rthis = $(this);
+            if($(this).is(":checked") == true){
+                option = "True";
+            }else{
+                option = "False";
+            }
+                $.ajax({
+                    type: 'POST',
+                    url: '#',
+                    data: {
+                        "option": option,
+                        "group_id": $(this).val(),
+                        "permission_id": $(this).attr('data-permission'),
+                        "group":$(this).attr('data-group'),
+                        "csrfmiddlewaretoken": "{{ csrf_token }}"
+                    }
+                }).success(function (data) {
+                    $('.navbar-fixed-top').append('<div class="alert alert-success"><button type="button" class="close" data-dismiss="alert">&times;</button>Saved</div>');
+                    $('.alert').fadeOut(2000, function() {
+                        $(this).remove();
+                      });
+{#                    rthis.parent('td').effect("highlight", {color:'#94f9a7'}, 3000);#}
+                });
+
+        });
+
+        $('.permissions-btn').click(function(e) {
+
+                if($(this).attr('data-has-users') >= 1){
+                  groupConfirm =  confirm('Users are already assigned to this group. On Save, the system will reapply Group Permissions to All Assigned Users')
+                  if(!groupConfirm)
+                      return false
+                }
+                var group_id = $(this).attr('id').split('-').pop();
+                $('#set-permission-' + group_id).lightbox_me({
+                    centered: true,
+                    onLoad: function() {
+                        //
+                    }
+                });
+            e.preventDefault();
+        });
+
+        $('.rename-group-btn').click(function(e) {
+                var group_id = $(this).attr('id').split('-').pop();
+                $('#rename-group-' + group_id).lightbox_me({
+                    centered: true,
+                    onLoad: function() {
+                        //
+                    }
+                });
+            e.preventDefault();
+        });
+    });
+
+    angular.module('app1', ['ui.bootstrap']).controller('ManageGroupsCtrl', function ($scope) {
+        $scope.groups = {{ group_list|safe|striptags }};
+        $scope.loaded = true;
+
+        $scope.permissions = {{ permission_dict|safe|striptags }};
+
+        $scope.showPermissionRoles=function(details){
+            angular.forEach($scope.permissions, function (mainDetails) {
+                if (details.has_permission.indexOf(mainDetails.perm_id) != -1) {
+                    mainDetails.status = true;
+                }
+                else {
+                    mainDetails.status = false;
+                }
+            });
+        }
+    });
+
+    angular.module('app1').config(function ($interpolateProvider) {
+        $interpolateProvider.startSymbol('((');
+        $interpolateProvider.endSymbol('))');
+    });
+    angular.bootstrap(document.getElementById('app1'), ['app1', 'ui.bootstrap']);
+    </script>
+{% endblock %}

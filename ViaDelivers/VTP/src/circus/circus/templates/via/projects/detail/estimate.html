@@ -1,0 +1,49 @@
+{% extends "via/projects/detail/base.html" %}
+{% load i18n %}
+
+{% block content %}
+{% if can_access_secure_job %}
+    {% if can_edit_job and project.show_transitions_header_estimate %}
+        {% include 'via/projects/detail/_transitions_header.html' %}
+    {%  endif %}
+
+    <div class="row-fluid">
+        <div class="tabbable tabs-left span12">
+          <ul class="nav nav-tabs">
+            <li{% if active_tab == 'analysis' %} class="active"{% endif %}><a href="#tabAnalysis" data-toggle="tab">{% trans "Analysis" %}</a></li>
+            <li{% if active_tab == 'services' %} class="active"{% endif %}><a href="#tabServices" data-toggle="tab">{% trans "Services" %}</a></li>
+            <li{% if active_tab == 'details' %} class="active"{% endif %}><a href="#tabDetails" data-toggle="tab">{% trans "Pricing" %}</a></li>
+            {% if project.large_jobs_check %}
+                <li{% if active_tab == 'approvals' %} class="active"{% endif %}><a href="#tabApprovals" data-toggle="tab">{% trans "Approvals" %}</a></li>
+            {% endif %}
+          </ul>
+          <div class="tab-content">
+            {# moving this to separate URL will drop loading times by ~1 second #}
+            <div class="tab-pane{% if active_tab == 'analysis' %} active{% endif %}" id="tabAnalysis">
+                {% include 'via/projects/kits/_analysis_list.html' %}
+            </div>
+            <div class="tab-pane{% if active_tab == 'services' %} active{% endif %}" id="tabServices">
+                {% include 'via/projects/tasks/_services_list.html' %}
+            </div>
+            <div class="tab-pane{% if active_tab == 'details' %} active{% endif %}" id="tabDetails">
+                {% include 'via/projects/tasks/_tasks_list.html' %}
+            </div>
+            {% if project.large_jobs_check %}
+            <div class="tab-pane{% if active_tab == 'approvals' %} active{% endif %}" id="tabApprovals">
+                {% include 'via/projects/tasks/_large_jobs_list.html' %}
+            </div>
+            {% endif %}
+          </div>
+        </div>
+    </div>
+{% endif %}
+{% endblock %}
+
+{% block script %}
+    <script type="text/javascript" src="{{ STATIC_URL }}shared/js/jquery.lightbox_me.js"></script>
+    {{ block.super }}
+    <script type="text/javascript" src="{{ STATIC_URL }}shared/js/filters/accordion-icon-switch.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}via/js/estimate.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}via/js/transitions_header.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}shared/js/disable_after_click.js"></script>
+{% endblock %}

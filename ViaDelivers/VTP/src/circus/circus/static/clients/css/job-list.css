@@ -1,0 +1,114 @@
+/* Job Id Column
+ ********************/
+
+.col-job-id span {
+    margin-left: 5px;
+}
+
+td.col-job-id {
+    font-size: 1.3em;
+}
+
+/* Column Widths
+ * ***************/
+
+.col-job-id {
+    width: 80px;
+}
+
+.col-workflow {
+    width: 100px;
+}
+
+.col-purchase-order {
+    width: 120px;
+}
+
+/* List Controls
+ *******************/
+
+.list-header > .job-filters {
+    padding: 15px 20px;
+}
+
+@media(max-width: 979px) {
+    .list-header [class*="span"] {
+        display: block;
+        float: none;
+        width: 100%;
+        margin-left: 0px;
+        -moz-box-sizing: border-box;
+    }
+}
+
+.list-header .job-filters {
+    border-width: 1px 1px 0 1px;
+    border-style: solid;
+    border-radius: 4px 4px 0 0;
+    -webkit-border-radius: 4px 4px 0 0;
+}
+
+.list-header h1 {
+    font-size: 38px;
+}
+
+.list-header h2 {
+    margin-top: 3px;
+    font-size: 30px;
+}
+
+.headings {
+    padding-top: 10px;
+}
+
+@media (max-width: 979px) {
+    .headings {
+        padding: 5px 0;
+    }
+}
+
+.job-active-table table.table-bordered {
+    margin: 0;
+    border-top-right-radius: 0;
+    -webkit-border-top-right-radius: 0;
+}
+
+.list-header .job-filters, table.table-bordered th {
+    color: #333333;
+    background: #bbbbbb;
+    font-weight: bold;
+}
+
+.list-header .job-filters,
+table.table-bordered, table.table-bordered td, table.table-bordered th {
+    border-color: #999999;
+}
+
+/*.column-display-controls .btn {*/
+    /*font-size: 12px;*/
+/*}*/
+
+
+/* Icon Columns
+ ***************/
+
+.table-wrapper .col-express, .table-wrapper .col-warnings, .table-wrapper .col-approved, .table-wrapper .col-restricted, .col-phi {
+    width: 35px;
+}
+
+.table-wrapper .col-express i, .table-wrapper .col-warnings i, .table-wrapper .col-approved i, .col-phi {
+    margin-left: 4px;
+}
+
+/* Misc
+ * ***************/
+.col-optional {
+    display: none;
+}
+
+
+.dropdown-menu-status {
+    text-align: left;
+    width: 100px;
+    margin-left: 161px;
+}

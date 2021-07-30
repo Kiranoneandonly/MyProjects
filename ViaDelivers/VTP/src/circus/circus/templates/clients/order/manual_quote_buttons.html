@@ -1,0 +1,12 @@
+{% load i18n %}
+{% load bootstrap %}
+
+<a class="btn btn-primary pull-left" href="{% url 'client_clone_new_job' project.id %}"  data-confirm="{% trans "Are you sure you want to Clone?" %}"  title="{% trans "Clone Estimate" %}"> <i class="fa fa-files-o"></i> {% blocktrans %}Clone Job{% endblocktrans %}</a>
+<a class="btn" href="{% url 'projects_cancel' project.id %}" data-confirm="{% trans "Are you sure you want to Cancel Job?" %}" title="{% trans "Cancel Estimate" %}"> <i class="fa fa-times-circle"></i> {% blocktrans %}Cancel Job{% endblocktrans %}</a>
+{% if project.is_queued_status %}
+<button name="edit_job" type="submit" class="btn btn-warning" title="{% trans "Modify Scope" %}"><i class="fa fa-pencil-square-o"></i> {% trans "Modify Scope" %}</button>
+<button name="save_quote" type="submit" class="btn btn-primary"  title="{% trans "Save For Later" %}"><i class="fa fa-arrow-circle-o-down"></i> {% trans "Save For Later" %}</button>
+<button name="request_quote" type="submit" class="btn btn-success disable_after_click" title="{% trans "Request Estimate" %}"><i class="fa fa-check-circle-o"></i> {% trans "Request Estimate" %}</button>
+{% else %}
+<a class="btn" href="{% url 'client_dashboard' %}" title="{% trans "Back to Client Dashboard" %}"><i class="fa fa-check-circle-o"></i> {% blocktrans %}OK{% endblocktrans %}</a>
+{% endif %}

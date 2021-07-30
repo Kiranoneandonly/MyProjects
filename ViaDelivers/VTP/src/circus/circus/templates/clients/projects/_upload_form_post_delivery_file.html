@@ -1,0 +1,9 @@
+{% load bootstrap %}
+{% load i18n %}
+{% load humanize %}
+
+<div id="delivery-upload-{{ delivery.id }}" class="delivery-form">
+    <h3>{% trans "Client Edits" %}</h3>
+    <p>{% trans "Please upload file if you made Post-Delivery Edits:" %} {{ delivery.post_delivery_file_name }}</p>
+    {{ delivery.client_post_delivery_upload_form.as_form_html }}
+</div>

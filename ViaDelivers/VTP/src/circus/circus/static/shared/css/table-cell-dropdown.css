@@ -1,0 +1,11 @@
+/* Table Cell Dropdown
+ *******************/
+
+.table-cell-dropdown-toggle {
+    display: block;
+}
+
+/* greater specificity to override .target-locale */
+.table-cell-additional-item {
+    display: none;
+}

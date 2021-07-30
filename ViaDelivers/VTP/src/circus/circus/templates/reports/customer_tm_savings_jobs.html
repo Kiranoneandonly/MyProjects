@@ -1,0 +1,105 @@
+{% extends template %}
+{% load i18n %}
+{% load bootstrap_pagination %}
+{% load currency_filter %}
+{% load manager_exist %}
+{% load get_item %}
+
+{% block title %}{% trans "TM Savings (MBD) by Job" %} | VTP{% endblock %}
+{% block content_header %}{% endblock %}
+
+{% block css %}
+    <link rel="stylesheet" href="{{ STATIC_URL }}shared/css/table-cell-dropdown.css" media="screen"/>
+    <link rel="stylesheet" href="{{ STATIC_URL }}via/css/job-list.css" media="screen"/>
+{% endblock %}
+
+{% block script %}
+    <script src="{{ STATIC_URL }}shared/js/filters/table-cell-dropdown.js" type="text/javascript"></script>
+    <script src="{{ STATIC_URL }}shared/js/filters/job-list.js" type="text/javascript"></script>
+{% endblock %}
+
+{% block content %}
+<div class="job-active job-content">
+        <div class="breadcrumb">
+        <span><i class="fa fa-home"></i></span>
+        <span><a href="{% url dash_board %}">{% trans "Home" %}</a></span>
+        <span class="divider"><i class="fa fa-chevron-right"></i></span>
+        <span class="active">{% trans "Reports" %}</span>
+        <span class="divider"><i class="fa fa-chevron-right"></i></span>
+        <span class="active">{% trans "Customer" %}</span>
+        <span class="divider"><i class="fa fa-chevron-right"></i></span>
+        <span class="active"><a href="{% url 'customer_tm_savings_client_portal' %}">{% trans "TM Savings (MBD)" %}</a></span>
+        <span class="divider"><i class="fa fa-chevron-right"></i></span>
+        <span class="active">{% trans "by Job" %}</span>
+        {{ block.super }}
+    </div>
+
+
+        <div class="job-active-table">
+
+            <div class="table-wrapper">
+                <table class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+
+                        <th class="col col-status">{% trans "Customer" %}</th>
+                        <th class="col col-job-number">{% trans "Job" %}</th>
+                        <th class="col col-status">{% trans "Target" %}</th>
+                        <th class="col col-status">{% trans "File" %}</th>
+                        <th class="col col-status">{% trans "Year" %}</th>
+                        <th class="col col-status">{% trans "Month" %}</th>
+                        <th class="col col-status">{% trans "TM Savings (MBD)" %}</th>
+
+                    </tr>
+                    </thead>
+                    <tbody>
+                        {% for task in jobs_tm_list %}
+                        {% check_secure_job_team_member request.user.id request.user.account.id task.projectsreporting__project_id task.projectsreporting__client_poc task.projectsreporting__is_secure_job as secure_job_memeber %}
+                                <tr class="">
+                                    <td class="col col-client_name">
+{#                                    {% if not task.projectsreporting__is_secure_job or request.user.id == task.projectsreporting__client_poc or secure_job_memeber %}#}
+                                    {% if secure_job_memeber %}
+                                        {{ task.name }}
+                                    {% else %}
+                                        <span class="icon-lock" title="Need permissions to access this Secure Job"></span>
+                                    {% endif %}
+                                    </td>
+                                    <td class="col col-job-number">
+                                       {{ task.projectsreporting__job_number }}
+                                    </td>
+                                    <td class="col col-client_name">
+                                        {{ task.projectsreporting__tasksreporting__target }}
+                                    </td>
+                                    <td class="col col-client_name">
+                                    {% if secure_job_memeber %}
+                                        {{ task.projectsreporting__tasksreporting__source_file }}
+                                    {% else %}
+                                        <span class="icon-lock" title="Need permissions to access this Secure Job"></span>
+                                    {% endif %}
+                                    </td>
+                                    <td class="col col-client_name">
+                                        {{ task.year|floatformat:0 }}
+                                    </td>
+                                    <td class="col col-client_name">
+                                        {{ task.month|month_name }}
+                                    </td>
+                                    <td class="col col-client_name">
+                                    {% if secure_job_memeber %}
+                                        {{ task.projectsreporting__tasksreporting__memory_bank_discount }} %
+                                    {% else %}
+                                        <span class="icon-lock" title="Need permissions to access this Secure Job"></span>
+                                    {% endif %}
+                                    </td>
+                                </tr>
+                        {% empty %}
+                            <tr><td colspan="100%" style="text-align: left">{% trans "No Jobs" %}</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+  
+{% endblock %}
+

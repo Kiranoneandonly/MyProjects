@@ -1,0 +1,46 @@
+{% extends "via/theme_base.html" %}
+{% load i18n %}
+{% load bootstrap %}
+{#{% load url from future %}#}
+
+{% block title %}{% blocktrans %}Notes for {{ client_name }}{% endblocktrans %}{% endblock %}
+
+{% block content_header %}
+    <h1>{% blocktrans %}Notes{% endblocktrans %}</h1>
+{% endblock %}
+
+{% block content %}
+    <form novalidate action="{% url 'clients_note' client.id %}" method="post" class="form">
+        {% if form.non_field_errors %}
+            <div class="row-fluid"><div class="alert alert-danger">
+                <a class="close" data-dismiss="alert">&times;</a>
+                {% for non_field_error in form.non_field_errors %}
+                     {{ non_field_error }}
+                {% endfor %}
+            </div></div>
+        {% endif %}
+
+        <div class="row-fluid">
+            {% csrf_token %}
+
+            {% for field in note_form.hidden_fields %}
+                {{ field }}
+            {% endfor %}
+
+            <div class="span5">
+                <h2>{{ client_name }}</h2>
+                {{ note_form.note|bootstrap }}
+            </div>
+            {% if client.parent %}<div class="span5 offset1">
+                <h2>{{ parent_name }}</h2>
+                {{ note_form.parent_note|bootstrap }}
+            </div>{% endif %}
+        </div>
+        <div class="row-fluid">
+            <div class="span12 form-actions">
+                <button type="submit" class="btn btn-primary">{% trans "Save" %}</button>
+                <a class="btn" href="{% url 'via_dashboard' %}?client={{ client.account_number }}">Return to Client Dashboard</a>
+            </div>
+        </div>
+    </form>
+{% endblock %}

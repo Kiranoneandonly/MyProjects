@@ -1,0 +1,173 @@
+{% load i18n %}
+{% load avatar_tags %}
+{% load new_messages_notification_check %}
+
+<!doctype html>
+<!-- paulirish.com/2008/conditional-stylesheets-vs-css-hacks-answer-neither/ -->
+<!--[if lt IE 7]> <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
+<!--[if IE 7]>    <html class="no-js lt-ie9 lt-ie8 ie7" lang="en"> <![endif]-->
+<!--[if IE 8]>    <html class="no-js lt-ie9 ie8" lang="en"> <![endif]-->
+<!--[if gt IE 8]><!--> <html lang="en"> <!--<![endif]-->
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <title>{% block title %}{{ APP_FULL_NAME }}{% endblock %}</title>
+
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ STATIC_URL }}shared/img/via_favi_V-16.png" />
+
+    {% block css_base %}
+        <link rel="stylesheet" href="{{ STATIC_URL }}shared/css/normalize.css" type="text/css" media="all"/>
+        <link rel="stylesheet" href="{{ STATIC_URL }}shared/css/bootstrap.min.css" type="text/css" media="all"/>
+        <link rel="stylesheet" href="{{ STATIC_URL }}shared/css/bootstrap-responsive.min.css" media="all" />
+        <link rel="stylesheet" href="{{ STATIC_URL }}shared/css/font-awesome.min.css" media="all" />
+        <link rel="stylesheet" href="{{ STATIC_URL }}shared/css/jquery-ui-1.12.1.min.css" type="text/css" media="all"/>
+        <link rel="stylesheet" href="{{ STATIC_URL }}shared/css/core.css" type="text/css" media="all"/>
+        <link rel="stylesheet" href="{{ STATIC_URL }}shared/css/select2.min.css" type="text/css" media="all"/>
+	    <link rel="stylesheet" href="{{ STATIC_URL }}vendors/css/vendors.css" type="text/css" media="all"/>
+        <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Lato:400,700,700italic" type="text/css">
+        {% block css %}{% endblock %}
+    {% endblock %}
+
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="{{ STATIC_URL }}shared/js/html5shiv.js" type="text/javascript"></script>
+    <![endif]-->
+</head>
+<body>
+<div class="topbar">
+    <div class="wrapper" id="wrap">
+        <div class="navbar navbar-fixed-top topbar">
+            <div class="navbar-inner">
+                <div class="content">
+                    <div class="nav-img">
+                        <a href="/">
+                            <img class="brand powered" src="{{ STATIC_URL }}shared/img/via.png" alt="{{ APP_FULL_NAME }}" title="{{ APP_FULL_NAME }}">
+                            <h1>{{ APP_NAME }}</h1>
+                        </a>
+                    </div>
+                    <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                        <i class="fa fa-bars"></i>
+                    </a>
+                </div>
+                <div class="nav-collapse collapse">
+                    <ul class="nav">
+                        <li class="nav-right">
+                        {% block search_menu %}
+                        {% if user.is_authenticated and not hide_search %}
+                        <div id="search" class="nav-search">
+                            <input type="text" class="search-query" value="{{ search_query }}" />
+                            <a class="btn btn-primary search-submit"><i class="fa fa-search"></i></a>
+                        </div>
+                        {% endif %}
+                        {% endblock %}
+                        </li>
+                        {% if user.is_impersonate %}
+                         <li class="nav-right">
+                            <div id="messages" class="nav-messages">
+                                <a href="/impersonate/stop" class="btn btn-danger job-messages-button"  title="Impersonate: {{ request.user }} ({{ request.impersonator }})"><i class="fa fa-bug"></i></a>
+                            </div>
+                         </li>
+                        {% endif %}
+                        {% if user.country %}
+                         <li class="nav-right">
+                             <a href="#" title="Logged in from {{ user.country }}, TimeZone is {{ request.user.user_timezone }}"><i class="fa fa-map-marker"></i></a>
+                         </li>
+                        {% endif %}
+                        {# todo when we figure out how to filter messages by Vendor #}
+                        {# Bell icon for job comments #}
+{#                        <li class="nav-right">#}
+{#                            <div id="messages" class="nav-messages">#}
+{#                                <a id="comments-notification-bell" class="btn btn-inverse job-messages-button" href="{% url 'job_messages_list_page_vendor' %}" title="{% trans "Job Messages" %}"><i class="fa fa-bell"></i></a>#}
+{#                            </div>#}
+{#                        </li>#}
+                            <li class="nav-right">
+                             <div id="notifications" class="nav-messages" style="padding: 5px 5px 5px 0px">
+                            <a id="notification-bell" class="btn btn-inverse job-notification-button" href="{% url 'vendor_notification_unread_count' %}" title="{% trans "Notifications" %}">
+                                <i class="fa fa-bell"></i></a>
+                            {% if client_notification_unread_count %}
+                            <span class="badge badge-notify" style="position:relative;top: -10px;left: -15px;">{{ client_notification_unread_count }}</span>
+                            {% endif %}
+                            </div>
+                            </li>
+                        <li class="dropdown nav-right" id="menu1">
+                            <a class="dropdown-toggle" data-toggle="dropdown" href="#menu1">
+                                {% avatar request.user %} <span>{{ request.user.get_full_name }}</span>
+                                <i class="fa fa-caret-down"></i>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a href="{% url 'vendor_edit_profile' %}">{% trans "My Profile" %}</a></li>
+                                <li><a href="{% url 'logout' %}">{% trans "Logout" %}</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block content_base %}
+    <div id="content">
+        <div id="content-header">
+            {% block content_header %}
+                <h1>Content</h1>
+                <div class="btn-group">
+                    <a class="btn btn-large tip-bottom" title="Button"><i class="fa fa-file"></i></a>
+                </div>
+            {% endblock %}
+        </div>
+        {% block content_breadcrumb %}
+            {% block timezone_info %}
+                <span class="divider"></span>
+                <span class="timezone-info"><i class="fa fa-globe fa-2x" title="{{ TIMEZONE_BLURB_TEXT }}"></i></span>
+                <span class="divider"></span>
+            {% endblock %}
+        {% endblock %}
+        <div class="container-fluid">
+            {% if messages %}
+                <div class="row-fluid">
+                    <div class="span12">
+                        {% for message in messages %}
+                            <!-- alert-success alert-error -->
+                            <div class="alert alert-{{ message.tags }}">
+                                <button class="close" data-dismiss="alert">&times;</button>
+                                 {% if 'safe' in message.tags %}{{ message|safe }}{% else %}{{ message }}{% endif %}
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
+            {% block content %}
+            {% endblock %}
+        </div>
+    </div>
+    {% block footer %}
+        {% include "shared/_footer.html" %}
+    {% endblock %}
+{% endblock %}
+
+{% block script_base %}
+    <script type="text/javascript" src="{{ STATIC_URL }}shared/js/jquery-1.12.4.min.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}shared/js/jquery-migrate-1.4.1.min.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}shared/js/jquery-ui-1.12.1.custom.min.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}shared/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}shared/js/css3-mediaqueries.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}shared/js/alert-fadeout.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}shared/js/search.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}shared/js/google_analytics.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}shared/js/select2.min.js"></script>
+    <script type="text/javascript">
+        $(function() {
+            search_setup("{% url 'vendor_task_search' %}");
+
+            {% new_messages_notification_check request as new_messages_check %}
+            {% if client_notification_unread_count %}
+                $('#notification-bell').removeClass().addClass('btn btn-danger');
+            {% endif %}
+        });
+    </script>
+    {% block script %}{% endblock %}
+{% endblock %}
+
+</body>
+</html>

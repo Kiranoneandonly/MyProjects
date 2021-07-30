@@ -1,0 +1,13 @@
+{% load i18n %}
+
+<div id="analysis_complete_modal" class="modal hide">
+    <div class="modal-header"><h3>{% trans "Analysis Complete" %}</h3></div>
+    <div class="modal-body">{% blocktrans %}
+        <p>The analysis of <span class="job-name">your job</span>
+            is complete.</p>
+    {% endblocktrans %}</div>
+    <div class="modal-footer">
+        <button class="btn" data-dismiss="modal">{% trans "Close" %}</button>
+        <button class="btn btn-primary">{% trans "See Result" %}</button>
+    </div>
+</div>

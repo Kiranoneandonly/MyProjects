@@ -1,0 +1,33 @@
+{% extends "shared/external/theme_base.html" %}
+{% load i18n %}
+{% load bootstrap %}
+
+{% block title %}{% trans "Register" %}{% endblock %}
+
+{% block css %}{% endblock %}
+{% block search_menu %}{% endblock %}
+{% block login_menu %}{% endblock %}
+
+{% block content_header %}
+    <h1 class="complete-registration">{% trans "Complete Registration" %}</h1>
+    <hr class="soften"/>
+{% endblock %}
+
+{% block content_breadcrumb %}{% endblock %}
+
+{% block content %}
+    <form novalidate class="form-horizontal" method="post" target="">
+        {% csrf_token %}
+        <fieldset>
+            {{ form|bootstrap }}
+        </fieldset>
+        <div class="control-group">
+            <div class="controls">
+                <button type="submit" class="btn btn-primary">{% blocktrans %}Continue{% endblocktrans %}</button>
+            </div>
+        </div>
+    </form>
+{% endblock %}
+
+{% block script %}
+{% endblock %}

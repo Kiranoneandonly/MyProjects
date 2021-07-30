@@ -1,0 +1,263 @@
+{% load i18n %}
+{% load humanize %}
+{% load currency_filter %}
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <title>{% trans "Vendor PO # " %} {{ po.number }}</title>
+    <style type="text/css">
+        @page {
+            size: {{ pagesize }};
+            margin: 1cm;
+            @frame footer {
+                    -pdf-frame-content: footerContent;
+                    bottom: 0cm;
+                    margin-left: 9cm;
+                    margin-right: 9cm;
+                    height: 1cm;
+            }
+        }
+
+        body {
+            font-family: Helvetica, Arial, sans-serif;
+            font-size:16px;
+            line-height: 22px;
+        }
+
+        .holder {
+            width:800px;
+            margin: 20px auto;
+        }
+
+        h1 {
+            text-align:center;
+        }
+
+        h2 {
+            font-size:22px;
+            line-height: 26px;
+            margin:0px;
+        }
+
+        .semibold {
+            font-weight:600;
+        }
+
+        .po-info {
+            width: 100%;
+            height: 40px;
+            background-color:#eee;
+            font-weight:600;
+        }
+
+        #order-num {
+
+            margin:0px;
+            margin-left:6px;
+            padding:0px;
+        }
+
+        #project-id {
+            margin:0px;
+            margin-right:6px;
+            padding:0px;
+        }
+
+
+        .vendor-info p, .deliverables p{
+            margin:2px 0px;
+        }
+
+        .vendor-info {
+            padding:0px;
+            /*border: #f00 solid 1px;*/
+        }
+
+        .deliverables {
+            padding:0px;
+            /*border: #f00 solid 1px;*/
+        }
+
+        .description {
+            margin: 20px 0px;
+        }
+
+        table.shaded {
+            width:100%;
+            margin: 10px 0px;
+        }
+
+{#        .shaded tbody tr {#}
+{#            height: 35px;#}
+{#        }#}
+
+        .shaded tbody tr:nth-child(odd)		{ background-color:#eee; }
+        .shaded tbody tr:nth-child(even)		{ background-color:#fff; }
+
+        thead tr {
+            background-color:#ddd;
+            padding-top: 4px;
+        }
+
+        .shaded td {
+            text-align: center;
+        }
+
+        .total-row {
+            font-weight:600;
+            background-color:#ddd;
+            padding-top: 4px;
+        }
+
+        .service-details {
+            color:#ccc;
+        }
+
+    </style>
+</head>
+<body>
+    <div>
+        <h1>{% trans "VIA Purchase Order" %}</h1>
+        <div class="po-info">
+            <hr/>
+            <table style="width: 100%">
+                <tr style="padding-top: 6px">
+                    <td style="width: 50%">
+                        <div id="order-num">{% blocktrans %}Purchase Order #:{% endblocktrans %} {{ po.number }}</div>
+                    </td>
+                    <td style="text-align: right">
+                        <div id="project-id">{% blocktrans %}Project ID:{% endblocktrans %} {{ po.task.project.job_number }}</div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <br class="clear"/>
+        <table style="width: 100%">
+            <tr>
+                <td style="width: 50%">
+                    <div class="vendor-info">
+                        <h2>{% blocktrans %}Issued To{% endblocktrans %}</h2>
+                        <p><span class="semibold">{% trans "Company:" %}</span> {{ po.vendor.name }}</p>
+                        <p><span class="semibold">{% trans "Email:" %}</span> {{ po.vendor.jobs_email }}</p>
+                        <p><span class="semibold">{% trans "Phone:" %}</span> {{ po.vendor.phone }}</p>
+                        <p><span class="semibold">{% trans "Fax:" %}</span> {{ po.vendor.fax }}</p>
+                    </div>
+                </td>
+                <td>
+                    <div class="deliverables">
+                        <h2>{% trans "Deliverables" %}</h2>
+                        <p><span class="semibold">{% blocktrans %}Date Issued:{% endblocktrans %}</span> {{ po.created|date:"SHORT_DATE_FORMAT" }}</p>
+                        <p><span class="semibold">{% blocktrans %}Due Date:{% endblocktrans %}</span> {{ po.due|date:"SHORT_DATE_FORMAT" }}</p>
+                        <p><span class="semibold">{% blocktrans %}Delivered to you via:{% endblocktrans %}</span> {% trans "VTP" %}</p>
+                        <p><span class="semibold">{% blocktrans %}Please Return via:{% endblocktrans %}</span> {% trans "VTP" %}</p>
+                    </div>
+                </td>
+            </tr>
+        </table>
+
+        <br class="clear"/>
+
+        <div class="description">
+            <h2>{% trans "Job Name:" %}</h2>
+            {{ po.task.project.name }}
+        </div>
+        <div class="tasks">
+            <h2>{% blocktrans %}Services Requested:{% endblocktrans %}</h2>
+            <table class="shaded">
+                <thead>
+                    <tr>
+                        <th>{% trans "Service" %}</th>
+                        <th>{% trans "Source" %}</th>
+                        <th>{% trans "Target" %}</th>
+                        <th>{% trans "Units" %}</th>
+                        <th>{% trans "Quantity" %}</th>
+                        <th>{% trans "Unit Price" %}</th>
+                        <th>{% trans "Total Price" %}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr style="padding-top: 4px">
+                        <td>{{ po.task.service.service_type }}</td>
+                        <td>{{ po.task.service.source }}</td>
+                        <td>{{ po.task.service.target }}</td>
+                        <td>{{ po.task.service.unit_of_measure }}</td>
+                        {% if po.task.actual_hours and po.task.project.delay_job_po %}
+                            <td>{{ po.task.actual_hours|floatformat:-2 }}</td>
+                        {% else %}
+                            <td>{{ po.task.quantity|floatformat:-2 }}</td>
+                        {% endif %}
+                        <td>{% if not po.task.service.service_type.code in 'translation|tep|' %}
+                                {{ po.task.unit_cost|currency }}
+                            {% endif %}&nbsp;
+                        </td>
+                        <td>{{ po.task.total_cost|currency }}</td>
+                    </tr>
+                    {% if po.task.is_translation and not po.task.is_minimum_vendor %}
+                        {% for row in po.task.detail_rows %}
+                            <tr class="service-details">
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td>{{ row.label }}</td>
+                                <td>{{ row.quantity|floatformat:-2 }}</td>
+                                <td>{{ row.unit_cost|currency }}</td>
+                                <td>{% if row.total_cost %}{{ row.total_cost|currency }}{% endif %}</td>
+                            </tr>
+                        {% endfor %}
+                    {% endif %}
+
+                    <tr class="total-row">
+                        <td>{% trans "Total" %}</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td>{{ po.total_cost|currency }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <hr/>
+        <div class="terms">
+            <p>
+                {% blocktrans %}Thank you for accepting this purchase order. We look forward to partnering with you to
+                provide our customers with a great service. We, at VIA, Inc., understand that timely
+                payments are essential in running a successful business. Please review the paragraphs below
+                as a reminder of our payment terms pursuant to this PO and/or your service level agreement
+                on file:{% endblocktrans %}
+            </p>
+            <p>
+                PAYMENT: Supplier agrees to be paid by check, PayPal, or bank wire on a net 45 day basis
+                following the time of receipt by Client of each undisputed request for payment. Supplier
+                agrees to submit all requests for payment via the Supplier Billing Portal
+                http://supplierbilling.vialanguage.com. All requests for payment must be received by Client
+                within 60 days following the completion of each project. Delays in payment may occur if the
+                quality of work requires re-work or the payment amount is in dispute. Both parties will make
+                reasonable efforts to resolve any disputes as soon as possible.
+            </p>
+            <p>
+                SUPPLIER ACKNOWLEDGES THAT CLIENT RELIES ON THE TIMELY SUBMISSION OF ALL
+                INVOICES. PURSUANT TO THE TERMS OF THE SERVICES CONTRACT, SUPPLIER HEREBY AGREES
+                TO SUBMIT ALL INVOICES WITHIN SIXTY (60) DAYS FOLLOWING THE COMPLETION OF EACH
+                PROJECT AND AGREES TO FORFEIT ALL AMOUNTS OWED BY CLIENT UNDER THIS CONTRACT
+                FOR ALL SERVICES RELATED TO EACH PROJECT IF CLIENT DOES NOT RECEIVE FROM SUPPLIER
+                PROPER INVOICE SUBMISSION WITHIN SUCH SIXTY (60) DAY PERIOD.
+            </p>
+            <p>
+                {% blocktrans %}If you need help with the portal, login information or have any billing questions please send
+                an email directly to invoices@viadelivers.com. Please address project only questions to your
+                project manager.{% endblocktrans %}
+            </p>
+        </div>
+    </div>
+    <div id="footerContent">{% comment %}
+    <!-- put this back if PDF generation is re-enabled -->
+        {% block page_foot %}
+            {% trans "Page" %}
+            <pdf:pagenumber>
+        {% endblock %}
+    {% endcomment %}</div>
+</body>
+</html>

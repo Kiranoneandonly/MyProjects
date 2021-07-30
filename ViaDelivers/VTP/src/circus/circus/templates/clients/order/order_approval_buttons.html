@@ -1,0 +1,46 @@
+{% load i18n %}
+{% load bootstrap %}
+
+<div class="row-fluid">
+    <div class="span1 offset1">
+        {{ form.accept_terms_and_conditions|bootstrap }}
+    </div>
+    <div class="span9">
+        {% blocktrans %}Please check to confirm that you have read and understood our{% endblocktrans %} <a href="{% url 'terms_via' %}" target="_blank">{% trans "Terms and Conditions" %}</a>.
+    </div>
+</div>
+<div class="row-fluid">
+    <div class="span12 offset2">
+        <a class="btn btn-primary " href="{% url 'client_clone_new_job' project.id %}"
+           data-confirm="{% trans "Are you sure you want to Clone Job?" %}"
+           title="{% trans "Clone Job" %}"> <i class="fa fa-files-o"></i> {% blocktrans %}Clone Job{% endblocktrans %}
+        </a>
+        <a class="btn" href="{% url 'projects_cancel' project.id %}"
+           data-confirm="{% trans "Are you sure you want to Cancel Job?" %}"
+           title="{% trans "Cancel Job" %}"> <i class="fa fa-times-circle"></i>
+            {% blocktrans %}Cancel Job{% endblocktrans %}
+        </a>
+        {% if not project.is_manual_estimate %}
+            <button name="edit_job" type="submit" class="btn btn-warning"
+                    title="{% trans "Modify Scope" %}"><i
+                    class="fa fa-pencil-square-o"></i> {% trans "Modify Scope" %}
+            </button>
+        {% endif %}
+        <button name="save_quote" type="submit" class="btn btn-primary"
+                title="{% trans "Save For Later" %}"><i
+                class="fa fa-arrow-circle-o-down"></i> {% trans "Save For Later" %}
+        </button>
+        {% if is_sow_available %}
+            <a class="btn" href="{% url 'download_client_sow' project.id %}"
+               title="{% trans "Download Statement of Work" %}"><i
+                    class="fa fa-download"></i> SOW</a>
+        {% endif %}
+        {% if secure_hierarchy %}
+            {% if user.is_approver_admin_groups %}
+                {% include "clients/order/order_approval_buttons_place_order.html" %}
+            {% endif %}
+        {% else %}
+            {% include "clients/order/order_approval_buttons_place_order.html" %}
+        {% endif %}
+    </div>
+</div>

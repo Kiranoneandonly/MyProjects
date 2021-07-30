@@ -1,0 +1,196 @@
+footer {
+    margin-bottom: 10;
+    bottom: 0;
+    position: fixed;
+    width: 100%;
+    height: 30px;
+    background-color: #343a40;
+    color: #007bff;
+    z-index: 14;
+}
+
+.error {
+    background-color: #f04124
+}
+
+.success {
+    background-color: #43AC6A
+}
+
+.menu-logo {
+    width: auto;
+    height: 50px;
+}
+
+#main-bar {
+    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, .16), 0 2px 10px 0 rgba(0, 0, 0, .12);
+}
+
+#sub-bar {
+    background-color: #343a40;
+}
+
+
+.side-menu-img {
+    width: auto;
+    height: 40px;
+}
+
+.dropdown-menu-img {
+    width: auto;
+    height: 20px;
+}
+
+section {
+    padding-bottom: 70px;
+}
+
+.expand-logo {
+    width: auto;
+    height: auto;
+    background-color: #1779ba;
+}
+
+.card-heading {
+    background-color: #343a40;
+    padding-bottom: 1.35em;
+    margin: 0;
+}
+
+.lamp-card {
+    max-width: 370px;
+    min-width: 300px;
+}
+
+.card-header-cell {
+    background-color: #343a40;
+}
+
+.card-hidden-content {
+    height: 10;
+}
+
+.idt-heading {
+    color: rgb(6, 53, 122);
+    font-size: 2.0em;
+    font-weight: 900;
+    width: 100%;
+}
+
+.left-menu-button {
+    margin: 0;
+}
+
+.reveal {
+    border-color: #1779BA;
+}
+
+.form-wrap {
+    padding-bottom: 20px;
+}
+
+.sigin-alert {
+    display: none;
+}
+
+.register-alert {
+    display: none;
+}
+
+.verify-alert {
+    display: none;
+}
+
+.register-success-callout {
+    display: none;
+}
+
+.verify-success-callout {
+    display: none;
+}
+
+
+body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+#map {
+    /*Changed Map Size*/
+    height: 75vh;
+    width: auto;
+    /* padding-top: 25em; */
+}
+
+.idt-heading {
+    font-size: 2.0em;
+    padding: 0px;
+    line-height: 0;
+}
+
+#ice-content {
+    padding-bottom: 30px;
+}
+
+.centered-spinner {
+    width: 150px;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.sideCanvas {
+    z-index: 16 !important;
+    background-color: #e6e6e6;
+}
+
+.model-heading {
+    padding-top: 15px;
+}
+
+#model-wait {
+    background-color: transparent;
+    border-color: none;
+    border: none;
+}
+
+#css-spinner {
+    position: fixed;
+    display: none;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 2;
+    cursor: pointer;
+}
+
+#sub-bar ul {
+    background-color: transparent;
+}
+
+#max-results {
+    color: whitesmoke;
+}
+
+#pagination {
+    width: 150px;
+}
+
+.openmap {
+    height: 55vh;
+}
+
+.submenu-heading {
+    font-size: 1.5em;
+    color: #1779ba;
+}
+
+.canvas-bar{
+    background-color: #343a40;
+}

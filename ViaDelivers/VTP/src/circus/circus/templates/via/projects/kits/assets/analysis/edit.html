@@ -1,0 +1,35 @@
+{% extends "via/theme_base.html" %}
+{% load i18n %}
+{% load bootstrap %}
+{#{% load url from future %}#}
+{% load widget_tweaks %}
+
+{% block title %}{% trans "Edit Analysis" %}{% endblock %}
+
+{% block content_header %}
+{% endblock %}
+
+{% block content %}
+    <div class="row-fluid">
+        <div class="span4 offset4">
+            <h3>{% blocktrans %}Edit Analysis:{% endblocktrans %} {{ analysis.target_locale }} : {{ analysis.asset.orig_name }} </h3>
+            <form novalidate action="" method="post" class="form-horizontal">
+                {% csrf_token %}
+                {{ form|bootstrap }}
+                <div class="form-actions centered">
+                    <button type="submit" class="btn btn-primary">{% trans "Save" %}</button>
+                    <a href="{% url 'via_job_detail_estimate' analysis.asset.kit.project.id %}" class="btn">{% trans "Close" %}</a>
+                </div>
+            </form>
+        </div>
+    </div>
+    <br/>
+{% endblock %}
+
+{% block script %}
+    <script>
+        $(document).ready(function () {
+            $('#id_asset').select2();
+        });
+    </script>
+{% endblock %}

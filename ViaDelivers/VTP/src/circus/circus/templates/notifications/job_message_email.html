@@ -1,0 +1,31 @@
+{% load humanize %}{% load currency_filter %}
+
+{% include 'notifications/_email_base_top.html' %}
+
+<table style="font-family: Helvetica, Verdana, Tahoma, Arial, sans-serif; font-size: 100%; line-height: 1.5; width: 100%; margin: 0; padding: 1px;">
+    <tr style="font-family: Helvetica, Verdana, Tahoma, Arial, sans-serif; font-size: 100%; line-height: 1.5; margin: 0; padding: 1px;">
+        <td style="font-family: Helvetica, Verdana, Tahoma, Arial, sans-serif; font-size: 100%; line-height: 1.5; margin: 0; padding: 1px;">
+        <h2> Here’s what you missed…</h2>
+            <ul>
+            {% for cmt in comments %}
+                <li>{{ forloop.counter }} . JOB # {{ cmt.content_object.job_number }} -- {{ cmt.user.get_full_name }}
+                    <div>
+                     <a href="{{ vtp_url }}">{{ cmt.comment|truncatechars:100 }}</a>
+                    </div>
+                </li>
+                &nbsp;
+            {% endfor %}
+            </ul>
+
+            <p style="font-family: Helvetica, Verdana, Tahoma, Arial, sans-serif; font-size: 14px; line-height: 1.5; font-weight: normal; margin: 0 0 10px; padding: 1px;">
+                <br/>
+                Thank you for your business.
+                <br/><br/>
+                Sincerely,<br/>
+                The VIA Team
+            </p>
+        </td>
+    </tr>
+</table>
+
+{% include 'notifications/_email_base_bottom.html' %}

@@ -1,0 +1,283 @@
+.container-fluid {
+    margin-bottom: 150px;
+}
+
+/* common border shared by all 'panes'* */
+
+.unit-border {
+    border-color: #999999;
+    border-style: solid;
+    border-width: 1px;
+    -webkit-border-radius: 6px;
+       -moz-border-radius: 6px;
+            border-radius: 6px;
+    font-size: 13px;        
+}
+
+
+/* BOOTSTRAP3  */
+
+.visible-sm {
+    display: none;
+}
+
+@media (max-width: 767px) {
+    .visible-sm {
+        display: block;
+    }
+}
+
+/* vendor nav */
+
+.vendor-nav {
+    border: none;
+    list-style: none;
+    margin: 0 0 10px 0;
+}
+
+.vendor-nav li {
+    float: left;
+    background: #d2d2d2;
+    padding: 5px 10px;
+    margin-right: 10px;
+    margin-bottom: 10px;
+}
+
+.vendor-nav li a {
+    font-size: 1.2em;
+    color: #333333;
+}
+
+.vendor-nav li:hover, .vendor-nav li.active {
+    background: #333333;
+}
+.vendor-nav li:hover a, .vendor-nav li.active a {
+    color: #cccccc;
+    /* font-weight: bold; */
+}
+
+
+@media (max-width: 767px) {
+    .vendor-nav {
+        background: #eeeeee;
+        border: 1px solid #999999;
+        -webkit-border-radius: 6px;
+           -moz-border-radius: 6px;
+                border-radius: 6px;
+    }
+
+    .vendor-nav > li {
+        margin-bottom: 0;
+        float: none;
+    }
+}
+
+/* TABLE LIST */
+
+.table-list > .table-list-header {
+    background: #d2d2d2;
+    color: #000000;
+    font-size: 1.2em;
+
+    border-color: #999999;
+    border-style: solid;
+    border-width: 0 0 1px 0;
+    -webkit-border-radius: 6px;
+       -moz-border-radius: 6px;
+            border-radius: 6px;
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
+
+/* eliminate overlapping bottom border */
+.table-list .table-list-item:last-child {
+    border: none;
+}
+
+.table-list > .row-fluid > * {
+    padding: 10px 5px;
+}
+
+.table-list i {
+    margin-right: 5px;
+}
+
+.table-list-item > * {
+    word-wrap: break-word;
+    overflow: hidden;
+}
+
+
+/* hide all table icons except in header in lg view */
+.table-list-item i {
+    display: none;
+}
+
+.table-list-header i {
+    display: inline;
+}
+
+
+
+@media (max-width: 767px) {
+    /* table-list icons */
+
+    .table-list i {
+        margin-right: 10px;
+    }
+
+    /* make skinny icons line up */
+    .table-list i.fa-skinny {
+        margin-left: 5px;
+    }
+
+    .table-list-item i {
+        /* normally hidden */
+        display: inline;
+    }
+
+    .table-list > .table-list-item {
+        padding-top: 20px;
+        padding-bottom: 20px;
+    }
+
+    /* control height individual rows */
+
+    .table-list > .table-list-item > div {
+        padding-top: 0;
+        padding-bottom: 0;
+        min-height: 20px;
+    }
+
+    .table-list > .task-header > div {
+        padding-bottom: 10px;
+        white-space: nowrap;
+    }
+
+    /* every other task offset color */
+
+    .table-list > .table-list-item:nth-child(odd) {
+        background: #eeeeee;
+    }
+}
+
+/* BACK TO TOP BUTTON */
+
+.back-to-top {
+    display: none;
+}
+
+@media (max-width: 767px) {
+    .back-to-top {
+        display: block;
+        padding: 10px 25px;
+        border-top: 1px solid #999999;
+    }
+}
+
+.label-pending,
+.badge-pending {
+    background-color: #3498DB;
+    color: #ffffff;
+}
+
+.label-upcoming,
+.badge-upcoming {
+    background: #4555DB;
+    color: #ffffff;
+}
+.label-overdue,
+.badge-overdue {
+    background: #C0392B;
+    color: #ffffff;
+}
+.label-active,
+.badge-active {
+    background: #00AE60;
+    color: #ffffff;
+}
+.label-hold,
+.badge-hold {
+    background: #ffa800;
+    color: #ffffff;
+}
+
+.label-complete,
+.badge-complete {
+    background: #706E9B;
+    color: #ffffff;
+}
+
+/* TITLES
+ * ************/
+
+.page-title {
+    margin-bottom: 15px;
+}
+
+/*For responsive design for via task list*/
+/*.row-fluid .span2{*/
+    /*margin-right: -7px;*/
+    /*margin-left: -7px;*/
+/*}*/
+
+.noMarginLeft { margin-left: 0 !important; }
+
+.select2-search input, .select2-container {
+    width: 100%;
+}
+
+.hc_report_chart {
+    max-width: 900px !important;
+    height: 300px !important;
+    margin: 0 auto !important;
+}
+
+.checkbox {
+    padding-top: 10px;
+}
+
+#via-task-edit-form {
+    margin: 0 0 0px;
+}
+
+.chooseServiceWidget ul {
+    margin: 0;
+    list-style-type: none;
+}
+.reviewEstimateWidget .btn {
+    float: right;
+}
+
+#notification_area {
+    text-align: center;
+}
+
+.analysis_notification {
+    display: inline-block;
+    border: thin solid #888;
+    border-top: none;
+    padding: 0 1em;
+    background: hsla(0, 0%, 96%, 0.85);
+    border-radius: 0 0 5px 5px;
+}
+
+@media (max-width: 1200px) {
+    .table-responsive {
+        width: 100%;
+        overflow-x: auto;
+    }
+}
+.rating-form-group .rating-input{
+    padding-top: 6px;
+}
+
+.task_rating_form {
+    margin: 0 0 0 0;
+    max-height: 5px;
+}
+
+.target-summary-row-group {
+    background-color: #CCCCCC;
+}

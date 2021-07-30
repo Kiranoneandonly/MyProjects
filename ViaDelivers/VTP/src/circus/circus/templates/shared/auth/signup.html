@@ -1,0 +1,62 @@
+{% extends "shared/external/theme_base.html" %}
+{% load i18n %}
+{% load bootstrap %}
+
+{% block title %}{% trans "Create a Client Account" %}{% endblock %}
+
+{% block css %}{% endblock %}
+{% block search_menu %}{% endblock %}
+{% block login_menu %}{% endblock %}
+{% block content_breadcrumb %}{% endblock %}
+{% block navbar_menu %}{% endblock %}
+
+{% block content_header %}
+    <div class="row-fluid">
+        <div class="span4 center"><h1 class="signup-header">{% blocktrans %}Get a Free Instant Quote{% endblocktrans %}</h1></div>
+    </div>
+    <hr class="soften"/>
+{% endblock %}
+
+{% block content %}
+
+    <div class="section">
+      <div class="container">
+        <div class="row">
+         <div class="span7">
+             <img src="{{ STATIC_URL }}shared/img/Easy_as_1_2_3.png" class="img-responsive">
+             <br> <br>
+             <p><h3>As much as we like working with our customers one on one, we understand that you don't always have time to chat. Sometimes you just want to submit your project, get a quote and go.</h3></p>
+             <p><h3>With the VIA Translation Platform you can get instant quotes 24/7. Plus, our cloud based translation management system provides a number of options for turnaround time, including Express if you’re on a tight timeline.</h3></p>
+             <p><h3>
+                 See how easy it is to have global translation, estimating, and project management at your fingertips!
+                 <a class="signup" style="color: #F47D30" href="http://www.viadelivers.com/what-we-do/technology/translation-portal" target="_blank">
+                     Watch a quick overview video now. <i class="fa fa-share"></i>
+                 </a>
+                </h3>
+             </p>
+         </div>
+
+        <div class="span5 ">
+            <form novalidate class="form-horizontal form-signin" method="post" action="">
+                {% csrf_token %}
+                {{ form|bootstrap }}
+                <div class="row-fluid">
+                    <button type="submit" class="btn btn-large btn-primary btn-block">{% blocktrans %}Create Client Account{% endblocktrans %}</button>
+                    <a href="{% url 'login' %}" class="btn btn-block">{% trans "Cancel" %}</a>
+                </div>
+                <div class="row-fluid">
+                    <hr class="soften"/>
+                </div>
+                <div class="row-fluid">
+                    <i>* If you are a Supplier, please contact <a href="mailto:suppliermanagement@viadelivers.com?subject=VTP Supplier Account Request" target="_blank">VIA Supplier Management</a> for your account.</i>
+                </div>
+
+            </form>
+        </div>
+    </div>
+    </div>
+    </div>
+{% endblock %}
+
+{% block script %}{% endblock %}
+

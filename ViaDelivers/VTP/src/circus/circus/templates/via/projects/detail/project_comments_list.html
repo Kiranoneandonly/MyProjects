@@ -1,0 +1,119 @@
+{% extends "via/theme_base.html" %}
+{% load i18n %}
+{% load bootstrap_pagination %}
+{#{% load url from future %}#}
+{% load bootstrap %}
+{% load widget_tweaks %}
+{% load humanize %}
+
+    {% block title %}
+        {% if message_type %}
+            {% trans "Message List" %}
+        {% else %}
+            {% trans "Notifications List" %}
+        {% endif %}
+    {% endblock %}
+
+{% block extra_head %}{% endblock %}
+{% block content_header %}{% endblock %}
+{% block css %}
+    <link rel="stylesheet" href="{{ STATIC_URL }}via/css/job-list.css" media="screen"/>
+{% endblock %}
+
+{% block content %}
+    <div class="job-active job-content">
+        {% block content_breadcrumb %}
+            <div class="breadcrumb">
+                <span><i class="fa fa-home"></i></span>
+                <span><a href="{% url 'via_dashboard' %}">{% trans "Home" %}</a></span>
+                <span class="divider"><i class="fa fa-chevron-right"></i></span>
+                <span class="active">
+                    {% if message_type %}
+                        {% trans "Job Messages" %}
+                    {% else %}
+                        {% trans "Notifications" %}
+                    {% endif %}
+                </span>
+                {{ block.super }}
+
+            </div>
+            <br>
+            {% if not message_type and client_notification_unread_count %}
+                <form novalidate action="" method="post">
+                    {% csrf_token %}
+                    <button name="clear_all" class="btn btn-inverse mark-all-as-read-btn"
+                            type="submit"
+                            TITLE="{% blocktrans %}Mark all as read{% endblocktrans %}"><i
+                            class="fa fa-check-square"></i> {% blocktrans %}Read All{% endblocktrans %}</button>
+                </form>
+            {% endif %}
+        {% endblock %}
+
+
+        <div class="table-wrapper">
+
+            <table class="table table-bordered table-hover">
+            <thead>
+                <tr>
+{#                    <th class="col ">{% trans "ID" %}</th>#}
+                    <th class="col ">{% trans "Job Number" %}</th>
+                    <th class="col ">{% trans "User" %} </th>
+                    {% if  message_type  %}
+                    <th class="col ">{% trans "Message" %}</th>
+                    {% else %}
+                    <th class="col ">{% trans "Notification" %}</th>
+                    {% endif %}
+                    <th class="col ">{% trans "Date" %}</th>
+                    <th class="col" >{% trans "Mark as Read" %}</th>
+                </tr>
+                </thead>
+                <tbody>
+                    {% for message in messages_list %}
+                            <tr class="hide-{{ message.id }}">
+                                <td class="col">
+                                {% if  message_type  %}
+                                    <a href="{% url 'project_comments' message.object_pk %}">{{ message.content_object.job_number }}</a>
+                                {% else %}
+                                    {% if  message.content_type.app_label in "tasks"  %}
+                                       <a href="{% url 'projects_tasks_edit' message.object_pk %}"> {{ message.content_object.project.job_number }}</a>
+                                    {% else %}
+                                       <a href="{% url 'via_job_detail_tasks' message.object_pk %} ">{{ message.content_object.job_number }}</a>
+                                    {% endif %}
+                                {% endif %}
+                                </td>
+                                <td class="col">
+                                    {{ message.user.get_full_name }}
+                                </td>
+                                <td class="col">
+                                    {{ message.comment|truncatechars:40 }}
+                                </td>
+                                <td class="col">
+                                    {{ message.submit_date|naturaltime }}
+                                </td>
+                                <td>
+                                <form novalidate action="" method="post">
+                                {% csrf_token %}
+                                    <input type="hidden" name="message_list_filter" value="{{ message.id }}">
+                                    <button class="fa fa-check-square" type="submit" title="{% trans "Mark as Read" %}"></button>
+                                    </form>
+                                </td>
+                            </tr>
+
+                    {% empty %}
+                        <tr><td colspan="100%" style="text-align: left">
+                            {% if message_type %}
+                                {% trans "No Unread Messages" %}
+                            {% else %}
+                                {% trans "No Unread Notifications" %}
+                            {% endif %}
+                        </td></tr>
+                    {% endfor %}
+
+                </tbody>
+            </table>
+            <div class="pagination pagination-centered">
+            {% bootstrap_paginate page_obj range=10 centered="true" %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

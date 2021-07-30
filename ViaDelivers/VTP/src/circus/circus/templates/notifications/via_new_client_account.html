@@ -1,0 +1,47 @@
+{% load humanize %}{% load currency_filter %}
+
+{% include 'notifications/_email_base_top.html' %}
+
+<table style="font-family: Helvetica, Verdana, Tahoma, Arial, sans-serif; font-size: 100%; line-height: 1.5; width: 100%; margin: 0; padding: 1px;">
+    <tr style="font-family: Helvetica, Verdana, Tahoma, Arial, sans-serif; font-size: 100%; line-height: 1.5; margin: 0; padding: 1px;">
+        <td style="font-family: Helvetica, Verdana, Tahoma, Arial, sans-serif; font-size: 100%; line-height: 1.5; margin: 0; padding: 1px;">
+            <p style="font-family: Helvetica, Verdana, Tahoma, Arial, sans-serif; font-size: 14px; line-height: 1.5; font-weight: normal; margin: 0 0 10px; padding: 1px;">
+                {% if client.parent %}
+                    A new department of {{ client.parent.name }} has been created.
+                {% else %}
+                    A new client organization has signed up.
+                {% endif %}
+            </p>
+            <p style="font-family: Helvetica, Verdana, Tahoma, Arial, sans-serif; font-size: 14px; line-height: 1.5; font-weight: normal; margin: 0 0 10px; padding: 1px;">
+                <ul>
+                    <li style="list-style-type:none;">Name: <b>{{ client.name }}</b></li>
+                    <li style="list-style-type:none;">Website: <b>{{ client.website }}</b></li>
+                    <li style="list-style-type:none;">Phone: <b>{{ client.phone }}</b></li>
+                    <li style="list-style-type:none;">Fax: <b>{{ client.fax }}</b></li>
+                    <li style="list-style-type:none;">Address: <br/>
+                        <b>
+                        {{ client.billing_street }}<br />
+                        {{ client.billing_city }} {{ client.billing_state }} {{ client.billing_postal_code }}<br/>
+                        {{ client.billing_country }}
+                        </b>
+                    </li>
+                </ul>
+            </p>
+            <p style="font-family: Helvetica, Verdana, Tahoma, Arial, sans-serif; font-size: 14px; line-height: 1.5; font-weight: normal; margin: 0 0 10px; padding: 1px;">
+                Initial contact at this client:
+            </p>
+            <p style="font-family: Helvetica, Verdana, Tahoma, Arial, sans-serif; font-size: 14px; line-height: 1.5; font-weight: normal; margin: 0 0 10px; padding: 1px;">
+                <ul>
+                {% for contact in contacts %}
+                    <li style="list-style-type:none;"><b>{{ contact.get_full_name }} &lt;{{ contact.email }}&gt; {{ contact.phone }}</b></li>
+                {% endfor %}
+                </ul>
+            </p>
+            <p style="font-family: Helvetica, Verdana, Tahoma, Arial, sans-serif; font-size: 14px; line-height: 1.5; font-weight: normal; margin: 0 0 10px; padding: 1px;">
+                For more information, please visit the <a href="{{ vtp_url }}">VIA Translation Platform</a>.
+            </p>
+        </td>
+    </tr>
+</table>
+
+{% include 'notifications/_email_base_bottom.html' %}

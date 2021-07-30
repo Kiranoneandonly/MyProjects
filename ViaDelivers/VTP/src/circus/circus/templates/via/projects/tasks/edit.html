@@ -1,0 +1,724 @@
+{% extends "via/theme_base.html" %}
+{% load i18n %}
+{#{% load url from future %}#}
+{% load bootstrap %}
+{% load widget_tweaks %}
+{% load humanize %}
+{% load get_next_task %}
+
+{% block title %}{% trans "Edit Task" %}{% endblock %}
+
+{% block css %}
+    <link rel="stylesheet" href="{{ STATIC_URL }}shared/css/datetimepicker.css" media="screen"/>
+{% endblock %}
+
+{% block content_header %}
+{% endblock %}
+
+{% block content %}
+    {% if not task.is_translation and not task.is_final_approval %}
+        {% if task.project.delay_job_po and task.is_complete and not task.actual_hours and not task.create_po_needed %}
+            {% include 'shared/components/approval_needed_for_po.html' with create_po_needed=True %}
+        {% elif task.project.delay_job_po and task.is_complete and task.actual_hours and not task.create_po_needed %}
+            {% include 'shared/components/approval_needed_for_po.html' with actual_hours=True %}
+        {% elif task.project.delay_job_po and task.is_complete and not task.actual_hours and task.create_po_needed %}
+            {% include 'shared/components/approval_needed_for_po.html' with actual_hours=False %}
+        {% endif %}
+    {% endif %}
+    <div class="breadcrumb">
+        <span>
+            <i class="fa fa-home"></i>
+                  {% url 'via_dashboard' as url %}
+            <a href="{{ url }}">
+                {% trans "Home" %}
+            </a>
+        </span>
+        <span class="divider"><i class="fa fa-chevron-right"></i></span>
+        <span class="active">
+            {% trans "Tasks Edit" %}
+        </span>
+        <span class="divider"><i class="fa fa-chevron-right"></i></span>
+        <span class="active">
+            <a href="
+            {% if task.project.is_inestimate_status %}
+                {% url 'via_job_detail_estimate' task.project.id %}
+            {% else %}
+                {% if is_task_view %}
+                    {% url 'via_job_detail_tasks_view' task.project.id task.service.service_type.id %}
+                {% else %}
+                    {% url 'via_job_detail_tasks' task.project.id %}
+                {% endif %}
+            {% endif %}
+            ">
+                {{ task }}
+            </a>
+        </span>
+        {{ block.super }}
+    </div>
+    {% if task.project.is_phi_secure_job %}
+            {% include 'shared/components/phi_secure_client_job_notification.html' %}
+    {% endif %}
+    {% if object.project.is_restricted_job %}
+        {% include 'shared/components/restriction_notification.html' %}
+    {% endif %}
+
+    <form novalidate action="" method="post" id="via-task-edit-form" class="form-horizontal">
+        {% csrf_token %}
+    <input type="hidden" name="parent-id" value="{{ task.parent_id }}">
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="span6">
+                    {% if not task.is_complete and not task.is_accepted and not task.project.internal_via_project %}
+                    <div class="span2">
+                        <div class="btn-group">
+                            <a href="{% url 'via_accept_task' task.id 0 %}" class="btn btn-success" value="{{task.id}}"><i class="fa fa-check fa-white"></i>{% trans "Accept" %}</a>\
+                            <a href="{% url 'via_reject_task' task.id %}" class="btn btn-danger" value="{{task.id}}"><i class="fa fa-times fa-white"></i>{% trans "Reject" %}</a>
+                        </div>
+                        <br class="clear"/>
+                        <span class="label">{% trans "Respond by:" %} {{ task.respond_by }}</span>
+                    </div>
+                    {% endif %}
+                    {% if can_edit_job and task.is_final_approval_ready %}
+                        <div class="span3">
+                            <a href="{% url 'via_approve_task' task.id %}" class="btn btn-success"><i class="fa fa-truck"></i> {% blocktrans %}Make Delivery{% endblocktrans %}</a>
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="span6">
+                    <div class="btn-group pull-left">
+                    {% if previous_task_vendor_notes %}
+                        <a href="#modal{{project.id}}"  class="instructions-modal-ref btn btn-info" style="display:inline-block;" data-toggle="modal" id="{{ project.id }}" title="{% trans "Click to see Previous Task Notes." %}">
+                            <i class="fa fa-comments-o instructions" data-container="body" data-toggle="popover" data-placement="top"></i>
+                        </a>
+                    {% endif %}
+                    {% if is_task_view %}
+                        {% get_task_view task 'previous' as previous_task %}
+                        {% if previous_task %}
+                            <a href="{% url 'projects_tasks_edit' previous_task.id %}" class="btn" title="{% trans "Jump to previous Workflow Task" %}">{% trans "Previous" %}</a>
+                        {% endif %}
+                        {% get_task_view task 'next' as next_task %}
+                        {% if next_task %}
+                            <a href="{% url 'projects_tasks_edit' next_task.id %}" class="btn" title="{% trans "Jump to next Workflow Task" %}">{% trans "Next" %}</a>
+                        {% endif %}
+                    {% else %}
+                        {% if task.predecessor.id %}
+                            <a href="{% url 'projects_tasks_edit' task.predecessor.id %}" class="btn" title="{% trans "Jump to previous Workflow Task" %}">{% trans "Previous" %}</a>
+                        {% endif %}
+                        {% get_next_task task.id as next_task %}#}
+                        {% if next_task %}
+                            <a href="{% url 'projects_tasks_edit' next_task %}" class="btn" title="{% trans "Jump to next Workflow Task" %}">{% trans "Next" %}</a>
+                        {% endif %}
+                    {% endif %}
+{#                    {% get_next_task task.id as next_task %}#}
+{#                    {% get_task_view task 'next' as next_task %}#}
+{#                    {% if next_task %}#}
+{#                        <a href="{% url 'projects_tasks_edit' next_task.id %}" class="btn" title="{% trans "Jump to next Workflow Task" %}">{% trans "Next" %}</a>#}
+{#                        <a href="{% url 'projects_tasks_edit' next_task %}" class="btn" title="{% trans "Jump to next Workflow Task" %}">{% trans "Next" %}</a>#}
+{#                    {% endif %}#}
+                    </div>
+                    <div class="btn-group pull-right">
+                        <a href="
+                            {% if is_from_mytaskview %}
+                                {{ request.META.HTTP_REFERER }}
+                            {% elif task.project.is_inestimate_status %}
+                                {% url 'via_job_detail_estimate' task.project.id %}
+                            {% else %}
+                                {% url 'via_job_detail_tasks' task.project.id %}
+                            {% endif %}
+                        " class="btn">{% trans "Close" %}</a>
+                        {% if can_edit_job %}
+                            <button name="save_and_edit" id="save_and_edit" type="submit" class="btn btn-success">{% trans "Save" %}</button>
+                            {% if is_from_mytaskview %}
+                                <button name="save_and_close" id="save_and_close" type="submit" class="btn btn-primary" value={{ request.META.HTTP_REFERER }}>{% trans "Save and Close" %}</button>
+                            {% else %}
+                                <button name="save_and_close" id="save_and_close" type="submit" class="btn btn-primary">{% trans "Save and Close" %}</button>
+                            {% endif %}
+                        {% endif %}
+                    </div>
+                    <div id="modal{{project.id}}" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+                            <h3 id="myModalLabel">{% trans "Previous Task Notes:" %} <br/> {{ task.predecessor.service.service_type }}</h3>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row-fluid">
+                                <div class="span12">{{ task.predecessor.vendor_notes|safe }}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br class="clear"/>
+        <div class="row-fluid">
+            <div class="accordion" id="accordionService">
+              <div class="accordion-group">
+                <div class="accordion-heading">
+                  <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordionService" href="#collapseServiceOne">
+                    <i class="fa fa-tasks"></i> <b>{% trans "Details" %}</b>
+                  </a>
+                </div>
+                <div id="collapseServiceOne" class="accordion-body collapse in">
+                  <div class="accordion-inner">
+                    <div class="span3">
+                        {{ form.service|bootstrap }}
+                        {{ form.predecessor|bootstrap }}
+                        {% if not task.is_translation %}
+                        <div class="row-fluid">
+                            <div class="span4">{{ form.quantity|bootstrap }}</div>
+                            {% if task.is_billable and task.project.delay_job_po or task.project.internal_via_project %}
+                            <div class="span4">{{ form.actual_hours|bootstrap }}</div>
+                            {% if task.project.internal_via_project %}
+                                <div class="span4"><br/>{{ form.qa_approved|bootstrap }}</div>
+                                <div class="row-fluid">
+                                {% if task.qa_approved %}
+                                    {{ form.qa_lead|bootstrap }}
+                                {% endif %}
+                                </div>
+                            {% else %}
+                            <div class="span2"><br/>{{ form.create_po_needed|bootstrap }}</div>
+                            {% endif %}
+                            {% endif %}
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="span3">
+                        {{ form.status|bootstrap }}
+                        {{ form.assignee|bootstrap }}
+                        <div class="row-fluid">
+                            <div class="span4"><br/>{{ form.billable|bootstrap }}</div>
+                            <div class="span8">{{ form.po_number|bootstrap }}</div>
+                        </div>
+                    </div>
+
+{#                  {% if task.workflow_task %}#}
+                    <div class="span3">
+                        <div class="row-fluid">
+                            <div class="span6">{{ form.standard_days|bootstrap }}</div>
+                            <div class="span6">{{ form.express_days|bootstrap }}</div>
+                        </div>
+                        {{ form.scheduled_start_timestamp|bootstrap }}
+                        {{ form.due|bootstrap }}
+                        <div class="row-fluid">
+                            <div class="span6">{{ form.resend_notification|bootstrap }}</div>
+                            <div class="span6">{{ form.reschedule_all_due_dates|bootstrap }}</div>
+                        </div>
+                    </div>
+                    <div class="span3">
+                        {{ form.accepted_timestamp|bootstrap }}
+                        {{ form.started_timestamp|bootstrap }}
+                        {{ form.completed_timestamp|bootstrap }}
+                    </div>
+{#                  {% endif %}#}
+                  </div>
+                </div>
+              </div>
+            </div>
+        </div>
+        {% if not task.project.internal_via_project %}
+        <div class="row-fluid">
+            <div class="accordion" id="accordionNotes">
+              <div class="accordion-group">
+                <div class="accordion-heading">
+                  <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordionNotes" href="#collapseNotesOne">
+                    <i class="fa fa-comments-o"></i> <b>{% blocktrans %}Instructions / Notes{% endblocktrans %}</b>
+                  </a>
+                </div>
+                <div id="collapseNotesOne" class="accordion-body collapse">
+                  <div class="accordion-inner">
+                    <div class="row-fluid">
+                        <div class="span4">{% blocktrans %}Task Instructions{% endblocktrans %}</div>
+                        <div class="span4">{% blocktrans %}Supplier Delivery Notes{% endblocktrans %}</div>
+                        <div class="span4">{% blocktrans %}Client Delivery Notes{% endblocktrans %}</div>
+                    </div>
+                    <div class="row-fluid">
+                        <div class="span4">{{ form.notes|bootstrap }}</div>
+                        <div class="span4">{{ form.vendor_notes|bootstrap }}</div>
+                        <div class="span4">{{ form.via_notes|bootstrap }}</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+        </div>
+    {% endif %}
+        {% if task.billable and not task.project.internal_via_project%}
+            <div class="row-fluid">
+                <div class="accordion" id="accordionPricing">
+                  <div class="accordion-group">
+                    <div class="accordion-heading">
+                      <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordionPricing" href="#collapsePricingOne">
+                        <i class="fa fa-tag"></i> <b>{% trans "Pricing" %}</b>
+                      </a>
+                    </div>
+                    <div id="collapsePricingOne" class="accordion-body collapse">
+                      <div class="accordion-inner">
+                        {% if task.is_translation %}
+                            {% include "via/projects/tasks/_edit_translation_task.html" %}
+                        {% else %}
+                            {% include "via/projects/tasks/_edit_nontranslation_task.html" %}
+                        {% endif %}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+            </div>
+            <div class="row-fluid">
+                <div class="accordion" id="vendorFeedback">
+                    <div class="accordion-group">
+                        <div class="accordion-heading">
+                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#vendorFeedback"
+                               href="#vendorFeedbackOne">
+                                <i class="fa fa-file-text"></i> <b>{% blocktrans %}Vendor Feedback{% endblocktrans %}</b>
+                            </a>
+                        </div>
+                        <div id="vendorFeedbackOne" class="accordion-body collapse  ">
+                            <div class="accordion-inner">
+                                <div class="span3">
+                                    <div class="form-group rating-form-group">
+                                        <label class="control-label  " for="id_rating"> {% blocktrans %}Vendor Rating{% endblocktrans %}</label>
+
+                                        <div class=" ">
+                                            <input class="rating hidden" data-active-icon="fa-star" data-icon-lib="fa"
+                                                   data-inactive-icon="fa-star-o" data-max="5" data-min="1"
+                                                   id="id_rating"
+                                                   name="rating" type="number" value={{ task.rating|default_if_none:"0" }}>
+                                            <input type="hidden" name="TaskId" class="rating_task_id"
+                                                   data-rating="{{ task.rating }}" value="{{ task.id }}"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="span8">{{ form.vendor_feedback|bootstrap }}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    </form>
+    {% if can_edit_job and not task.project.internal_via_project %}
+    <div class="row-fluid">
+        <div class="accordion" id="accordionFiles">
+          <div class="accordion-group">
+            <div class="accordion-heading">
+              <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordionFiles" href="#collapseFilesOne">
+                <i class="fa fa-file-text"></i> <b>{% trans "Files" %}</b>
+              </a>
+            </div>
+            <div id="collapseFilesOne" class="accordion-body collapse in">
+              <div class="accordion-inner">
+                    <div class="row-fluid">
+                        <div class="assets span12">
+                            <table class="table table-bordered table-striped table-condensed asset-table">
+                                <tr>
+                                {% if not task.is_translation %}
+                                    <th>
+                                        {% trans "Source File" %}
+                                    </th>
+                                {% endif %}
+                                    <th>
+                                        {% blocktrans with service=task.service.service_type.description %}
+                                            For {{ service }}
+                                        {% endblocktrans %}
+                                    </th>
+                                    <th>
+                                        {% trans "Completed" %}
+                                    </th>
+                                    <th>
+                                        {% trans "Support file" %}
+                                    </th>
+                                    {% if task.is_final_approval %}
+                                    <th width="2%">
+                                        {% trans "Approvals" %}
+                                    </th>
+                                    {% endif %}
+                                    {% if not task.is_translation %}
+                                    <th width="2%"> </th>
+                                    {% endif %}
+                                </tr>
+                            {% if task.is_translation %}
+                                {% with trans_kit=task.trans_kit %}
+                                    <tr>
+                                        <td>
+                                            {% if trans_kit.input_file %}
+                                                <a href="{% url 'download_tasklocaletranslationkit_in_file' task.id trans_kit.id %}" title="{{ trans_kit.input_file_name }}">{{ trans_kit.input_file_name|truncatechars:75 }} <i class="fa fa-download"></i></a>
+                                            {% else %}
+                                                {% blocktrans %}Not Available{% endblocktrans %}
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if task.is_active_status or task.is_complete %}
+                                                <form novalidate name="DELETE_TLTK_OUTFILE{{ trans_kit.id }}" action="" method="post">
+                                                {% csrf_token %}
+                                                {% if trans_kit.output_file %}
+                                                    <a class='download_file_check' href="{% url 'download_tasklocaletranslationkit_out_file' task.id trans_kit.id %}" title="{{ trans_kit.output_file_name }}">{{ trans_kit.output_file_name|truncatechars:75 }} <i class="fa fa-download"></i></a>
+
+                                                    <input type="hidden" name="tltk_output_delete" value="{{ trans_kit.id }}">
+                                                    <a type="submit" class="btn btn-small btn-danger pull-right" href="javascript:document.DELETE_TLTK_OUTFILE{{ trans_kit.id }}.submit()" data-confirm="{% trans "Are you sure you want to delete this file?" %}">
+                                                        <i class="fa fa-times"></i>&nbsp;{% trans "Delete" %}
+                                                    </a>
+
+                                                    <a id="replace-btn-{{ trans_kit.id }}" class="btn btn-small btn-inverse upload-btn pull-right" href="#"><i class="fa fa-upload fa-white"></i> {% blocktrans %}Replace{% endblocktrans %}</a>
+                                                {% else %}
+                                                    <a id="upload-btn-{{ trans_kit.id }}" class="btn btn-small btn-warning upload-btn pull-right" href="#"><i class="fa fa-upload fa-white"></i> {% blocktrans %}Upload{% endblocktrans %}</a>
+                                                {% endif %}
+                                                </form>
+                                                {% include "via/projects/tasks/_upload_form_task_edit.html" %}
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if trans_kit.support_file %}
+                                                <a class='download_file_check' href="{% url 'download_tasklocaletranslationkit_sup_file' task.id trans_kit.id %}" title="{{ trans_kit.support_file_name }}">{{ trans_kit.support_file_name|truncatechars:75 }} <i class="fa fa-download"></i></a>
+                                                <a id="support-replace-btn-{{ trans_kit.id }}" class="btn btn-small btn-inverse support_upload-btn pull-right" href="#"><i class="fa fa-upload fa-white"></i> {% blocktrans %}Replace{% endblocktrans %}</a>
+                                            {% else %}
+                                                {% blocktrans %}Not Available{% endblocktrans %}
+                                                <a id="support-upload-btn-{{ trans_kit.id }}" class="btn btn-small btn-warning support_upload-btn pull-right" href="#"><i class="fa fa-upload fa-white"></i> {% blocktrans %}Upload{% endblocktrans %}</a>
+                                            {% endif %}
+                                        {% include "via/projects/tasks/_upload_form_task_support_edit.html" %}
+                                        </td>
+                                    </tr>
+                                {% endwith %}
+
+                            {% else %}{# non-translation task #}
+
+                                {% for la in task.localized_assets.all %}
+                                    <tr>
+                                        <td>
+                                            {% if la.source_asset %}
+                                                <a href="{% url 'download_asset' task.project.id  la.source_asset.id %}" title="{{ la.source_asset.orig_name }}">{{ la.source_asset.orig_name|truncatechars:50 }} <i class="fa fa-download"></i></a>
+                                            {% else %}
+                                                {% blocktrans %}--{% endblocktrans %}
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if task.is_active_status %}
+                                                <form novalidate name="DELETE_INFILES{{ la.id }}" action="" method="post">
+                                                {% csrf_token %}
+                                                {% if la.input_file %}
+                                                    <div class="row-fluid">
+                                                        <div class="span6">
+                                                            <a class='download_file_check' style = "display : block" href="{% url 'download_tasklocalizedasset_in_file' task.id la.id %}" title="{{ la.input_file_name }}">{{ la.input_file_name|truncatechars:75 }} <i class="fa fa-download"></i></a>
+                                                        </div>
+                                                        <div class="span6">
+                                                            <a type="submit" class="btn btn-small pull-right" href="{% url 'copy_to_tla_output_file' task.id la.id %}"><i class="fa fa-files-o fa-white"></i> {% blocktrans %}Copy >{% endblocktrans %}</a>
+                                                            <input type="hidden" name="tla_input_delete" value="{{ la.id }}">
+                                                            <a type="submit" class="btn btn-small btn-danger pull-right" href="javascript:document.DELETE_INFILES{{ la.id }}.submit()" data-confirm="{% trans "Are you sure you want to delete this file?" %}">
+                                                                <i class="fa fa-times"></i>&nbsp;{% trans "Delete" %}
+                                                            </a>
+                                                            <a id="replace-btn-{{ la.id }}" class="btn btn-small btn-inverse input_upload-btn pull-right" href="#"><i class="fa fa-upload fa-white"></i> {% blocktrans %}Replace{% endblocktrans %}</a>
+                                                        </div>
+                                                    </div>
+                                                {% else %}
+                                                    <a id="upload-btn-{{ la.id }}" class="btn btn-small btn-warning input_upload-btn pull-right" href="#"><i class="fa fa-upload fa-white"></i> {% blocktrans %}Upload{% endblocktrans %}</a>
+                                                {% endif %}
+                                                </form>
+                                                {% include "via/projects/tasks/_upload_form_task_input_edit.html" %}
+                                            {% elif task.is_complete %}
+                                                {% if la.input_file %}
+                                                    <a href="{% url 'download_tasklocalizedasset_in_file' task.id la.id %}" title="{{ la.input_file_name }}">{{ la.input_file_name|truncatechars:75 }} <i class="fa fa-download"></i></a>
+                                                {% endif %}
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if task.is_active_status %}
+                                                <form novalidate name="DELETE_OUTFILES{{ la.id }}" action="" method="post">
+                                                {% csrf_token %}
+                                                {% if la.output_file %}
+                                                    <div class="row-fluid">
+                                                        <div class="span6">
+                                                            <a class='download_file_check' href="{% url 'download_tasklocalizedasset_out_file' task.id la.id %}" title="{{ la.output_file_name }}">{{ la.output_file_name|truncatechars:75 }} <i class="fa fa-download"></i></a>
+                                                        </div>
+                                                        <div class="span6">
+                                                            <input type="hidden" name="tla_output_delete" value="{{ la.id }}">
+                                                            <a type="submit" class="btn btn-small btn-danger pull-right" href="javascript:document.DELETE_OUTFILES{{ la.id }}.submit()" data-confirm="{% trans "Are you sure you want to delete this file?" %}"> <i class="fa fa-times"></i>&nbsp;{% trans "Delete" %}</a>
+                                                            <a id="replace-btn-{{ la.id }}" class="btn btn-small btn-inverse upload-btn pull-right" href="#"><i class="fa fa-upload fa-white"></i> {% blocktrans %}Replace{% endblocktrans %}</a>
+                                                        </div>
+                                                    </div>
+                                                {% else %}
+                                                    <a id="upload-btn-{{ la.id }}" class="btn btn-small btn-warning upload-btn pull-right" href="#"><i class="fa fa-upload fa-white"></i> {% blocktrans %}Upload{% endblocktrans %}</a>
+                                                {% endif %}
+                                                </form>
+                                                {% include "via/projects/tasks/_upload_form_task_edit.html" %}
+                                            {% elif task.is_complete %}
+                                                {% if la.output_file %}
+                                                    <a href="{% url 'download_tasklocalizedasset_out_file' task.id la.id %}" title="{{ la.output_file_name }}">{{ la.output_file_name|truncatechars:75 }} <i class="fa fa-download"></i></a>
+                                                {% endif %}
+                                            {% endif %}
+                                        </td>
+                                        <td>{% if la.support_file %}
+                                                <a href="{% url 'download_tasklocalizedasset_sup_file' task.id la.id %}" title="{{ la.support_file_name }}">{{ la.support_file_name|truncatechars:75 }} <i class="fa fa-download"></i></a>
+                                            {% else %}
+                                                {% blocktrans %}Not Available{% endblocktrans %}
+                                            {% endif %}</td>
+                                    {% if task.is_final_approval %}
+                                        <td>
+                                            {% if la.via_approved %}
+                                                <a href="#" id="verify-btn-{{ la.id }}" class="btn btn-small btn-success verify-btn "data-file-id="{{ la.id }}" data-verify=0 TITLE="{% blocktrans %}Approved{% endblocktrans %}">
+                                                <i class="fa fa-thumbs-up text-success" title="Approved"></i>
+                                                </a>
+                                            {% else %}
+                                                <a href="#" id="verify-btn-{{ la.id }}" class="btn btn-small btn-warning verify-btn "  data-file-id="{{ la.id }}" data-verify=1 TITLE="{% blocktrans %}Approved{% endblocktrans %}">
+                                                <i class="fa fa-thumbs-down text-warning" title="Unapproved"></i>
+                                                </a>
+                                            {% endif %}
+                                    </td>
+                                    {% endif %}
+                                    <td>
+                                        <form novalidate name="DELETE_TL_ASSETFILE{{ la.id }}" action="" method="post">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="tla_delete_row" value="{{ la.id }}">
+                                            <a type="submit" class="btn" href="javascript:document.DELETE_TL_ASSETFILE{{ la.id }}.submit()" data-confirm="{% trans "Are you sure you want to remove this file?" %}" title="Remove this file.">
+                                                <i class="fa fa-times"></i>
+                                            </a>
+                                        </form>
+                                    </td>
+                                    </tr>
+                                {% empty %}
+                                    <tr><td colspan="100%">
+                                        <form novalidate name="MANUAL_CREATE_TL_ASSETFILE{{ task.id }}" method="post" action="">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="manual_tl_asset_file" value="{{ task.id }}">
+                                            <button type="submit" class="btn btn-warning" TITLE="{% blocktrans %}Manually generating the task files.{% endblocktrans %}">{% blocktrans %}Generate Files{% endblocktrans %}</button>
+                                        </form>
+                                    </td></tr>
+                                {%  endfor %}
+                            {% endif %}
+                            </table>
+                        </div>
+                    </div>
+                    <div class="row-fluid">
+                        {# Reference file should be settable even before task is active. #}
+                        <div class="reference_container span4">
+                            <table class="table table-bordered table-striped table-condensed">
+                            <tr><th>{% trans "Supplier Reference" %}</th></tr>
+                            <tr><td>
+                                {% if task.reference_file %}
+                                    <form novalidate action="{% url 'task_remove_reference' task_id=task.id  %}" method="post" class="pull-right">
+                                        {% csrf_token %}
+                                        <button name="task_remove_reference" type="submit" class="btn btn-small btn-danger"><i class="fa fa-times"></i>&nbsp;{% trans "Delete" %}</button>
+                                    </form>
+                                    <button id="upload-btn-ref" class="btn btn-inverse btn-small upload-btn pull-right"><i class="fa fa-upload"></i>&nbsp;{% trans "Replace" %}</button>
+                                    <a href="{{ task.reference_file.url }}" class="reference_file" title="{{ task.reference_file_name }}">
+                                        {{ task.reference_file_name|truncatechars:75 }}
+                                       <i class="fa fa-download"></i>
+                                    </a> {% else %}
+                                    {% if can_edit_job %}
+                                    <button id="upload-btn-ref"
+                                            class="btn btn-small btn-warning upload-btn pull-right"><i class="fa fa-upload"></i>
+                                        {% trans "Upload" %}
+                                    </button>
+                                    {% endif %}
+                                    {% trans "N/A" %}
+                                {% endif %}
+                                <div id="delivery-upload-ref" class="delivery-form">
+                                    <h3>{% trans "Upload Supplier Reference" %}</h3>
+                                    <p>{% trans "Upload a reference file." %}</p>
+                                    {{ reference_upload_form.as_form_html }}
+                                </div>
+                            </td></tr>
+                            </table>
+                        </div>
+                    </div>
+              </div>
+            </div>
+        </div>
+    </div>
+    </div>
+    {% if task.is_active_status %}
+        <br/>
+        <div class="row-fluid task-completed-button"  >
+            <div class="span10">
+                {% if task.predecessor.id %}
+                <form novalidate name="REDO_PREVIOUS_TASK_COMPLETED" action="" method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="task_id" value="{{ task.id }}">
+                    <button name="previous_task_complete" type="submit" class="btn btn-inverse" TITLE="{% blocktrans %}Click this to re-do previous Task Completed process (Only run if necessary).{% endblocktrans %}">
+                        <i class="fa fa-repeat"></i> {% blocktrans %}Previous Task Completed{% endblocktrans %}
+                    </button>
+                </form>
+                {% endif %}
+            </div>
+            <div class="btn-group pull-right">
+                <form novalidate method="post" target="">
+                    {% csrf_token %}
+                    <input type="hidden" name="task_id" value="{{ task.id }}">
+                    <button name="task_completed" type="submit" class="btn btn-primary" TITLE="{% blocktrans %}Click Task Completed when you are ready to deliver.{% endblocktrans %}"><i class="fa fa-check"></i> {% blocktrans %}Task Completed{% endblocktrans %}</button>
+                </form>
+            </div>
+        </div>
+    {% endif %} <!-- if task.is_active_status -->
+    {% endif %} <!-- if can_edit_job -->
+    {% if task.project.internal_via_project and not task.is_complete %}
+        <div class="btn-group pull-right">
+                <form novalidate method="post" target="">
+                    {% csrf_token %}
+                    <input type="hidden" name="task_id" value="{{ task.id }}">
+                    <button name="task_completed" type="submit" class="btn btn-primary" TITLE="{% blocktrans %}Click Task Completed when you are ready to deliver.{% endblocktrans %}">{% blocktrans %}Task Completed{% endblocktrans %}</button>
+                </form>
+            </div>
+    {% endif %}
+    <br>
+{% endblock %}
+
+{% block script %}
+    {{ block.super }}
+    <script src="{{ STATIC_URL }}shared/js/jquery.lightbox_me.js"></script>
+    <script src="{{ STATIC_URL }}shared/js/bootstrap-rating-input.js"></script>
+    <script>
+        $(document).ready(function(){
+
+            $("#id_scheduled_start_timestamp_0").bind("change", toggle_reschedule_all_due_dates);
+            $("#id_due_0").bind("change", toggle_reschedule_all_due_dates);
+
+            {% if object.project.client.manifest.is_hourly_schedule %}
+                $('#id_standard_days , #id_express_days').attr('step', '0.01');
+            {% else %}
+                $('#id_standard_days , #id_express_days').attr('step', '1');
+            {% endif %}
+
+            $('#id_service').select2();
+            $('#id_assignee').select2();
+            $('#id_predecessor').select2();
+            $('#id_generic_obj').select2();
+            $('#id_status').select2();
+            
+            $('#reject_active_task').click(function(e){
+                $('#id_accepted_timestamp_0').val('');
+            });
+            $('#accept_pending_task').click(function(e){
+                $('#id_accepted_timestamp_0').datetimepicker("setDate", new Date());
+            });
+
+            $('.download_file_check').click(function () {
+
+                var filename = $(this).text();
+                if (filename.indexOf('.') >= 0) {
+                    return true;
+                } else {
+                    alert("Invalid File");
+                    return false;
+                }
+             });
+
+            function toggle_reschedule_all_due_dates(){
+                $('#id_reschedule_all_due_dates').prop('checked', true);
+            }
+
+            var quantity_field_manage = function() {
+                // hide the quantity field if translation task selected otherwise show the quantity field
+
+                var self = this;
+                var unit_of_measure_quantity_allowed = function() {
+                    var selected;
+                    if (!self.options) {
+                        selected = $('#id_service').find('option[selected]').text()
+                    }
+                    else {
+                        selected = self.options[self.selectedIndex].textContent
+                    }
+                    return !(selected.toLowerCase().indexOf('translation') != -1)
+                };
+
+                if (unit_of_measure_quantity_allowed())
+                    $('#quantity-control-group').show();
+                else
+                    $('#quantity-control-group').hide();
+            };
+            quantity_field_manage();
+            $("#id_service").change(quantity_field_manage);
+        });
+
+        $('.upload-btn').click(function(e) {
+            var task_id = $(this).attr('id').split('-').pop();
+            $('#delivery-upload-' + task_id).lightbox_me({
+                centered: true,
+                onLoad: function() {
+                    //
+                }
+            });
+            e.preventDefault();
+        });
+
+        $('button#delivery_kit').click(function() {
+            var analysis_code = $('input#analysis_code').val();
+            var del_kit = '';
+            $('input[name="file"]').each(function(index){
+            	if($(this).val()){
+            	del_kit = $(this).val();
+            	}
+            });
+            var delivery_kit = del_kit.replace("C:\\fakepath\\", "");
+            if (del_kit == "") {
+                alert("Please select a file name.")
+                return false
+            }
+            if($(this).parents('.trans-upload-form').length) {
+                if (delivery_kit.indexOf(analysis_code) != -1) {
+                    return true
+                } else {
+                    var conf = confirm("{% blocktrans %}The uploaded file name contains wrong analysis code. Are you sure to continue and upload anyway?{% endblocktrans %}");
+                    if (conf) return true;
+                    else return false;
+                }
+            }else{
+                return true;
+            }
+            return false
+        });
+
+        $('.input_upload-btn').click(function(e) {
+            var task_id = $(this).attr('id').split('-').pop();
+            $('#input_delivery-upload-' + task_id).lightbox_me({
+                centered: true,
+                onLoad: function() {
+                    //
+                }
+            });
+            e.preventDefault();
+        });
+        $('.support_upload-btn').click(function(e) {
+            var task_id = $(this).attr('id').split('-').pop();
+            $('#support-delivery-upload-' + task_id).lightbox_me({
+                centered: true,
+                onLoad: function() {
+                    //
+                }
+            });
+            e.preventDefault();
+        });
+        $('.verify-btn').click(function () {
+            var url = '{% url 'via_approve_task' task.id %}';
+            var that = $(this);
+            that.addClass('disabled');
+            var verify = that.attr('data-verify');
+            $.ajax({
+                type: 'POST',
+                url: url,
+                data: {
+                    verify_files: "1",
+                    verify: verify,
+                    "la_id": that.attr('data-file-id'),
+                    "csrfmiddlewaretoken": $('form input[name="csrfmiddlewaretoken"]').val()
+                }
+            }).success(function (data) {
+                that.attr('data-verify',verify==1?0:1);
+                that.toggleClass('btn-success').toggleClass('btn-warning').removeClass('disabled');
+                that.find('i').toggleClass('fa-thumbs-up fa-thumbs-down');
+                location.reload();
+            });
+        });
+     $('input.rating').each(function(){
+            	$(this).on('change',function(){
+            		var formd = $(this.form);
+            		$.post('{{ request.path }}', formd.serialize(), function(data){
+            		if($.parseJSON(data).message=='Saved'){
+            			$('<span class="task_rating_message label label-success ">saved</span>' ).insertBefore( formd.children().find('.rating') ).fadeOut(1000,function(){ $(this).remove(); });
+            		}else{
+            			$('<span class="task_rating_message label label-danger ">Error</span>' ).insertBefore( formd.children().find('.rating') ).fadeOut(1000,function(){ $(this).remove(); });
+            		}
+			       });
+            	});
+            });
+
+    </script>
+{% endblock %}

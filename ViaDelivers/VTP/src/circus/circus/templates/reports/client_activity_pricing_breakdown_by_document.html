@@ -1,0 +1,96 @@
+{% extends template %}
+{% load i18n %}
+{% load bootstrap %}
+{% load bootstrap_pagination %}
+{% load currency_filter %}
+{% load manager_exist %}
+{% load humanize %}
+{% load get_item %}
+
+{% block title %}{% trans "Pricing Breakdown" %} | {{ workflow_status.text | capfirst }} | VTP{% endblock %}
+{% block content_header %}{% endblock %}
+
+{% block css %}
+    <link rel="stylesheet" href="{{ STATIC_URL }}via/css/job-list.css" media="screen"/>
+{% endblock %}
+
+{% block content %}
+<div class="job-active job-content">
+
+        <div class="breadcrumb">
+            <span><i class="fa fa-home"></i></span>
+            <span><a href="{% url dash_board %}">{% trans "Home" %}</a></span>
+            <span class="divider"><i class="fa fa-chevron-right"></i></span>
+            <span class="active">{% trans "Reports" %}</span>
+            <span class="divider"><i class="fa fa-chevron-right"></i></span>
+            <span class="active">{% trans "Customer" %}</span>
+            <span class="divider"><i class="fa fa-chevron-right"></i></span>
+            <span>
+                {% if request.user.is_via %}
+                    <a href="{% url 'client_filter_form' '2' %}">
+                {% else %}
+                    <a href="{% url 'client_filter_form_client_portal' '2' %}">
+                {% endif %}
+                {% trans "Report Filter" %}</a>
+            </span>
+            <span class="divider"><i class="fa fa-chevron-right"></i></span>
+            <span class="active">{% trans "Pricing per Document" %}</span>
+            {{ block.super }}
+        </div>
+
+        <div class="job-active-table">
+            <div class="row-fluid list-header">
+                <div class="span3">
+                    <h2 class="heading">
+                        {% trans "Pricing per Document" %}
+                    </h2>
+                </div>
+                <div class="span9 form-inline job-filters">
+                    <div class="btn-group pull-right">
+                        <a href="{% url 'client_activity_pricing_by_document_csv_export' customer_filter_id from_days to_days %}"
+{#                        <a href="{% url 'client_activity_pricing_by_document_csv_export' customer_filter_id days %}"#}
+                           class="btn"><i class="fa fa-cloud-download fa-white"></i> {% trans "Export" %}
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="table-wrapper">
+                <table class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th class="col col-job-id">{% trans "Job" %}</th>
+                        <th class="col col-filename">{% trans "File" %}</th>
+                        <th class="col col-target">{% trans "Target" %}</th>
+                        <th class="col col-price-task">{% trans "Price" %}</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        {% for task in activity_pricing_by_document_list %}
+                                <tr>
+                                    <td class="col col-job-id">
+                                       {{ task.project__job_number }}
+                                    </td>
+                                    <td class="col col-filename">
+                                        {{ task.source_file }}
+                                    </td>
+                                    <td class="col col-target">
+                                        {{ task.target }}
+                                    </td>
+                                    <td class="col col-price-task number-cell">
+                                        {% get_document_price_report task task.target task.source_file as task_doc_price %}
+                                        {{ task_doc_price|currency|intcomma }}
+                                    </td>
+                                </tr>
+                        {% empty %}
+                            <tr><td colspan="100%" style="text-align: left">{% trans "No Jobs" %}</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <div class="pagination pagination-centered">
+                {% bootstrap_paginate page_obj range=10 centered="true" %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+

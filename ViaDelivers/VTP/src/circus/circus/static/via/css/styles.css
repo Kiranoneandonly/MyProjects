@@ -1,0 +1,620 @@
+html {
+    height: 100%;
+    margin-top: 40px;
+}
+
+body {
+    height: 100%;
+    padding-bottom: 30px;
+    line-height: 16px;
+}
+
+li {
+    line-height: 18px;
+}
+
+/* ==  FIX WEBKIT DATE/TIME INPUTS  == */
+
+input[type="date"],
+input[type="time"] {
+	display: -webkit-inline-flex;
+}
+
+/* navbar
+*****************/
+
+.dropdown .dropdown-menu {
+    min-width: 150px;
+}
+
+.nav > li, .nav .dropdown {
+    padding-top: 5px;
+}
+
+/* navbar search
+ * *****************/
+
+.nav .nav-search {
+    padding: 0px 60px 5px 0;
+}
+
+.nav-search .search-submit {
+    margin-left: 8px;
+}
+
+.nav-search .search-query {
+    margin-top: 5px;
+}
+
+.nav-search input {
+    margin: 0px auto;
+    width: 125px;
+    font-size: 12px;
+    height: 18px;
+    line-height: 14px;
+    outline: 0;
+    padding: 4px 15px;
+    border: 1px solid #888;
+    -webkit-border-radius: 13px;
+    -moz-border-radius:13px;
+    border-radius: 13px;
+    background-color: #ddd;
+    text-shadow: 0 -1px 0px #f8f8f8;
+}
+.nav-search input:focus {
+    background: #f4f4f4;
+}
+
+.nav-img .brand {
+    padding: 12px 30px;
+}
+
+/* ==  Content  == */
+
+#content {
+	padding: 5px 5px;
+	top: 0px;  /* Height of #heading + padding of #heading-wrapper */
+	right: 0;
+	bottom: 0;
+	left: 0;
+}
+
+#push {
+    margin-bottom: 0px;
+}
+
+/***------ @FOOTER ------***/
+
+/* Set the fixed height of the footer here */
+.footer {
+    background-color: #f5f5f5;
+	position: fixed;
+	bottom: 0px;
+	right: 0px;
+	left: 0px;
+	height: 30px;
+    z-index: 1000 !important;
+}
+
+.centered a.btn {
+    float: none !important;
+}
+
+/* ==  Breadcrumbs  == */
+
+.breadcrumb {
+	padding: 10px 20px;
+    margin: 0 0 10px;
+}
+
+.breadcrumb-dashboard {
+    margin: 0 0 0px;
+}
+
+
+/* ==  Job New == */
+
+.form-horizontal .control-label {
+    text-align: left;
+}
+
+.form-horizontal .controls > input { width: 94% }
+.form-horizontal .input-prepend > input { width: 64% }
+.form-horizontal .input-append > input { width: 64% }
+.form-horizontal .controls > textarea { width: 90% }
+.form-horizontal input {
+    line-height: 20px;
+    width: 94%
+}
+
+input[type="checkbox"] {
+    width: 15px;
+    height: 15px;
+}
+
+.form-horizontal input[type="radio"], input[type="checkbox"] {
+    line-height: 20px;
+}
+
+/* ==  Job Description Partial  == */
+
+.job-description {
+	background: #333;
+	border: 2px #000 solid;
+	border-radius: 8px;
+	padding: 5px;
+	color: #fff;
+	font-size: 13px;
+    margin-bottom: 10px;
+}
+
+	.job-description .row-fluid [class*="span"] {
+		min-height: 0;
+	}
+
+	.job-description-label {
+	}
+
+	.job-description-value {
+		/**/
+	}
+
+	.job-description-state {
+		padding-top: 15px;
+	}
+
+		.job-description-state select {
+			width: auto;
+		}
+
+
+
+/* ==  Job Content  == */
+
+.job-content {
+	top: 1px;
+	right: 0px;
+	bottom: 0px;
+	left: 0px;
+	padding: 1px 1px 1px 1px;
+	/*overflow-y: auto;*/
+}
+
+.job-content > h2 { margin-top: 0; margin-bottom: 18px; font-weight: normal }
+
+
+	.work-files table {
+		width: 98%;
+		margin: 10px auto;
+	}
+
+.project-details .controls > input { width: 94% }
+.project-details .input-prepend > input { width: 64% }
+.project-details .input-append > input { width: 64% }
+.project-details .controls > textarea { width: 94% }
+.project-details input {
+    line-height: 20px;
+    width: 94%
+}
+
+.project-details input[type="checkbox"] {
+    line-height: 20px;
+    width: 6%
+}
+
+.radio input[type="radio"], .project-details input[type="radio"] {
+    line-height: 20px;
+    width: 10%;
+}
+
+.estimate-target-locale-accordion-heading > .sum {
+    float: right;
+    padding: 8px 15px;
+}
+
+.estimate-target-locale-accordion-heading > .estimate-target-locale-accordion-toggle {
+    float: left;
+    padding: 8px 15px;
+}
+
+.estimate-target-locale-accordion-heading .last {
+    margin-right: 20px;
+}
+
+.estimate-target-locale-accordion-heading .accordion-toggle {
+    padding: 0;
+}
+.estimate-grand-total {
+    background-color: #bababa !important;
+}
+
+.grand-total-row .grand-total-label {
+    float: right;
+    margin-right: 15px;
+}
+
+.grand-total-row td {
+    padding: 4px 5px;
+    font-weight:bold;
+}
+
+.bg-gray {
+    background-color: #eeeeee;
+}
+
+td.number-cell {
+    text-align: right;
+}
+/* ==  Active Jobs  == */
+
+.job-active {
+	/**/
+}
+
+	.job-active > h2 {
+		margin-bottom: 10px;
+	}
+
+	.job-active-table {
+		/**/
+	}
+
+		.job-active-table .header {
+			color: #eee;
+			background: #333;
+			border-radius: 10px;
+			border: 2px #888 solid;
+			padding: 5px 15px;
+		}
+
+			.job-active-table .header h3 {
+				margin: 0;
+				font-size: 16px;
+			    font-weight: normal;
+            }
+            .job-active-table .header h3 > * {
+                margin-right: 10px;
+            }
+            .job-active-table .header h3 i {
+                opacity: 0.7;
+            }
+			.job-active-table .header select {
+				width: auto;
+				margin: 5px 10px;
+			}
+            .job-active-table .header h3 .search-query {
+                font-weight: bold;
+                font-size: 125%;
+            }
+        .job-active-table .overdue_warning {
+			color: #fff;
+			background: #C0392B;
+			border-radius: 10px;
+			border: 2px #888 solid;
+			padding: 5px 15px;
+		}
+
+			.job-active-table .overdue_warning h3 {
+				margin: 0;
+				font-size: 16px;
+			}
+
+			.job-active-table .overdue_warning select {
+				width: auto;
+				margin: 5px 10px;
+			}
+		.job-active-table .my_tasks {
+			color: #fff;
+			background: #006DCC;
+			border-radius: 10px;
+			border: 2px #888 solid;
+			padding: 5px 15px;
+		}
+
+			.job-active-table .my_tasks h3 {
+				margin: 0;
+				font-size: 16px;
+			}
+
+			.job-active-table .my_tasks select {
+				width: auto;
+				margin: 5px 10px;
+			}
+	
+
+		.job-active-table .final_approval {
+			color: #fff;
+			background: #080;
+			border-radius: 10px;
+			border: 2px #888 solid;
+			padding: 5px 15px;
+		}
+
+			.job-active-table .final_approval h3 {
+				margin: 0;
+				font-size: 16px;
+			}
+
+			.job-active-table .final_approval select {
+				width: auto;
+				margin: 5px 10px;
+			}
+
+		.job-active-table .table-wrapper {
+			min-height: 200px;
+			/*overflow-y: auto;*/
+		}
+
+			.job-active-table table {
+				margin: 5px 0;
+			}
+
+				.job-active-table td input[type="checkbox"] {
+					margin: 0 20px;
+				}
+
+				/* ==  This is a currency field, so right align for ease of reading  == */
+				.job-active-table td:last-child {
+					text-align: right;
+					padding-right: 15px;
+				}
+
+		.job-active-table .table-wrapper-dashboard {
+			min-height: 200px;
+            max-height: 300px;
+			/*overflow-y: auto;*/
+		}
+
+		.job-active-table .footer {
+			color: #000;
+			background: #ccc;
+			border-radius: 10px;
+			border: 2px #888 solid;
+			padding: 5px 15px;
+		}
+
+			.job-active-table .footer h3 {
+				margin: 0;
+				font-size: 16px;
+			}
+
+			.job-active-table .footer .job-count,
+			.job-active-table .footer .total-price {
+				padding: 8px 0;
+			}
+
+			.job-active-table .footer .total-price {
+				text-align: right;
+			}
+
+	.job-active-controls {
+		/**/
+	}
+
+		.job-active-controls select {
+			position: relative;
+			top: 25px;
+			left: 100px;
+			width: auto;
+		}
+
+
+/* ==  Accounting  == */
+#accounting-summary {
+    margin-bottom: 100px;
+}
+
+#accounting-summary h2 {
+    font-size: 16px;
+    margin-left: 20px;
+}
+
+
+/* == Estimate - Analysis == */
+
+.analysis-waiting-icon {
+    float: left;
+    font-size: 300%;
+    margin-right: 0.5ex;
+}
+
+/* Custom page CSS
+-------------------------------------------------- */
+/* Not required for template or sticky footer method. */
+
+.content .credit {
+    margin: 5px 0;
+    /*text-align: center;*/
+}
+
+.credit {
+    vertical-align: middle;
+}
+
+.right {
+    text-align: right;
+}
+
+.powered {
+    position: relative;
+    top: 0px;
+    margin-left: 2px;
+    margin-right: 10px;
+    width: 25px;
+    height: 25px;
+}
+
+.transtask-details {
+    color: #a9a9a9;
+}
+
+.form-actions {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.importlog {
+    background: #fafafa;
+    border-radius: 8px;
+}
+
+#id_instructions, #id_instructions_via, #id_instructions_vendor, #id_notes, #id_via_notes, #id_vendor_notes, #id_vendor_feedback , #id_client_consulted_notes, #id_root_cause_analysis , #id_resolution ,.quality_defect_comment  {
+    width: 97%;
+}
+
+/* ACCORDION
+****************/
+
+.accordion-group {
+    background-color: #f5f5f5;
+}
+
+.accordion-body {
+    background-color: #ffffff;
+}
+
+#my_accordion_tasks .accordion-inner {
+    padding: 0;
+}
+
+/* MISC
+*****************/
+
+.delivery-form {
+    background: none repeat scroll 0 0 #EEF2F7;
+    border: 1px solid #536376;
+    display: none;
+    padding: 14px 22px;
+    position: relative;
+    width: 400px;
+}
+
+.label-overdue,
+.badge-overdue {
+    background-color: #C0392B;
+    color: #ffffff;
+}
+
+.breadcrumb .timezone-info {
+    font-size: 0.7em;
+    float: right;
+}
+
+.input-append {
+    width: 100%;
+}
+
+
+#approve-delivery .table-bordered,
+#approve-delivery .table-bordered th,
+#approve-delivery .table-bordered td {
+    border-color: #999;
+}
+
+#approve-delivery .table-em-row {
+    background: #ddd;
+}
+
+#approve-delivery .table-em-row form {
+    margin: 0;
+}
+
+.hasPlaceholder, .placeholder {
+	color: #aaa;
+}
+
+.help-block{
+	font-size: 12px;
+	font-style: italic;
+    color: #ff0000;
+}
+
+
+
+@media(min-width:979px) {
+    .navbar .nav-collapse {
+        margin-left: 75px;
+    }
+
+    .navbar .nav-collapse .nav {
+        width: 100%;
+    }
+    .navbar .nav .nav-right {
+        float: right;
+    }
+}
+
+@media(max-width: 1024px) {
+    #search {
+        height: auto;
+    }
+
+    html {
+        margin-top: 60px;
+    }
+}
+
+@media(max-width: 979px) {
+    .nav-collapse .nav > li > a, .nav-collapse .nav > li > div {
+        padding: 9px 25px;
+        border-bottom: 1px solid #333333;
+    }
+    .navbar .btn-navbar {
+        margin-right: 25px;
+    }
+    .navbar-fixed-top {
+        z-index: 1200;
+        position: relative;
+    }
+    html {
+        margin-top: 1px;
+    }
+}
+
+@media(max-width: 767px) {
+    .breadcrumb .divider {
+        display: block;
+        overflow-y: hidden;
+        margin-bottom: 10px;
+        height: 0px;
+        width: 100%;
+    }
+    .breadcrumb .timezone-info {
+        float: none;
+    }
+
+    .breadcrumb {
+        height: auto;
+    }
+
+    .viadeliverslinks {
+        display: none;
+    }
+
+    .footer {
+        height: 60px;
+    }
+
+    body {
+        padding-bottom: 60px;
+    }
+}
+.sub-text {
+    color:#aaa;
+    font-family:verdana;
+    font-size:11px;
+}
+
+.newlyaddwell{
+    display: none;
+}
+
+#id_is_restricted_job, #id_is_secure_job{
+    width: auto;
+    min-width: 0;
+    display: table;
+}
+
+form#comment-action-form{
+    display: inline;
+}

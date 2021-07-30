@@ -1,0 +1,29 @@
+{% extends template %}
+{% load i18n avatar_tags %}
+{#{% load url from future %}#}
+
+{% block title %}{% trans "My Avatar" %}{% endblock %}
+
+{% block content_breadcrumb %}
+    <ul class="breadcrumb">
+        <li><i class="fa fa-home"></i> <a href="/">{% trans "Home" %}</a> <span class="divider"><i class="fa fa-chevron-right"></i></span></li>
+        <li><a href="{% url profile_url %}">{% trans "My Profile" %}</a> <span class="divider"><i class="fa fa-chevron-right"></i></span></li>
+        <li class="active">{% trans "Add Avatar" %}</li>
+    </ul>
+{% endblock %}
+
+
+{% block content %}
+
+    <p>{% trans "Your current avatar: " %}</p>
+    {% avatar request.user True %}
+    {% if not avatars %}
+        <p>{% trans "You haven't uploaded an avatar yet. Please upload one now." %}</p>
+    {% endif %}
+    <form novalidate enctype="multipart/form-data" method="POST" action="{% url 'avatar_add' %}">
+        {{ upload_avatar_form.as_p }}
+        <p>{% csrf_token %}<input type="submit" value="{% trans "Upload New Image" %}" /></p>
+    </form>
+    {% block content_header %}{% endblock %}
+{% endblock %}
+

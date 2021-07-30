@@ -1,0 +1,31 @@
+{% load i18n %}
+<div class="span3 well">
+    <ul class="nav nav-list">
+        <li {% if current == 'profile' %}class="active"{% endif %}><a href="{% url 'edit_profile' %}">{% blocktrans %}My Profile{% endblocktrans %}</a></li>
+        {% if perms.people.change_account and request.user.is_client %}
+            <li {% if current == 'organization' %}class="active"{% endif %}>
+                <a href="{% url 'update_client_organization' request.user.account.id %}">
+                    {% blocktrans with client_type=user.account.client_type|capfirst %}
+                        My {{ client_type }}
+                    {% endblocktrans %}
+                </a>
+            </li>
+        {% endif %}
+
+        {% if can_manage_users %}
+            <li {% if current == 'users' %}class="active"{% endif %}><a href="{% url 'client_manage_users' %}">{% blocktrans %}Manage Users{% endblocktrans %}</a></li>
+        {% endif %}
+
+        {% if can_access_users_groups_options %}
+            <li {% if current == 'groups' %}class="active"{% endif %}><a href="{% url 'client_manage_groups' %}">
+                {% if request.user.is_client_organization_administrator %}
+                    {% blocktrans %}Manage Groups{% endblocktrans %}
+                {% else %}
+                    {% blocktrans %}View Groups{% endblocktrans %}
+                {% endif %}
+            </a></li>
+        {% endif %}
+        <li><a href="{% url 'avatar_change' %}">{% blocktrans %}Set Avatar{% endblocktrans %}</a></li>
+        <li><a href="{% url 'avatar_delete' %}">{% blocktrans %}Delete Avatar{% endblocktrans %}</a></li>
+    </ul>
+</div>

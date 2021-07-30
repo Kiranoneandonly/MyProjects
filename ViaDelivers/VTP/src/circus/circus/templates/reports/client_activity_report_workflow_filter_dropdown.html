@@ -1,0 +1,12 @@
+{% load i18n %}
+
+
+<button class="btn dropdown-toggle" data-toggle="dropdown">
+    <i class="{{ workflow_status.icon}}"></i>  {% trans workflow_status.text %}
+    <i class="fa fa-caret-down"></i>
+</button>
+<ul class="dropdown-menu dropdown-menu-status">
+{% for status_name, status_details in workflow_statuses.items %}
+    <li><a href="{% url status_details.named_url_pattern customer_filter_id status_name days %}"><i class="{{ status_details.icon }}"></i> {% trans status_details.text %}</a></li>
+{% endfor %}
+</ul>

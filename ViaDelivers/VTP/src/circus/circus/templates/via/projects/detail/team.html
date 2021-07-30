@@ -1,0 +1,154 @@
+{% extends "via/projects/detail/base.html" %}
+{% load i18n %}
+{% load get_item %}
+{% load avatar_tags %}
+
+{% block content %}
+{% if can_access_secure_job %}
+    <div class="row-fluid">
+        <div class="tabbable tabs-left span12">
+            <ul class="nav nav-tabs">
+            {% if project.is_secure_job %}
+                <li{% if active_tab == 'via_team' %} class="active"{% endif %}><a href="#tabViaTeam" data-toggle="tab">{% trans "VIA Team" %}</a></li>
+                <li{% if active_tab == 'client_secure_job_team' %} class="active"{% endif %}><a href="#tabSecureJobTeam" data-toggle="tab">{% trans "Client Team" %}</a></li>
+            {% endif %}
+            </ul>
+            <div class="tab-content">
+                <div class="tab-pane{% if active_tab == 'via_team' %} active{% endif %}" id="tabViaTeam">
+                    <h4><i class="fa fa-users"></i> {% trans "VIA Team" %}</h4>
+
+                    {#    <div class="form-actions">#}
+                    {#        <div class="pull-right">#}
+                    {#        TODO make this work #}
+                    {#        <a id="add-team" href="#" class="btn btn-primary">{% blocktrans %}Add Team Member{% endblocktrans %}</a>#}
+                    {#        </div>#}
+                    {#    </div>#}
+                    <div class="table-wrapper">
+                        <table class="table table-bordered table-hover">
+                            <thead>
+                            <tr>
+                                <th>{% trans "Name" %}</th>
+                                <th>{% trans "Role" %}</th>
+                                <th>{% trans "Hours" %}</th>
+                                <th>{% trans "Last Login" %}</th>
+                                {% if can_edit_job %}
+                                    <th></th>
+                                {% endif %}
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for team_member in team_list %}
+                                <tr>
+                                    <td>{% avatar team_member.contact %} {{ team_member.mail_link|safe }}</td>
+                                    <td>{{ team_member.get_role_display }}</td>
+                                    {# TODO make this work #}
+                                    <td>#.##</td>
+                                    <td>{{ team_member.contact.last_login }}</td>
+                                    {% if can_edit_job %}
+                                        <td>
+                                            <form name="DELETE_USER{{ team_member.id }}" action=""
+                                                  method="post">
+                                                {% csrf_token %}
+                                                <input type="hidden" name="team_member"
+                                                       value="{{ team_member.contact_id }}">
+                                                <input type="hidden" name="team_member_role"
+                                                       value="{{ team_member.role }}">
+                                                <a type="submit"
+                                                   class="btn btn-danger pull-right"
+                                                   href="javascript:document.DELETE_USER{{ team_member.id }}.submit()"
+                                                   data-confirm="{% trans "Are you sure you want to delete this User from Project Team?" %}"
+                                                ><i
+                                                        class="fa fa-times"></i>&nbsp;{% trans "Delete" %}
+                                                </a>
+                                            </form>
+                                        </td>
+                                    {% endif %}
+                                </tr>
+                                {% empty %}
+                                <tr><td colspan="100%" style="text-align: left">{% trans "No Team Members" %}</td></tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% if project.is_secure_job %}
+                    <hr/>
+                    <h4>
+                        {% if project.is_phi_secure_job %}
+                            <i class="fa fa-user-md"></i>
+                        {% else %}
+                            <i class="fa fa-users"></i>
+                        {% endif %} {% trans "Give VIA User access to Secure Job" %}
+                    </h4>
+                    <div class="table-wrapper">
+                    <form action="" method="post">
+                     {% csrf_token %}
+                        <input type="hidden" value="{{ project.id }}" name="project_id"/>
+                        <select class="span2" name="secure_job_team_role_user">
+                            <option  value="">{% blocktrans %}Select user...{% endblocktrans %}</option>
+                            {% for user in all_via_users %}
+                                <option value="{{ user.id }}">
+                                    {{ user.get_full_name }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                        <div>
+                            <input type="submit" name="add_user_secure_job_team" value="Add User"/>
+                        </div>
+                    </form>
+                    </div>
+                {% endif %}
+                </div>
+
+                <div class="tab-pane{% if active_tab == 'client_secure_job_team' %} active{% endif %}" id="tabSecureJobTeam">
+                    <h4><i class="fa fa-users"></i> {% trans "Client Team" %}</h4>
+
+                    <div class="table-wrapper">
+                        <table class="table table-bordered table-hover">
+                            <thead>
+                            <tr>
+                                <th>{% trans "Name" %}</th>
+                                <th>{% trans "Role" %}</th>
+                                <th>{% trans "Hours" %}</th>
+                                <th>{% trans "Last Login" %}</th>
+                                {% if can_edit_job %}
+                                    <th></th>
+                                {% endif %}
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for team_member in secure_job_team %}
+                                <tr>
+                                    <td>{% avatar team_member.contact %} {{ team_member.mail_link|safe }}</td>
+                                    <td>{{ team_member.user.user_type|capfirst }}</td>
+                                    <td>0.00</td>
+                                    <td>{{ team_member.user.last_login }}</td>
+                                    {% if can_edit_job %}
+                                        <td>
+                                            <form name="DELETE_USER{{ team_member.id }}" action=""
+                                                  method="post">
+                                                {% csrf_token %}
+                                                <input type="hidden" name="secure_job_team_member"
+                                                       value="{{ team_member.id }}">
+                                                <a type="submit"
+                                                   class="btn btn-danger pull-right"
+                                                   href="javascript:document.DELETE_USER{{ team_member.id }}.submit()"
+                                                   data-confirm="{% trans "Are you sure you want to delete this User from Secure Job Team?" %}"
+                                                ><i
+                                                        class="fa fa-times"></i>&nbsp;{% trans "Delete" %}
+                                                </a>
+                                            </form>
+                                        </td>
+                                    {% endif %}
+                                </tr>
+                                {% empty %}
+                                <tr><td colspan="100%" style="text-align: left">{% trans "No Team Members" %}</td></tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endif %}
+{% endblock %}

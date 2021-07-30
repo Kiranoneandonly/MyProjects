@@ -1,0 +1,233 @@
+{% extends template %}
+{% load i18n %}
+{% load bootstrap %}
+{% load bootstrap_pagination %}
+{% load currency_filter %}
+{% load manager_exist %}
+{% load humanize %}
+
+{% block title %}{% trans "Job List" %} | {{ workflow_status.text | capfirst }} | VTP{% endblock %}
+{% block content_header %}{% endblock %}
+
+{% block css %}
+    <link rel="stylesheet" href="{{ STATIC_URL }}shared/css/table-cell-dropdown.css" media="screen"/>
+    <link rel="stylesheet" href="{{ STATIC_URL }}via/css/job-list.css" media="screen"/>
+{% endblock %}
+
+{% block script %}
+    <script src="{{ STATIC_URL }}shared/js/filters/table-cell-dropdown.js" type="text/javascript"></script>
+    <script src="{{ STATIC_URL }}shared/js/filters/job-list.js" type="text/javascript"></script>
+{% endblock %}
+
+{% block content %}
+<div class="job-active job-content">
+
+        <div class="breadcrumb">
+            <span><i class="fa fa-home"></i></span>
+            <span><a href="{% url dash_board %}">{% trans "Home" %}</a></span>
+            <span class="divider"><i class="fa fa-chevron-right"></i></span>
+            <span class="active">{% trans "Reports" %}</span>
+            <span class="divider"><i class="fa fa-chevron-right"></i></span>
+            <span class="active">{% trans "Customer" %}</span>
+            <span class="divider"><i class="fa fa-chevron-right"></i></span>
+            <span>
+                {% if request.user.is_via %}
+                    <a href="{% url 'client_filter_form' 1 %}">
+                {% else %}
+                    <a href="{% url 'client_filter_form_client_portal' 1 %}">
+                {% endif %}
+                {% trans "Report Filter" %}</a>
+            </span>
+            <span class="divider"><i class="fa fa-chevron-right"></i></span>
+            <span class="active">{% trans "Job Activity" %}</span>
+            {{ block.super }}
+        </div>
+
+
+        <div class="job-active-table">
+            <div class="row-fluid list-header">
+                <div class="span3">
+                    <h2 class="heading">
+                        <i class="{{ workflow_status.icon }}"></i>
+                        {{ workflow_status.text | capfirst }}
+                    </h2>
+                </div>
+                <div class="span9 form-inline job-filters">
+                    <div class="row-fluid column-display-checkboxes">
+                        <span class="span6">
+                            <input id="display_project_details_columns_checkbox" type="checkbox" />
+                            <label for="display_project_details_columns_checkbox">Project Details</label>
+                        </span>
+                        <span class="span5 text-right">
+                            <div class="btn-group">
+                                {% if request.user.is_client %}
+                                    <a href="{% url 'client_activity_csv_export_client_portal' customer_filter_id status_filter from_days to_days %}"
+                                        class="btn"><i class="fa fa-cloud-download fa-white"></i> {% trans "Export" %}
+                                    </a>
+                                {% else %}
+                                    <a href="{% url 'client_activity_csv_export' customer_filter_id status_filter from_days to_days %}"
+                                        class="btn"><i class="fa fa-cloud-download fa-white"></i> {% trans "Export" %}
+                                    </a>
+                                {% endif %}
+                                {% include 'reports/client_activity_report_workflow_filter_dropdown.html' %}
+                            </div>
+                        </span>
+                        <span class="span1"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="table-wrapper">
+                <table class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th class="col col-job-id"><span>{% blocktrans %}Number{% endblocktrans %}</span></th>
+                        <th class="col col-status">{% trans "Status" %}</th>
+                        <th class="col col-client_name">{% trans "Client" %}</th>
+                        <th class="col col-department">{% trans "Department" %}</th>
+                        <th class="col col-full_name">{% trans "Owner" %}</th>
+                        <th class="col col-client_manager">{% trans "Client Manager" %}</th>
+                        <th class="col col-project_reference_name">{% trans "Project Reference Name" %}</th>
+                        <th class="col col-email">{% trans "Email" %}</th>
+                        <th class="col col-project_manager">{% trans "PM" %}</th>
+                        <th class="col col-source">{% trans "Source" %}</th>
+                        <th class="col col-target">{% trans "Target" %}</th>
+                        <th class="col col-task_type">{% trans "Task" %}</th>
+                        <th class="col col-filename">{% trans "File" %}</th>
+                        <th class="col col-price-task">{% trans "Price" %}</th>
+                        <th class="col col-word_count">{% trans "WordCount" %}</th>
+                        <th class="col col-mbd">{% trans "MBD" %}</th>
+                        <th class="col col-payment_method">{% trans "Payment" %}</th>
+                        <th class="col col-payment_po">{% trans "PO" %}</th>
+                        <th class="col col-industry">{% trans "Industry" %}</th>
+                        <th class="col col-priority">{% trans "Priority" %}</th>
+                        <th class="col col-estimate_type">{% trans "Type" %}</th>
+                        <th class="col col-instructions">{% trans "Instructions" %}</th>
+                        <th class="col col-start_date">{% trans "Started" %}</th>
+                        <th class="col col-quoted_date">{% trans "Quoted" %}</th>
+                        <th class="col col-due_date">{% trans "Due" %}</th>
+                        <th class="col col-delivered_date">{% trans "Delivered" %}</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        {% for task in activity_list %}
+                                <tr class="
+                                    ">
+                                    <td class="col col-job-id">
+                                       {{ task.project.job_number }}
+                                    </td>
+                                    <td class="col col-workflow">
+                                        <i class="{{ task.project.workflow.icon }}"></i>
+                                        {{ task.project.workflow.text }}
+                                    </td>
+                                    <td class="col col-client_name">
+                                        {{ task.project.customer.name|default_if_none:'' }}
+                                    </td>
+                                    <td class="col col-department">
+                                        {% if task.project.client_poc_id %}
+                                            {% client_department task.project.client_poc_id as department %}
+                                            {{ department|default_if_none:'' }}
+                                        {% endif %}
+                                    </td>
+                                     <td class="col col-full_name">
+                                        {% if task.project.client_poc_id %}
+                                            {% client_full_name task.project.client_poc_id as full_name %}
+                                            {{ full_name|default_if_none:'' }}
+                                         {% endif %}
+                                    </td>
+                                    <td class="col col-client_manager">
+                                        {% if task.project.client_poc.reports_to_id %}
+                                            {% manager_name task.project.client_poc.reports_to_id as manager_full_name %}
+                                            {{ manager_full_name|default_if_none:'' }}
+                                        {% endif %}
+                                    </td>
+                                    <td class="col col-project_reference_name">
+                                            {{ task.project.project_reference_name|default_if_none:'' }}
+                                    </td>
+                                    <td class="col col-email">
+                                        {% if task.project.client_poc_id %}
+                                            {% client_email task.project.client_poc_id as email %}
+                                            {{ email|default_if_none:'' }}
+                                        {% endif %}
+                                    </td>
+                                    <td class="col col-project_manager">
+                                        {{ task.project.project_manager }}
+                                    </td>
+                                    <td class="col col-source">
+                                        {{ task.project.source_locale }}
+                                    </td>
+                                    <td class="col col-target">
+                                        {{ task.target }}
+                                    </td>
+                                    <td class="col col-task_type">
+                                        {{ task.service_type }}
+                                    </td>
+                                    <td class="col col-filename">
+                                        {{ task.source_file }}
+                                    </td>
+                                    <td class="col col-price-task number-cell">
+                                        {{ task.price|floatformat:2|intcomma }}
+                                    </td>
+                                    <td class="col col-word_count number-cell">
+                                        {{ task.word_count }}
+                                    </td>
+                                    <td class="col col-mbd number-cell">
+                                        {{ task.memory_bank_discount }}%
+                                    </td>
+                                    <td class="col col-payment_method">
+                                        {{ task.project.payment_method }}
+                                    </td>
+                                     <td class="col col-payment_po">
+                                        {{ task.project.client_po }}
+                                    </td>
+                                    <td class="col col-industry">
+                                        {{ task.project.industry }}
+                                    </td>
+                                    <td class="col col-priority">
+                                        {{ task.project.priority }}
+                                    </td>
+                                    <td class="col col-estimate_type">
+                                        {{ task.project.estimate_type }}
+                                    </td>
+                                    <td class="col col-instructions">
+                                        {{ task.project.instructions|safe }}
+                                    </td>
+                                    <td class="col col-start_date">
+                                        {{ task.project.start_date|date:"SHORT_DATE_FORMAT"|default_if_none:"" }}
+                                    </td>
+                                    <td class="col col-quoted_date">
+                                        {{ task.project.quoted|date:"SHORT_DATE_FORMAT"|default_if_none:"" }}
+                                    </td>
+                                    <td class="col col-due_date">
+                                        {{ task.project.due_date|date:"SHORT_DATE_FORMAT"|default_if_none:"" }}
+                                    </td>
+                                    <td class="col col-delivered_date">
+                                        {{ task.project.delivered_date|date:"SHORT_DATE_FORMAT"|default_if_none:"" }}
+                                    </td>
+                                </tr>
+                        {% empty %}
+                            <tr><td colspan="100%" style="text-align: left">{% trans "No Jobs" %}</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <div class="pagination pagination-centered">
+                {% bootstrap_paginate page_obj range=10 centered="true" %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+  <script>
+
+ $(function () {
+     $('.col-estimate_type, .col-priority, .col-payment_method, .col-payment_po, .col-instructions, .col-industry,.col-word_count, .col-mbd, .col-start_date, .col-quoted_date, .col-due_date, .col-delivered_date').hide();
+
+    $("#display_project_details_columns_checkbox").click(function() {
+        if (this.checked)
+            $('.col-estimate_type, .col-priority, .col-payment_method, .col-payment_po, .col-instructions, .col-industry,.col-word_count, .col-mbd, .col-start_date, .col-quoted_date, .col-due_date, .col-delivered_date').show();
+        else
+            $('.col-estimate_type, .col-priority, .col-payment_method, .col-payment_po, .col-instructions, .col-industry,.col-word_count, .col-mbd, .col-start_date, .col-quoted_date, .col-due_date, .col-delivered_date').hide();
+    });
+ });
+ </script>
+{% endblock %}
+

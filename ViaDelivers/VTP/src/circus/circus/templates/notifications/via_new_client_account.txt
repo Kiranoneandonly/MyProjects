@@ -1,0 +1,19 @@
+A new client organization has signed up.
+
+Name: {{ client.name }}
+Website: {{ client.website }}
+Phone: {{ client.phone }}
+Fax: {{ client.fax }}
+Address: 
+    {{ client.billing_street }}
+    {{ client.billing_city }} {{ client.billing_state }} {{ client.billing_postal_code }}
+    {{ client.billing_country }}
+
+Initial contact at this client:
+{% for contact in contacts %}
+    {{ contact.get_full_name }} <{{ contact.email }}> {{ contact.phone }}
+{% endfor %}
+
+For more information, please visit {{ vtp_url }}
+
+{% include 'notifications/_email_footer.txt' %}

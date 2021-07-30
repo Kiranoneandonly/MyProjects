@@ -1,0 +1,29 @@
+{% extends "via/theme_base.html" %}
+{% load i18n %}
+{% load bootstrap %}
+{#{% load url from future %}#}
+{% load widget_tweaks %}
+
+{% block title %}{% trans "Create Supplier" %}{% endblock %}
+
+{% block css %}
+{% endblock %}
+
+{% block content_header %}
+    <h1>{% trans "Create Supplier" %}</h1>
+{% endblock %}
+
+{% block content %}
+    <div class="row-fluid">
+        <div class="span12">
+            <form novalidate action="" method="post" class="form-horizontal">
+                {% csrf_token %}
+                {{ form|bootstrap }}
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">{% trans "Save" %}</button>
+                    <a href="{% url 'vendors_list' %}" class="btn">{% trans "Cancel" %}</a>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}

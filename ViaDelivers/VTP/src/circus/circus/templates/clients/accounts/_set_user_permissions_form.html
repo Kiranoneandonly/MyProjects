@@ -1,0 +1,14 @@
+{% load bootstrap %}
+{% load i18n %}
+{% load humanize %}
+{% load check_job_access %}
+
+<div id="set-permission-(( user.id ))" class="delivery-form set-permission">
+    <table class="table table-responsive">
+        <p><h3>{% blocktrans %} Assign "(( user.first_name )) ((user.last_name))" to below Groups {% endblocktrans %}</h3></p>
+        <tr ng-repeat="group in groups" ng-show="user.is_top_organization || group.grp_name != '{{ organization_administrator_group }}'">
+            <td>(( group.grp_name ))</td>
+            <td><input class="client_group group_toggle" type="checkbox" value="((user.id))" data-group="(( group.grp_name ))" data-groupid="(( group.grp_id ))"  ng-checked="group.status"></td>
+        </tr>
+    </table>
+</div>

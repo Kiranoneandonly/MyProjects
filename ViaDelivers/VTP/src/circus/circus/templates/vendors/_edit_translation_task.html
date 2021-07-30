@@ -1,0 +1,57 @@
+{% load i18n %}
+{% load currency_filter %}
+
+<div class="row-fluid">
+    <div class="assets">
+        <table class="table table-bordered table-striped table-condensed asset-table">
+            <tr>
+                <th>{% blocktrans %}<i class="fa fa-file"></i> Source Files{% endblocktrans %}</th>
+                <th>{% blocktrans %}Total{% endblocktrans %}</th>
+                <th>{% blocktrans %}Guaranteed{% endblocktrans %}</th>
+                <th>{% blocktrans %}Exact{% endblocktrans %}</th>
+                <th>{% blocktrans %}Duplicate{% endblocktrans %}</th>
+                <th>{% blocktrans %}95-99{% endblocktrans %}</th>
+                <th>{% blocktrans %}85-94{% endblocktrans %}</th>
+                <th>{% blocktrans %}75-84{% endblocktrans %}</th>
+                <th>{% blocktrans %}50-74{% endblocktrans %}</th>
+                <th>{% blocktrans %}No Match{% endblocktrans %}</th>
+                <th>{% blocktrans %}Price (USD){% endblocktrans %}</th>
+            </tr>
+        {% if not task.assets.count %}
+            <tr>
+                <td colspan=100%>{% blocktrans %}No assets{% endblocktrans %}</td>
+            </tr>
+        {% else %}
+            {% for row in task.itemized_cost_details %}
+            {% if row.analysis.asset %}{# not a min-job surcharge row #}
+            {% with asset=row.analysis.asset analysis=row.analysis %}
+                <tr>
+                    <td>
+                        <a href="{% url 'download_asset' project.id asset.id %}">{{ asset.orig_name }} <i class="fa fa-download"></i></a>
+                    </td>
+                    {% for field_wordcount in analysis.field_wordcount_list %}
+                        <td>{{ field_wordcount }}</td>
+                    {% endfor %}
+                    <td>{{ row.net|currency }}</td>
+                </tr>
+            {% endwith %}{% endif %}
+            {% endfor %}
+
+            <tr class="grand-total-row">
+                <td>
+                    <span class="grand-total-label">{% blocktrans %}Grand Total{% endblocktrans %}</span>
+                </td>
+
+                {% for field_wordcount in task.field_wordcount_list %}
+                    <td>
+                        {{ field_wordcount }}
+                    </td>
+                    {% endfor %}
+                <td>
+                    {{ task.total_cost|currency }}
+                </td>
+            </tr>
+        {% endif %}
+        </table>
+    </div>
+</div>

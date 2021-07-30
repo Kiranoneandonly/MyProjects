@@ -1,0 +1,99 @@
+{% load i18n %}
+{% load humanize %}
+
+<div class="row-fluid">
+    {% if task.reference_file or project.kit.reference_files.all|length >= 1 %}
+    <div class="span8">
+    {% else %}
+    <div class="span12">
+    {% endif %}
+        <div class="widget-box">
+            <div class="section-title">
+                <h2>
+                    {% if task.is_translation %}
+                        <i class="fa fa-calculator"></i> {% trans "Analysis" %}
+                    {% else %}
+                        <i class="fa fa-file"></i>{% trans "Source" %}
+                    {% endif %}
+                </h2>
+            </div>
+            {% if not project.is_restricted_job  %}
+                <div class="section-content well">
+                    {% if task.is_translation %}
+                        {% include "vendors/_edit_translation_task.html" %}
+                    {% else %}
+                        {% include "vendors/_edit_nontranslation_task.html" %}
+                    {% endif %}
+                    {% if task.project.kit.source_files|length > 1 %}
+                        <hr/>
+                        <a href="{% url 'project_source_files_zip' project.id %}" class="btn">{% blocktrans %}Download All Source{% endblocktrans %}</a>
+                        {% blocktrans %}* Download for reference only. Do not use for translation.{% endblocktrans %}
+                    {% endif %}
+                </div>
+            {% else %}
+                <div class="section-content well">{% blocktrans %}Job is restricted. Notify PM to get Terminal Service access to complete the job.{% endblocktrans %}</div>
+            {% endif %}
+        </div>
+    </div>
+
+    {% if task.reference_file %}
+    <div class="span4">
+        <div class="widget-box">
+            <div class="section-title">
+                <h2>
+                    <i class="fa fa-file-text-o"></i> {% trans "Reference File" %}
+                </h2>
+            </div>
+            <div class="section-content well">
+                <a href="{{ task.reference_file.url }}" class="reference_file">{{ task.reference_file_name }} <i class="fa fa-download"></i></a>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    {% if project.kit.reference_files.all|length >= 1 and show_on_supplier %}
+    <div class="span4">
+        <div class="widget-box">
+            <div class="section-title">
+                <h2>
+                    <i class="fa fa-file-text-o"></i> {% trans "Job Reference File" %}
+                </h2>
+            </div>
+            <div class="section-content well">
+            {% for asset in task.project.kit.reference_files %}
+                    {% if asset.file_exists and asset.available_on_supplier %}
+                        <a href="{% url 'download_asset' task.project.id asset.id %}">{{ asset.orig_name }} <i class="fa fa-download"></i></a>
+                    {% endif %}
+                <br>
+            {% endfor %}
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+{% if project.instructions_vendor or task.notes %}
+<div class="row-fluid">
+    <div class="span12">
+        <div class="section-title">
+            <h2><i class="fa fa-comment"></i> {% trans "Instructions" %}</h2>
+        </div>
+        <div class="section-content well">
+            {% if task.notes %}
+                <div class="row-fluid">
+                    <div class="span12">
+                        {{ task.notes|safe }}
+                    </div>
+                </div>
+            {% endif %}
+            {% if project.instructions_vendor %}
+                <div class="row-fluid">
+                    <div class="span12">
+                       {{ project.instructions_vendor|safe }}
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endif %}

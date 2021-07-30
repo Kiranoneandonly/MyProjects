@@ -1,0 +1,650 @@
+3857,1-Stop Translation,2,Chinese to English (US),1028,1033,1,0,,2,1,3,Active B,0.1,,,,0,,25,20,Hourly,15,0.1,0.05,0.035,0.025,0.015,0.01,
+3857,1-Stop Translation,10,English to Chinese (Simp),1033,2052,11,0,,10,1,2,Active A,0.07,,,0.023,,,25,20,Per Page,,0.07,0.035,0.025,0.018,0.011,0.007,
+3857,1-Stop Translation,11,English to Chinese (Trad),1033,1028,10,0,,11,1,2,Active A,0.09,0.14,0.092,0.046,,,25,20,Per Page,,0.09,0.045,0.032,0.023,0.014,0.009,
+3857,1-Stop Translation,29,English to Indonesian,1033,1057,26,0,,29,1,2,Active A,0.12,,,,,,25,20,Per Page,,0.12,0.06,0.042,0.03,0.018,0.012,
+3857,1-Stop Translation,32,English to Korean,1033,1042,9,0,,32,1,2,Active A,0.09,0.14,0.092,0.0462,,,25,20,Per Page,,0.09,0.045,0.032,0.023,0.014,0.009,
+3857,1-Stop Translation,32,English to Korean,1033,1042,9,1443,GP Strategies,32,1,2,Active A,0.1,,,,,,,,,,0.1,0.07,0.05,0.035,0.02,0.02,0
+3857,1-Stop Translation,32,English to Korean,1033,1042,9,1066,Cisco Systems,32,1,1,Active preferred,0.09,,,,,,25,20,Per Page,,0.09,0.045,0.032,0.023,0.014,0.009,
+3857,1-Stop Translation,55,English to Vietnamese,1033,1066,17,0,,55,1,2,Active A,0.12,0.11,0.066,0.033,,0,25,20,Hourly,20,0.12,0.06,0.042,0.03,0.018,0.012,
+3857,1-Stop Translation,66,Korean to English (US),1042,1033,1,0,,66,1,3,Active B,0.11,,,,,,25,2040,Per Page,,0.11,0.055,0.039,0.028,0.017,0.011,
+453055141,AALS,198,Armenian to English (US),1067,1033,1,744,"A & K Designs, Inc.",198,2,3,Active B,,,,,,,,,,,,,,,,,
+453055141,AALS,33,English to Lao,1033,1108,67,0,,33,1,3,Active B,0.26,,,,0.26,0.09,75,75,,,,,,,,,
+453055141,AALS,51,English to Thai,1033,1054,42,0,,51,1,3,Active B,0.24,,,,,0.08,,,,,,,,,,,
+3143,ACME Translations,18,German to English (US),1031,1033,1,0,,18,1,2,Active A,,0.12,0.06,0.03,0.13,0.04,40,25,,,0.13,0.13,0.065,0.065,0.03,0.03,0
+3143,ACME Translations,18,German to English (US),1031,1033,1,1376,"Cisco Systems, Inc. (Legal)",18,1,2,Active A,,,,,0.14,0.04,60,25,Per Page,,0.14,0.14,0.047,0.047,0.047,0.047,0
+3897,"Alik, Carmina",119,English to Marshallese,1033,1084,34,0,,119,1,2,Active A,0.15,,,,0.1,0.05,35,25,Hourly,35,,,,,,,
+453054692,Alisa International of Orlando,47,English to Spanish (LatAm),1033,58378,78,0,,47,1,3,Active B,0.07,,,,0.05,0.02,20,20,,,0.07,0.035,0.025,0.018,0.011,0.007,0
+453054692,Alisa International of Orlando,65,English to Spanish (Puerto Rico),1033,20490,80,0,,65,1,3,Active B,0.09,0.065,0.035,,0.1,0.04,20,20,,,0.09,0.045,0.032,0.023,0.014,0.009,0
+453054692,Alisa International of Orlando,63,Spanish to English (US),1034,1033,1,0,,63,1,3,Active B,0.07,,,,0.05,0.02,20,20,,,0.07,0.035,0.025,0.018,0.011,0.007,0
+3971,All Locatrans,127,Arabic to English (US),1025,1033,1,0,,127,1,2,Active A,0.07,0.07,,,0.05,0.03,25,0,,,0.07,0.035,0.025,0.018,0.011,0.007,0
+3971,All Locatrans,144,English to Afrikaans,1033,1078,87,0,,144,1,2,Active A,0.15,0.15,,,0.1,0.06,25,0,,,0.15,0.075,0.053,0.038,0.023,0.015,0
+3971,All Locatrans,4,English to Amharic,1033,1118,20,0,,4,1,2,Active A,0.14,0.14,,,0.1,0.05,25,0,,,0.14,0.07,0.049,0.035,0.021,0.014,0
+3971,All Locatrans,5,English to Arabic,1033,1025,48,0,,5,1,2,Active A,0.07,0.07,,,0.05,0.03,25,0,,,0.07,0.035,0.025,0.018,0.011,0.007,0
+3971,All Locatrans,5,English to Arabic,1033,1025,48,93,Microsoft Corp,5,1,2,Active A,0.07,,,,0.05,0.03,25,0,Hourly,25,0.07,0.035,0.025,0.018,0.011,0.007,0
+3971,All Locatrans,5,English to Arabic,1033,1025,48,1066,Cisco Systems,5,1,2,Active A,0.07,,,,0.05,0.03,25,0,Hourly,25,0.07,0.035,0.025,0.018,0.011,0.007,0
+3971,All Locatrans,6,English to Armenian,1033,1067,21,0,,6,1,2,Active A,0.1,0.1,,,0.08,0.03,25,0,,,0.1,0.05,0.035,0.025,0.015,0.01,0
+3971,All Locatrans,141,English to Dari,1033,1164,35,0,,141,1,2,Active A,0.15,0.15,,,0.1,0.06,25,0,,,0.15,0.075,0.053,0.038,0.023,0.015,0
+3971,All Locatrans,19,English to Farsi (Persian),1033,1065,22,0,,19,1,2,Active A,0.09,0.09,,,0.05,0.03,25,0,,,0.09,0.045,0.032,0.023,0.014,0.009,0
+3971,All Locatrans,205,English to Fula,1033,1127,126,0,,205,1,2,Active A,0.15,,,,0.1,0.06,25,0,Per Page,,0.15,0.075,0.053,0.038,0.023,0.015,
+3971,All Locatrans,158,English to Hausa,1033,1128,91,0,,158,1,2,Active A,0.11,,,,0.083,0.028,25,0,Per Page,,0.11,0.055,0.039,0.028,0.017,0.011,
+3971,All Locatrans,161,English to Igbo,1033,1136,94,0,,161,1,2,Active A,0.14,0.14,,,0.1,0.05,25,0,,,0.14,0.07,0.049,0.035,0.021,0.014,0
+3971,All Locatrans,164,English to Kinyarwanda/Rwanda,1033,1159,97,0,,164,1,2,Active A,0.12,,,,0.09,0.03,25,0,Per Page,,0.12,0.06,0.042,0.03,0.018,0.012,
+3971,All Locatrans,193,"English to Kurdish, Central (Sorani)",1033,1170,121,0,,193,1,2,Active A,0.12,,,,0.1,0.03,25,0,Per Page,,0.12,0.06,0.042,0.03,0.018,0.012,0
+3971,All Locatrans,122,English to Oromo,1033,1138,75,0,,122,1,2,Active A,0.13,,,,0.098,0.033,25,0,Per Page,,0.13,0.065,0.046,0.033,0.02,0.013,
+3971,All Locatrans,46,English to Somali,1033,1143,16,0,,46,1,2,Active A,0.13,0.13,,,0.1,0.03,25,0,Per Page,,0.13,0.065,0.046,0.033,0.02,0.013,0
+3971,All Locatrans,174,English to Southern Sotho (Sesotho),1033,1072,107,0,,174,1,2,Active A,0.12,,,,0.09,0.03,25,0,Per Page,,0.12,0.06,0.042,0.03,0.018,0.012,
+3971,All Locatrans,84,English to Swahili,1033,1089,29,0,,84,1,2,Active A,0.15,0.15,,,0.1,0.06,25,0,,,0.15,0.075,0.053,0.038,0.023,0.015,0
+3971,All Locatrans,179,English to Tswana (Setswana),1033,1074,112,0,,179,1,2,Active A,0.11,,,,0.083,0.028,25,0,Per Page,,0.11,0.055,0.039,0.028,0.017,0.011,
+3971,All Locatrans,53,English to Turkish,1033,1055,30,0,,53,1,2,Active A,0.13,0.13,,,0.1,0.03,25,0,,,0.13,0.065,0.046,0.033,0.02,0.013,0
+3971,All Locatrans,93,English to Urdu,1033,1056,84,0,,93,1,2,Active A,0.09,0.09,,,0.05,0.03,25,0,,,0.09,0.045,0.032,0.023,0.014,0.009,0
+3971,All Locatrans,285,English to Wolof,1033,1160,155,0,,285,1,2,Active A,0.13,,,,0.098,0.033,25,0,Per Page,,0.13,0.065,0.046,0.033,0.02,0.013,
+3971,All Locatrans,183,English to Xhosa,1033,1076,116,0,,183,1,2,Active A,0.14,0.14,,,0.1,0.05,25,0,,,0.14,0.07,0.049,0.035,0.021,0.014,0
+3971,All Locatrans,185,English to Yoruba,1033,1130,118,0,,185,1,2,Active A,0.11,,,,0.083,0.028,25,0,Per Page,,0.11,0.055,0.039,0.028,0.017,0.011,
+3971,All Locatrans,186,English to Zulu,1033,1077,52,0,,186,1,2,Active A,0.14,0.14,,,0.1,0.05,25,0,,,0.14,0.07,0.049,0.035,0.021,0.014,0
+3906,"Allin, Karim",46,English to Somali,1033,1143,16,0,,46,1,2,Active A,0.13,0.13,0.09,,0.1,0.03,,35,,,0.13,0.09,0.09,0.09,0.04,0.04,
+3934,ALPHABET Translation and Interpreting,24,English to Greek,1033,1032,23,0,,24,1,2,Active A,0.15,0.15,0.06,0.013,0.14,0.07,38,85,Per Page,16,0.15,0.06,0.06,0.06,0.013,0.013,
+3934,ALPHABET Translation and Interpreting,24,English to Greek,1033,1032,23,1730,Oracle - Legal,24,1,2,Active A,0.15,,,,0.14,0.07,38,85,Per Page,16,0.15,0.06,0.06,0.06,0.013,0.013,
+453055275,AltPlus Translation Company,41,English to Russian,1033,1049,15,0,,41,1,2,Active A,0.06,,,,0.055,0.025,15,15,Per Page,,0.06,0.03,0.021,0.015,0.009,0.006,
+1024,"Amadio, Michael",30,English to Italian,1033,1040,4,0,,30,1,2,Active A,0.13,0.13,0.06,0.03,0.12,0.03,30,30,Per Page,,0.13,0.06,0.06,0.06,0.03,0.03,
+1024,"Amadio, Michael",61,Italian to English (US),1040,1033,1,0,,61,2,1,Active preferred,0.12,0.12,0.06,0.003,0.12,0.03,30,30,Per Page,,0.12,0.06,0.06,0.06,0.003,0.003,
+1759,AMMACOM,21,English to French (Canada),1033,3084,12,0,,21,1,1,Active preferred,0.13,0.13,0.08,0.03,,0.03,35,35,Per Page,,0.13,0.08,0.08,0.08,0.03,0.03,
+1759,AMMACOM,21,English to French (Canada),1033,3084,12,1730,Oracle - Legal,21,1,2,Active A,0.13,,,,,0.03,35,35,Per Page,,0.13,0.08,0.08,0.08,0.03,0.03,
+1759,AMMACOM,21,English to French (Canada),1033,3084,12,1880,NAVEX Global,21,3,2,Active A,,,,,,,,,Per Page,,,,,,,,
+453054733,Ando Translations,8,English to Bulgarian,1033,1026,53,0,,8,1,2,Active A,0.08,,,,0.07,0.03,18,20,,,0.08,0.04,0.028,0.02,0.012,0.008,0
+453054733,Ando Translations,8,English to Bulgarian,1033,1026,53,93,Microsoft Corp,8,1,2,Active A,0.08,,,,0.07,0.03,18,0,,,0.08,0.04,0.028,0.02,0.012,0.008,0
+453054733,Ando Translations,8,English to Bulgarian,1033,1026,53,1066,Cisco Systems,8,1,2,Active A,0.08,,,,0.07,0.03,18,0,,,0.08,0.04,0.028,0.02,0.012,0.008,0
+453054733,Ando Translations,8,English to Bulgarian,1033,1026,53,1730,Oracle - Legal,8,1,2,Active A,0.115,,,,0.08,0.035,18,0,Per Page,,0.115,0.058,0.04,0.029,0.017,0.0115,
+453054733,Ando Translations,13,English to Czech,1033,1029,56,1376,"Cisco Systems, Inc. (Legal)",13,1,2,Active A,0.115,,,,0.08,0.035,18,0,,,0.115,0.058,0.04,0.029,0.017,0.0115,0
+453054733,Ando Translations,13,English to Czech,1033,1029,56,0,,13,1,2,Active A,0.09,,,,0.07,0.03,18,,,,0.09,0.045,0.032,0.023,0.014,0.009,0
+453054733,Ando Translations,13,English to Czech,1033,1029,56,93,Microsoft Corp,13,1,2,Active A,0.08,,,,0.07,0.03,18,0,,,0.08,0.04,0.028,0.02,0.012,0.008,0
+453054733,Ando Translations,13,English to Czech,1033,1029,56,1066,Cisco Systems,13,1,2,Active A,0.08,,,,0.07,0.03,18,0,,,0.08,0.04,0.028,0.02,0.012,0.008,0
+453054733,Ando Translations,13,English to Czech,1033,1029,56,1730,Oracle - Legal,13,1,1,Active preferred,0.115,,,,0.08,0.035,18,0,Per Page,,0.115,0.058,0.04,0.029,0.017,0.0115,
+453054733,Ando Translations,28,English to Hungarian,1033,1038,46,0,,28,1,2,Active A,0.08,,,,0.07,0.03,18,20,,,0.08,0.04,0.028,0.02,0.012,0.008,0
+453054733,Ando Translations,28,English to Hungarian,1033,1038,46,93,Microsoft Corp,28,1,2,Active A,0.08,,,,0.07,0.03,18,0,,,0.08,0.04,0.028,0.02,0.012,0.008,0
+453054733,Ando Translations,28,English to Hungarian,1033,1038,46,1066,Cisco Systems,28,1,2,Active A,0.08,,,,0.07,0.03,18,0,,,0.08,0.04,0.028,0.02,0.012,0.008,0
+453054733,Ando Translations,40,English to Romanian,1033,1048,44,0,,40,1,2,Active A,0.08,,,,0.07,0.03,18,20,,,0.08,0.04,0.028,0.02,0.012,0.008,0
+453054733,Ando Translations,40,English to Romanian,1033,1048,44,93,Microsoft Corp,40,1,2,Active A,0.08,,,,0.07,0.03,18,0,,,0.08,0.04,0.028,0.02,0.012,0.008,0
+453054733,Ando Translations,40,English to Romanian,1033,1048,44,1066,Cisco Systems,40,1,2,Active A,0.08,,,,0.07,0.03,18,0,,,0.08,0.04,0.028,0.02,0.012,0.008,0
+453054733,Ando Translations,44,English to Slovak,1033,1051,45,0,,44,1,2,Active A,0.08,,,,0.07,0.03,18,20,,,0.08,0.04,0.028,0.02,0.012,0.008,0
+453054733,Ando Translations,44,English to Slovak,1033,1051,45,93,Microsoft Corp,44,1,2,Active A,0.08,,,,0.07,0.03,18,0,,,0.08,0.04,0.028,0.02,0.012,0.008,0
+453054733,Ando Translations,44,English to Slovak,1033,1051,45,1066,Cisco Systems,44,1,2,Active A,0.08,,,,0.07,0.03,18,0,,,0.08,0.04,0.028,0.02,0.012,0.008,0
+453054733,Ando Translations,44,English to Slovak,1033,1051,45,1730,Oracle - Legal,44,1,1,Active preferred,0.115,,,,0.08,0.035,18,0,Per Page,,0.115,0.058,0.04,0.029,0.017,0.0115,
+453054984,Apro Translation,69,Danish to English (US),1030,1033,1,0,,69,1,2,Active A,0.14,,,,0.105,0.053,40,30,,,0.14,0.07,0.049,0.035,0.021,0.014,0
+453054984,Apro Translation,14,English to Danish,1033,1030,36,0,,14,1,2,Active A,0.14,,,,0.105,0.053,40,30,,,0.14,0.07,0.049,0.035,0.021,0.014,0
+453054984,Apro Translation,14,English to Danish,1033,1030,36,1730,Oracle - Legal,14,1,1,Active preferred,0.14,,,,0.105,0.053,40,30,Per Page,,0.14,0.07,0.049,0.035,0.021,0.014,
+453054984,Apro Translation,20,English to Finnish,1033,1035,40,1730,Oracle - Legal,20,1,1,Active preferred,0.16,,,,0.12,0.06,40,30,Per Page,,0.16,0.08,0.056,0.04,0.024,0.014,
+453054984,Apro Translation,20,English to Finnish,1033,1035,40,0,,20,1,2,Active A,0.16,,,,0.12,0.06,40,30,,,0.16,0.08,0.056,0.04,0.024,0.16,0
+453054984,Apro Translation,131,English to Icelandic,1033,1039,64,0,,131,1,2,Active A,0.25,,,,0.188,0.094,40,30,,,0.25,0.125,0.088,0.063,0.038,0.025,0
+453054984,Apro Translation,35,English to Norwegian (Bokmål),1033,1044,39,0,,35,1,2,Active A,0.14,,,,0.105,0.053,40,30,,,0.14,0.07,0.049,0.035,0.021,0.014,0
+453054984,Apro Translation,35,English to Norwegian (Bokmål),1033,1044,39,1730,Oracle - Legal,35,1,1,Active preferred,0.14,,,,0.105,0.053,40,30,Per Page,,0.14,0.07,0.049,0.035,0.021,0.014,
+453054984,Apro Translation,49,English to Swedish,1033,1053,38,0,,49,1,2,Active A,0.14,,,,0.105,0.053,40,30,,,0.14,0.07,0.049,0.035,0.021,0.014,0
+453054984,Apro Translation,71,Finnish to English (US),1035,1033,1,0,,71,1,2,Active A,0.16,,,,0.12,0.06,40,30,,,0.16,0.08,0.056,0.04,0.024,0.16,0
+453054984,Apro Translation,272,Icelandic to English (US),1039,1033,1,0,,272,1,2,Active A,0.25,,,,0.188,0.094,40,30,,,0.25,0.125,0.088,0.063,0.038,0.025,0
+453054984,Apro Translation,70,Norwegian (Bokmål) to English (US),1044,1033,1,0,,70,1,2,Active A,0.14,,,,0.105,0.053,40,30,Per Page,,0.14,0.07,0.049,0.035,0.021,0.014,0
+453054984,Apro Translation,197,Swedish to English (US),1053,1033,1,0,,197,1,2,Active A,0.14,,,,0.105,0.053,40,30,,,0.14,0.07,0.049,0.035,0.021,0.014,0
+453054950,Asial10n,31,English to Japanese,1033,1041,8,1066,Cisco Systems,31,1,1,Active preferred,0.15,,,,,0.038,25,25,Per Page,25,0.15,0.075,0.053,0.038,0.023,0.015,
+453054950,Asial10n,31,English to Japanese,1033,1041,8,1730,Oracle - Legal,31,1,1,Active preferred,0.15,,,,,0.038,25,25,Per Page,25,0.15,0.075,0.053,0.038,0.023,0.015,
+453054950,Asial10n,31,English to Japanese,1033,1041,8,0,,31,1,2,Active A,0.15,,,,,0.038,25,25,,25,0.15,0.075,0.053,0.038,0.023,0.015,0
+453054950,Asial10n,32,English to Korean,1033,1042,9,0,,32,1,2,Active A,0.1,,,,,0.025,25,25,,25,0.1,0.05,0.035,0.025,0.015,0.01,0
+453054950,Asial10n,32,English to Korean,1033,1042,9,1730,Oracle - Legal,32,1,2,Active A,0.1,,,,,0.025,25,25,Per Page,25,0.1,0.05,0.035,0.025,0.015,0.01,
+453054950,Asial10n,34,English to Malay,1033,1086,71,0,,34,1,2,Active A,0.1,,,,,0.025,25,25,,25,0.1,0.05,0.035,0.025,0.015,0.01,0
+453054950,Asial10n,50,English to Tagalog,1033,1124,54,0,,50,1,2,Active A,0.1,,,,,0.025,25,25,,25,0.1,0.05,0.035,0.025,0.015,0.01,0
+453054950,Asial10n,51,English to Thai,1033,1054,42,0,,51,1,2,Active A,0.1,,,,,0.025,25,25,,25,0.1,0.05,0.035,0.025,0.015,0.01,0
+453054950,Asial10n,55,English to Vietnamese,1033,1066,17,0,,55,1,2,Active A,0.1,,,,,0.025,25,25,,25,0.1,0.05,0.035,0.025,0.015,0.01,0
+3943,Asian Trans World,2,Chinese to English (US),1028,1033,1,0,,2,2,3,Active B,0.08,0.08,,,0.06,0.03,30,30,Hourly,30,0.08,0.04,0.028,0.02,0.012,0.008,0
+3943,Asian Trans World,10,English to Chinese (Simp),1033,2052,11,0,,10,1,1,Active preferred,0.06,0.06,,,0.05,0.02,30,30,Hourly,30,0.06,0.03,0.021,0.015,0.009,0.006,0
+3943,Asian Trans World,10,English to Chinese (Simp),1033,2052,11,93,Microsoft Corp,10,1,2,Active A,0.06,,,,0.05,0.02,25,0,Hourly,25,0.06,0.03,0.021,0.015,0.009,0.006,0
+3943,Asian Trans World,10,English to Chinese (Simp),1033,2052,11,1066,Cisco Systems,10,1,2,Active A,0.06,,,,0.05,0.02,25,0,Hourly,25,0.06,0.03,0.021,0.015,0.009,0.006,0
+3943,Asian Trans World,10,English to Chinese (Simp),1033,2052,11,1730,Oracle - Legal,10,1,1,Active preferred,0.07,,,,0.07,0.03,30,30,Hourly,30,0.07,0.035,0.025,0.018,0.01,0.007,0
+3943,Asian Trans World,11,English to Chinese (Trad),1033,1028,10,1730,Oracle - Legal,11,1,1,Active preferred,0.09,,,,0.09,0.03,30,30,Hourly,30,0.09,0.045,0.032,0.023,0.015,0.009,0
+3943,Asian Trans World,11,English to Chinese (Trad),1033,1028,10,0,,11,1,1,Active preferred,0.08,0.08,,,0.06,0.03,30,30,Hourly,30,0.08,0.04,0.028,0.02,0.012,0.008,0
+3943,Asian Trans World,11,English to Chinese (Trad),1033,1028,10,93,Microsoft Corp,11,1,2,Active A,0.08,,,,0.06,0.03,25,0,Hourly,25,0.08,0.04,0.028,0.02,0.012,0.008,0
+3943,Asian Trans World,11,English to Chinese (Trad),1033,1028,10,1066,Cisco Systems,11,1,2,Active A,0.08,,,,0.06,0.03,25,0,Hourly,25,0.08,0.04,0.028,0.02,0.012,0.008,0
+3943,Asian Trans World,29,English to Indonesian,1033,1057,26,1730,Oracle - Legal,29,1,2,Active A,0.11,,,,0.11,0.03,30,30,Hourly,30,0.11,0.055,0.04,0.028,0.018,0.011,
+3943,Asian Trans World,29,English to Indonesian,1033,1057,26,0,,29,1,2,Active A,0.1,,,,0.07,0.03,30,30,Hourly,30,0.1,0.05,0.035,0.025,0.015,0.01,
+3943,Asian Trans World,31,English to Japanese,1033,1041,8,1066,Cisco Systems,31,1,2,Active A,0.15,,,,0.105,0.055,30,,Per Page,,0.15,0.075,0.053,0.038,0.023,0.015,
+3943,Asian Trans World,31,English to Japanese,1033,1041,8,0,,31,1,1,Active preferred,0.13,0.13,,,0.11,0.04,30,30,Hourly,30,0.13,0.065,0.046,0.033,0.02,0.013,0
+3943,Asian Trans World,32,English to Korean,1033,1042,9,0,,32,1,1,Active preferred,0.1,0.1,,,0.08,0.03,30,30,Hourly,30,0.1,0.05,0.035,0.025,0.015,0.01,0
+3943,Asian Trans World,32,English to Korean,1033,1042,9,93,Microsoft Corp,32,1,2,Active A,0.09,,,,0.07,0.03,25,0,Hourly,25,0.09,0.045,0.032,0.023,0.014,0.009,0
+3943,Asian Trans World,32,English to Korean,1033,1042,9,1066,Cisco Systems,32,1,2,Active A,0.09,,,,0.07,0.03,25,0,Hourly,25,0.09,0.045,0.032,0.023,0.014,0.009,0
+3943,Asian Trans World,32,English to Korean,1033,1042,9,1730,Oracle - Legal,32,1,1,Active preferred,0.11,,,,0.11,0.03,30,30,Hourly,30,0.11,0.055,0.04,0.028,0.018,0.011,0
+3943,Asian Trans World,34,English to Malay,1033,1086,71,0,,34,1,1,Active preferred,0.11,0.11,,,0.09,0.04,30,30,Hourly,30,0.11,0.055,0.039,0.028,0.017,0.011,0
+3943,Asian Trans World,50,English to Tagalog,1033,1124,54,0,,50,1,3,Active B,0.11,0.11,,,0.09,0.04,30,30,Hourly,30,0.11,0.055,0.039,0.028,0.017,0.011,0
+3943,Asian Trans World,51,English to Thai,1033,1054,42,0,,51,1,2,Active A,0.11,0.11,,,0.09,0.04,30,30,Hourly,30,0.11,0.055,0.039,0.028,0.017,0.011,0
+3943,Asian Trans World,51,English to Thai,1033,1054,42,93,Microsoft Corp,51,1,2,Active A,0.1,,,,0.08,0.03,25,0,Hourly,25,0.1,0.05,0.035,0.025,0.015,0.01,0
+3943,Asian Trans World,51,English to Thai,1033,1054,42,1066,Cisco Systems,51,1,2,Active A,0.1,,,,0.08,0.03,25,0,Hourly,25,0.1,0.05,0.035,0.025,0.015,0.01,0
+3943,Asian Trans World,55,English to Vietnamese,1033,1066,17,0,,55,1,1,Active preferred,0.1,0.1,,,0.08,0.03,30,30,Hourly,30,0.1,0.05,0.035,0.025,0.015,0.01,0
+3943,Asian Trans World,55,English to Vietnamese,1033,1066,17,93,Microsoft Corp,55,1,2,Active A,0.1,,,,0.08,0.03,25,0,Hourly,25,0.1,0.05,0.035,0.025,0.015,0.01,0
+3943,Asian Trans World,55,English to Vietnamese,1033,1066,17,1066,Cisco Systems,55,1,2,Active A,0.1,,,,0.08,0.03,25,0,Hourly,25,0.1,0.05,0.035,0.025,0.015,0.01,0
+3943,Asian Trans World,62,Japanese to English (US),1041,1033,1,0,,62,1,2,Active A,0.11,0.11,,,0.09,0.04,30,30,Hourly,30,0.11,0.055,0.039,0.028,0.017,0.011,0
+3943,Asian Trans World,66,Korean to English (US),1042,1033,1,0,,66,1,3,Active B,0.09,0.09,,,0.07,0.03,30,30,Hourly,30,0.09,0.045,0.032,0.023,0.014,0.009,0
+3943,Asian Trans World,73,Thai to English (US),1054,1033,1,0,,73,1,2,Active A,0.12,,,,0.09,0.03,30,30,Hourly,30,0.12,0.6,0.042,0.03,0.018,0.012,0
+3943,Asian Trans World,188,Vietnamese to English (US),1066,1033,1,0,,188,1,3,Active B,0.1,0.1,,,0.08,0.03,30,30,Hourly,30,0.1,0.05,0.035,0.025,0.015,0.01,0
+453054833,"ASPENA, s.r.o.",7,English to Bosnian,1033,8218,13,0,,7,1,2,Active A,0.12,,,,0.1,0.04,36,36,,,0.12,0.06,0.048,0.036,0.024,0.012,0
+453054833,"ASPENA, s.r.o.",8,English to Bulgarian,1033,1026,53,0,,8,1,2,Active A,0.09,,,,0.08,0.03,27,27,,,0.09,0.045,0.036,0.027,0.018,0.009,0
+453054833,"ASPENA, s.r.o.",8,English to Bulgarian,1033,1026,53,1376,"Cisco Systems, Inc. (Legal)",8,1,2,Active A,0.1,,,,0.09,0.035,30,,,,0.1,0.05,0.04,0.03,0.02,0.01,0
+453054833,"ASPENA, s.r.o.",8,English to Bulgarian,1033,1026,53,1730,Oracle - Legal,8,1,1,Active preferred,0.1,,,,0.09,0.035,30,,Per Page,,0.1,0.05,0.04,0.03,0.02,0.01,
+453054833,"ASPENA, s.r.o.",12,English to Croatian,1033,1050,51,1730,Oracle - Legal,12,1,2,Active A,0.12,,,,0.1,0.04,33,,Per Page,,0.12,0.06,0.048,0.036,0.024,0.012,
+453054833,"ASPENA, s.r.o.",12,English to Croatian,1033,1050,51,0,,12,1,2,Active A,0.11,,,,0.09,0.04,33,33,,,0.11,0.055,0.044,0.033,0.022,0.011,0
+453054833,"ASPENA, s.r.o.",12,English to Croatian,1033,1050,51,1376,"Cisco Systems, Inc. (Legal)",12,1,2,Active A,0.12,,,,0.1,0.04,33,,,,0.12,0.06,0.048,0.036,0.024,0.012,0
+453054833,"ASPENA, s.r.o.",13,English to Czech,1033,1029,56,0,,13,1,2,Active A,0.09,,,,0.08,0.03,27,27,,,0.09,0.045,0.036,0.027,0.018,0.009,0
+453054833,"ASPENA, s.r.o.",13,English to Czech,1033,1029,56,1376,"Cisco Systems, Inc. (Legal)",13,1,2,Active A,0.1,,,,0.09,0.035,30,,,,0.1,0.05,0.04,0.03,0.02,0.01,0
+453054833,"ASPENA, s.r.o.",13,English to Czech,1033,1029,56,1730,Oracle - Legal,13,1,2,Active A,0.1,,,,0.09,0.035,30,,Per Page,,0.1,0.05,0.04,0.03,0.02,0.01,
+453054833,"ASPENA, s.r.o.",28,English to Hungarian,1033,1038,46,0,,28,1,2,Active A,0.12,,,,0.1,0.04,33,,,,0.12,0.06,0.048,0.036,0.024,0.012,0
+453054833,"ASPENA, s.r.o.",28,English to Hungarian,1033,1038,46,1730,Oracle - Legal,28,1,1,Active preferred,0.12,,,,0.1,0.04,33,,Hourly,,0.12,0.06,0.048,0.036,0.024,0.012,0.012
+453054833,"ASPENA, s.r.o.",28,English to Hungarian,1033,1038,46,1376,"Cisco Systems, Inc. (Legal)",28,1,2,Active A,0.12,,,,0.1,0.04,33,,,,0.12,0.06,0.048,0.036,0.024,0.012,0
+453054833,"ASPENA, s.r.o.",130,English to Lithuanian,1033,1063,69,0,,130,1,2,Active A,0.13,,,,0.11,0.04,36,,,,0.13,0.065,0.052,0.039,0.026,0.013,0
+453054833,"ASPENA, s.r.o.",130,English to Lithuanian,1033,1063,69,1376,"Cisco Systems, Inc. (Legal)",130,1,2,Active A,0.13,,,,0.11,0.04,36,,,,0.13,0.065,0.052,0.039,0.026,0.013,0
+453054833,"ASPENA, s.r.o.",138,English to Macedonian,1033,1071,49,0,,138,1,2,Active A,0.14,,,,0.12,0.05,42,42,,,0.14,0.07,0.056,0.042,0.028,0.014,0
+453054833,"ASPENA, s.r.o.",40,English to Romanian,1033,1048,44,1730,Oracle - Legal,40,1,1,Active preferred,0.11,,,,0.09,0.04,33,,Per Page,,0.11,0.055,0.044,0.033,0.022,0.011,
+453054833,"ASPENA, s.r.o.",40,English to Romanian,1033,1048,44,0,,40,1,2,Active A,0.11,,,,0.09,0.04,33,,,,0.011,0.055,0.044,0.033,0.022,0.011,0
+453054833,"ASPENA, s.r.o.",40,English to Romanian,1033,1048,44,1376,"Cisco Systems, Inc. (Legal)",40,1,2,Active A,0.11,,,,0.09,0.04,33,,,,0.011,0.055,0.044,0.033,0.022,0.011,0
+453054833,"ASPENA, s.r.o.",279,English to Serbian (Cyrillic),1033,3098,150,0,,279,1,2,Active A,0.1,,,,0.09,0.035,30,30,Per Page,,0.1,0.05,0.04,0.03,0.02,0.01,0
+453054833,"ASPENA, s.r.o.",114,English to Serbian (Latin),1033,2074,58,1730,Oracle - Legal,114,1,1,Active preferred,0.11,,,,0.09,0.04,33,,Per Page,,0.11,0.055,0.044,0.033,0.022,0.011,
+453054833,"ASPENA, s.r.o.",114,English to Serbian (Latin),1033,2074,58,0,,114,1,2,Active A,0.1,,,,0.09,0.035,30,30,,,0.1,0.05,0.04,0.03,0.02,0.01,0
+453054833,"ASPENA, s.r.o.",114,English to Serbian (Latin),1033,2074,58,1376,"Cisco Systems, Inc. (Legal)",114,1,2,Active A,0.11,,,,0.09,0.04,33,,,,0.11,0.055,0.044,0.033,0.022,0.011,0
+453054833,"ASPENA, s.r.o.",44,English to Slovak,1033,1051,45,0,,44,1,2,Active A,0.09,,,,0.08,0.03,27,27,,,0.09,0.045,0.036,0.027,0.018,0.009,0
+453054833,"ASPENA, s.r.o.",44,English to Slovak,1033,1051,45,1376,"Cisco Systems, Inc. (Legal)",44,1,2,Active A,0.1,,,,0.09,0.035,30,,,,0.1,0.05,0.04,0.03,0.02,0.01,0
+453054833,"ASPENA, s.r.o.",45,English to Slovenian,1033,1060,47,0,,45,1,2,Active A,0.11,,,,0.09,0.04,33,33,,,0.11,0.055,0.044,0.033,0.022,0.011,0
+453054833,"ASPENA, s.r.o.",45,English to Slovenian,1033,1060,47,1376,"Cisco Systems, Inc. (Legal)",45,1,2,Active A,0.12,,,,0.1,0.04,33,,,,0.12,0.06,0.048,0.036,0.024,0.012,0
+453054833,"ASPENA, s.r.o.",45,English to Slovenian,1033,1060,47,1730,Oracle - Legal,45,1,1,Active preferred,0.12,,,,0.1,0.04,33,,Per Page,,0.12,0.06,0.048,0.036,0.024,0.012,
+3986,AUTONET,38,English to Portuguese (Port),1033,2070,50,0,,38,1,2,Active A,0.1,0.08,0.04,0.02,0.08,0.03,,25,,,0.08,0.04,0.04,0.04,0.02,0.02,
+453054703,AzTech Solutions,15,English to Dutch (Netherlands),1033,1043,6,0,,15,1,2,Active A,0.16,,,,,,35,35,Hourly,45,0.16,0.08,0.056,0.04,0.024,0.016,0
+453054910,Bayan-Tech,144,English to Afrikaans,1033,1078,87,0,,144,1,3,Active B,0.13,,,,0.096,0.034,35,35,Hourly,20,0.13,0.065,0.046,0.033,0.02,0.013,0
+453054910,Bayan-Tech,4,English to Amharic,1033,1118,20,0,,4,1,3,Active B,0.14,,,,0.075,0.025,35,35,Hourly,20,0.14,0.07,0.049,0.035,0.021,0.014,0
+453054910,Bayan-Tech,5,English to Arabic,1033,1025,48,0,,5,1,3,Active B,0.09,,,,,,25,25,Hourly,20,0.09,0.045,0.032,0.023,0.014,0.009,0
+453054910,Bayan-Tech,141,English to Dari,1033,1164,35,0,,141,1,2,Active A,0.15,,,,,,,,Per Page,,,,,,,,
+453054910,Bayan-Tech,19,English to Farsi (Persian),1033,1065,22,0,,19,1,2,Active A,0.1,,,,,,25,25,Hourly,20,0.1,0.05,0.035,0.025,0.015,0.01,0
+453054910,Bayan-Tech,158,English to Hausa,1033,1128,91,0,,158,1,3,Active B,0.12,,,,0.075,0.025,35,35,Hourly,20,0.12,0.06,0.042,0.03,0.018,0.012,0
+453054910,Bayan-Tech,25,English to Hebrew,1033,1037,24,0,,25,1,3,Active B,0.14,,,,,,3540,35,Hourly,20,0.13,0.07,0.05,0.035,0.022,0.014,0
+453054910,Bayan-Tech,161,English to Igbo,1033,1136,94,0,,161,1,3,Active B,0.12,,,,0.09,0.03,35,35,Hourly,20,0.12,0.06,0.042,0.03,0.018,0.012,0
+453054910,Bayan-Tech,164,English to Kinyarwanda/Rwanda,1033,1159,97,0,,164,1,3,Active B,0.13,,,,0.09,0.03,35,35,Hourly,20,0.13,0.065,0.046,0.033,0.02,0.013,0
+453054910,Bayan-Tech,193,"English to Kurdish, Central (Sorani)",1033,1170,121,0,,193,11,3,Active B,0.14,,,,,,25,35,Per Page,20,0.14,0.07,0.05,0.035,0.022,0.014,
+453054910,Bayan-Tech,34,English to Malay,1033,1086,71,0,,34,11,3,Active B,0.14,,,,,,35,35,Per Page,20,0.14,0.07,0.05,0.035,0.022,0.014,
+453054910,Bayan-Tech,122,English to Oromo,1033,1138,75,0,,122,1,3,Active B,0.14,,,,0.06,0.02,35,35,Hourly,20,0.14,0.07,0.05,0.035,0.022,0.014,0
+453054910,Bayan-Tech,308,English to Pashto/Afghani,1033,1123,167,0,,308,1,2,Active A,0.14,,,,,,35,,Hourly,20,,,,,,,
+453054910,Bayan-Tech,46,English to Somali,1033,1143,16,0,,46,1,3,Active B,0.15,,,,0.113,0.038,40,40,Hourly,15,0.15,0.075,0.053,0.038,0.023,0.015,0
+453054910,Bayan-Tech,174,English to Southern Sotho (Sesotho),1033,1072,107,0,,174,1,3,Active B,0.14,,,,0.098,0.033,35,35,Hourly,20,0.14,0.07,0.049,0.035,0.021,0.014,0
+453054910,Bayan-Tech,84,English to Swahili,1033,1089,29,0,,84,1,3,Active B,0.12,,,,0.068,0.023,35,35,Hourly,20,0.12,0.06,0.042,0.03,0.018,0.012,0
+453054910,Bayan-Tech,245,English to Telugu,1033,1098,137,0,,245,11,3,Active B,0.14,,,,,,35,35,Hourly,20,,,,,,,
+453054910,Bayan-Tech,179,English to Tswana (Setswana),1033,1074,112,0,,179,1,3,Active B,0.14,,,,0.09,0.03,35,35,Hourly,20,0.14,0.07,0.049,0.035,0.021,0.014,0
+453054910,Bayan-Tech,53,English to Turkish,1033,1055,30,0,,53,1,2,Active A,0.09,,,,,,25,25,Hourly,20,0.09,0.045,0.032,0.023,0.014,0.009,0
+453054910,Bayan-Tech,93,English to Urdu,1033,1056,84,0,,93,11,3,Active B,0.1,,,,,,30,30,Hourly,20,0.1,0.05,0.035,0.025,0.015,0.01,
+453054910,Bayan-Tech,285,English to Wolof,1033,1160,155,0,,285,1,3,Active B,0.14,,,,0.09,0.03,35,35,Hourly,20,0.14,0.07,0.049,0.035,0.021,0.014,0
+453054910,Bayan-Tech,183,English to Xhosa,1033,1076,116,0,,183,1,3,Active B,0.13,,,,0.09,0.03,35,35,Hourly,20,0.13,0.065,0.046,0.033,0.02,0.013,0
+453054910,Bayan-Tech,185,English to Yoruba,1033,1130,118,0,,185,1,3,Active B,0.12,,,,0.075,0.025,35,35,Hourly,20,0.12,0.06,0.042,0.03,0.018,0.012,0
+453054910,Bayan-Tech,186,English to Zulu,1033,1077,52,0,,186,1,3,Active B,0.13,,,,0.083,0.028,35,35,Hourly,20,0.13,0.065,0.046,0.033,0.02,0.013,0
+453054726,"Becker-Boelter, Sonja",18,German to English (US),1031,1033,1,0,,18,1,2,Active A,0.1,,,,0.075,0.03,20,20,,,0.1,0.05,0.035,0.025,0.015,0.01,0
+453055101,"Bellini, Eugenia",47,English to Spanish (LatAm),1033,58378,78,0,,47,1,2,Active A,0.04,,,,,0.013,9,,Per Page,,0.04,0.02,0.014,0.01,0.006,0.004,
+453055191,"Bellini, Maria Magdalena",47,English to Spanish (LatAm),1033,58378,78,0,,47,1,2,Active A,,,,,,0.02,,,,,,,,,,,
+453054757,"Berret, Jean-Evens",86,English to Creole (Haiti),1033,1127,32,0,,86,1,1,Active preferred,0.13,,,,0.1,0.03,30,30,,,0.13,0.065,0.046,0.033,0.02,0.013,0
+453055268,"Beti, Bellis",119,English to Marshallese,1033,1084,34,0,,119,1,2,Active A,0.2,,,,,0.15,35,,Per Page,,,,,,,,
+453054704,Beyondsoft Corporation,10,English to Chinese (Simp),1033,2052,11,0,,10,1,2,Active A,0.06,,,,0.05,0.02,14.99,14.99,Hourly,,0.06,0.033,0.021,0.018,0.009,0.009,0
+453054704,Beyondsoft Corporation,10,English to Chinese (Simp),1033,2052,11,1066,Cisco Systems,10,1,1,Active preferred,0.06,,,,0.05,0.02,14.99,14.99,Hourly,,0.06,0.033,0.021,0.018,0.009,0.009,
+453054704,Beyondsoft Corporation,11,English to Chinese (Trad),1033,1028,10,1066,Cisco Systems,11,1,1,Active preferred,0.0988,,,,0.06,0.03,17.5,17.5,Hourly,,0.0988,0.054,0.035,0.03,0.015,0.015,
+453054704,Beyondsoft Corporation,11,English to Chinese (Trad),1033,1028,10,0,,11,1,3,Active B,0.0988,,,,0.06,0.03,17.5,17.5,,,0.0988,0.054,0.035,0.03,0.015,0.015,0
+1121,"Bojlesen, Ines",37,English to Portuguese (Braz),1033,1046,37,0,,37,1,3,Active B,0.12,,,,0.09,0.03,35,55,Hourly,45,0.12,0.06,0.042,0.03,0.018,0.012,0
+1121,"Bojlesen, Ines",128,Portuguese to English (US),1046,1033,1,0,,128,1,1,Active preferred,0.13,,,,0.1,0.03,45,60,Hourly,45,0.13,0.065,0.046,0.033,0.02,0.013,0
+453055219,"Bonelli, Costanza",30,English to Italian,1033,1040,4,0,,30,1,2,Active A,0.055,,,,,0.022,14,,Per Page,,0.041,0.028,0.019,0.014,0.008,0.006,0
+453055194,"Brian, Bemy",119,English to Marshallese,1033,1084,34,1720,BI Worldwide,119,1,2,Active A,0.15,,,,0.15,0.1,30,30,Hourly,35,,,,,,,
+453054877,Business Valkyries,23,English to German,1033,1031,5,0,,23,1,2,Active A,0.11,,,,0.08,0.03,35,,,,0.11,0.055,0.039,0.028,0.017,0.011,0
+453054981,"Campagnale, Irene",47,English to Spanish (LatAm),1033,58378,78,0,,47,1,2,Active A,0.03,,,,,0.01,9,,,,0.03,0.015,0.011,0.008,0.005,0.003,0
+453055283,"Carr-Rollitt, Tomas",47,English to Spanish (LatAm),1033,58378,78,0,,47,1,2,Active A,0.035,,,,0.035,0.023,9,,Per Page,,0.026,0.018,0.012,0.009,0.005,0.004,0
+453055283,"Carr-Rollitt, Tomas",290,Spanish (LatAm) to English (US),58378,1033,1,0,,290,2,2,Active A,0.09,,,,,0.03,15,,Per Page,,,,,,0.015,0.015,0
+453055192,"Chang, Yee",27,English to Hmong,1033,1129,55,0,,27,3,2,Active A,0.15,,,,,50,50,,Per Page,,,,,,,,
+453055286,Cobalt Fox International,47,English to Spanish (LatAm),1033,58378,78,0,,47,1,2,Active A,0.08,,,,0.053,0.027,30,30,Per Page,,0.06,0.04,0.028,0.02,0.012,0.008,
+453055286,Cobalt Fox International,290,Spanish (LatAm) to English (US),58378,1033,1,0,,290,2,2,Active A,0.12,,,,0.08,0.04,35,35,Per Page,,0.09,0.06,0.042,0.03,0.018,0.012,0
+453054762,CONTENTECH - wire,5,English to Arabic,1033,1025,48,0,,5,1,2,Active A,0.08,,,,,,20,20,Hourly,20,0.08,0.04,0.028,0.02,0.012,0.008,0
+453054762,CONTENTECH - wire,19,English to Farsi (Persian),1033,1065,22,0,,19,1,2,Active A,0.08,,,,,,20,20,Hourly,20,0.08,0.04,0.028,0.02,0.012,0.008,0
+453054762,CONTENTECH - wire,25,English to Hebrew,1033,1037,24,0,,25,1,2,Active A,0.13,,,,,,35,35,Hourly,20,0.13,0.065,0.046,0.033,0.02,0.013,0
+453054762,CONTENTECH - wire,25,English to Hebrew,1033,1037,24,1730,Oracle - Legal,25,1,1,Active preferred,0.13,,,,,,35,35,Hourly,20,0.13,0.065,0.046,0.033,0.02,0.013,
+453054762,CONTENTECH - wire,53,English to Turkish,1033,1055,30,0,,53,1,2,Active A,0.09,,,,,,20,20,Hourly,20,0.09,0.045,0.032,0.023,0.014,0.009,0
+453054762,CONTENTECH - wire,93,English to Urdu,1033,1056,84,0,,93,1,2,Active A,0.08,,,,,,20,20,Hourly,20,0.08,0.04,0.028,0.02,0.012,0.008,0
+453055265,"Corbellini, Estela",37,English to Portuguese (Braz),1033,1046,37,0,,37,1,2,Active A,0.046,,,,,0.023,12,,Per Page,,0.035,0.023,0.016,0.012,0.007,0.005,
+3921,Cromie Thailai Translation,9,English to Khmer (Cambodian),1033,1107,14,0,,9,1,1,Active preferred,0.1,0.1,0.06,0.03,0.08,0.03,,25,Hourly,25,0.1,0.06,0.06,0.06,0.03,0.03,
+3921,Cromie Thailai Translation,33,English to Lao,1033,1108,67,0,,33,1,2,Active A,0.12,,,,0.08,0.03,,25,Hourly,25,,,,,,,
+3921,Cromie Thailai Translation,55,English to Vietnamese,1033,1066,17,0,,55,1,1,Active preferred,0.1,0.1,0.06,0.03,0.08,0.03,,25,Hourly,25,0.1,0.06,0.06,0.06,0.03,0.03,
+2040,Czech Translations,105,Czech to English (US),1029,1033,1,0,,105,1,2,Active A,0.12,,,,,0.03,30,35,Hourly,30,,,,,,,
+2040,Czech Translations,13,English to Czech,1033,1029,56,0,,13,1,2,Active A,0.12,,,,,0.03,30,35,Hourly,30,,,,,,,
+3693,"Davis, Leila",86,English to Creole (Haiti),1033,1127,32,0,,86,1,2,Active A,0.12,,,,,0.05,,0,Hourly,28,,,,,,,
+453054684,"De Vogelaere, Tom",3,Dutch to English (US),1043,1033,1,0,,3,1,2,Active A,0.08,0.06,0.04,,0.06,0.02,20,25,,,0.06,0.04,0.04,0.04,0.024,0.01,0
+453055278,DE-office,15,English to Dutch (Netherlands),1033,1043,6,0,,15,1,2,Active A,0.13,,,,,0.05,40,40,Hourly,40,0.13,0.065,0.046,0.033,0.02,0.013,0
+453055278,DE-office,157,English to Flemish,1033,2067,41,0,,157,1,2,Active A,0.13,,,,,0.05,40,40,Hourly,40,0.13,0.065,0.046,0.033,0.02,0.013,
+453055256,"Diao, Bassy",22,English to French (Europe),1033,1036,3,0,,22,1,2,Active A,0.08,,,,,0.04,20,,Hourly,,0.06,0.04,0.028,0.02,0.012,0.008,
+453055096,Diskusija,8,English to Bulgarian,1033,1026,53,0,,8,1,2,Active A,0.1,,,,0.075,0.025,30,30,Per Page,,0.1,0.05,0.045,0.035,0.015,0.01,0
+453055096,Diskusija,132,English to Estonian,1033,1061,62,1730,Oracle - Legal,132,1,2,Active A,0.11,,,,0.083,0.028,30,30,Per Page,,0.11,0.055,0.049,0.038,0.017,0.011,
+453055096,Diskusija,132,English to Estonian,1033,1061,62,0,,132,1,2,Active A,0.11,,,,0.083,0.028,30,30,Per Page,,0.11,0.055,0.049,0.038,0.017,0.011,0
+453055096,Diskusija,129,English to Latvian,1033,1062,68,0,,129,1,2,Active A,0.11,,,,0.083,0.028,30,30,Per Page,,0.11,0.055,0.049,0.038,0.017,0.011,
+453055096,Diskusija,129,English to Latvian,1033,1062,68,1730,Oracle - Legal,129,1,1,Active preferred,0.11,,,,0.083,0.028,30,30,Per Page,,0.11,0.055,0.049,0.038,0.017,0.011,
+453055096,Diskusija,130,English to Lithuanian,1033,1063,69,1730,Oracle - Legal,130,1,1,Active preferred,0.11,,,,0.083,0.028,30,30,Per Page,,0.11,0.055,0.049,0.038,0.017,0.011,
+453055096,Diskusija,130,English to Lithuanian,1033,1063,69,0,,130,1,2,Active A,0.11,,,,0.083,0.025,30,30,Per Page,,0.11,0.055,0.049,0.038,0.017,0.011,
+453055096,Diskusija,40,English to Romanian,1033,1048,44,0,,40,1,2,Active A,0.1,,,,0.075,0.025,30,30,Per Page,,0.1,0.05,0.045,0.035,0.015,0.01,
+453055096,Diskusija,279,English to Serbian (Cyrillic),1033,3098,150,0,,279,1,2,Active A,0.11,,,,0.083,0.028,30,30,,,0.11,0.055,0.049,0.038,0.017,0.011,0
+453055096,Diskusija,114,English to Serbian (Latin),1033,2074,58,0,,114,1,2,Active A,0.11,,,,0.083,0.028,30,30,Per Page,,0.11,0.055,0.049,0.038,0.017,0.011,
+453055096,Diskusija,44,English to Slovak,1033,1051,45,0,,44,1,2,Active A,0.1,,,,0.075,0.025,30,30,Per Page,,0.1,0.05,0.045,0.035,0.015,0.01,
+3972,DoDutch Productions Inc.,15,English to Dutch (Netherlands),1033,1043,6,0,,15,1,2,Active A,0.11,0.11,0.04,0.015,0.1,0.05,25,25,Hourly,50,0.11,0.04,0.04,0.04,0.015,0.015,
+453055254,"Dornellas, Gustavo",37,English to Portuguese (Braz),1033,1046,37,0,,37,1,2,Active A,0.07,,,,0.047,0.023,20,,Hourly,,0.053,0.035,0.025,0.018,0.011,0.007,
+4010,Editrad,38,English to Portuguese (Port),1033,2070,50,0,,38,1,2,Active A,0.11,0.1,0.055,0.033,0.07,0.04,30,25,Hourly,50,0.1,0.055,0.055,0.055,0.033,0.033,
+2565,"Edwards, Mary",76,English to English (UK),1033,2057,2,0,,76,1,3,Active B,,,,,,40,,40,Hourly,,,,,,,,
+2565,"Edwards, Mary",18,German to English (US),1031,1033,1,579,Trumpf - Bittner,18,1,3,Active B,,,,,,35,,35,,,,,,,,,
+2565,"Edwards, Mary",18,German to English (US),1031,1033,1,1144,Texthaus GmbH,18,1,3,Active B,,,,,,35,,35,,,,,,,,,
+2565,"Edwards, Mary",18,German to English (US),1031,1033,1,0,,18,1,3,Active B,,,,,,40,,40,Hourly,,,,,,,,
+1150,EQHO,10,English to Chinese (Simp),1033,2052,11,1376,"Cisco Systems, Inc. (Legal)",10,1,2,Active A,0.09,,,,0.07,0.03,25,0,,,0.09,0.045,0.032,0.023,0.014,0.009,0
+1150,EQHO,10,English to Chinese (Simp),1033,2052,11,0,,10,1,3,Active B,0.09,,,,0.07,0.03,25,0,Per Page,,0.09,0.045,0.032,0.023,0.014,0.009,0
+1150,EQHO,11,English to Chinese (Trad),1033,1028,10,0,,11,1,3,Active B,0.1,,,,0.06,0.03,25,0,Per Page,,0.1,0.05,0.035,0.025,0.015,0.01,0
+1150,EQHO,11,English to Chinese (Trad),1033,1028,10,1376,"Cisco Systems, Inc. (Legal)",11,1,2,Active A,0.1,,,,0.06,0.03,25,0,,,0.1,0.05,0.035,0.025,0.015,0.01,0
+1150,EQHO,29,English to Indonesian,1033,1057,26,0,,29,1,2,Active A,0.1,,,,0.07,0.03,30,25,Hourly,19.5,0.1,0.07,0.05,0.035,0.025,0.025,0
+1150,EQHO,31,English to Japanese,1033,1041,8,1376,"Cisco Systems, Inc. (Legal)",31,1,3,Active B,0.18,,,,0.12,0.06,35,0,Per Page,,0.18,0.09,0.063,0.045,0.027,0.018,0
+1150,EQHO,31,English to Japanese,1033,1041,8,0,,31,1,3,Active B,0.18,,,,0.12,0.06,35,0,Per Page,,0.18,0.09,0.063,0.045,0.027,0.018,0
+1150,EQHO,32,English to Korean,1033,1042,9,0,,32,1,3,Active B,0.14,,,,0.095,0.045,35,,Per Page,,0.14,0.07,0.049,0.035,0.021,0.014,
+1150,EQHO,32,English to Korean,1033,1042,9,1066,Cisco Systems,32,1,3,Active B,0.14,,,,0.095,0.045,35,0,Hourly,23,0.14,0.07,0.049,0.035,0.021,0.014,0
+1150,EQHO,32,English to Korean,1033,1042,9,1376,"Cisco Systems, Inc. (Legal)",32,1,3,Active B,0.14,,,,0.08,0.04,30,0,Per Page,,0.14,0.07,0.049,0.035,0.021,0.014,0
+1150,EQHO,33,English to Lao,1033,1108,67,0,,33,1,2,Active A,0.12,,,,0.08,0.04,35,25,Hourly,19.5,0.12,0.09,0.06,0.042,0.03,0.03,0
+1150,EQHO,34,English to Malay,1033,1086,71,0,,34,1,2,Active A,0.1,,,,0.07,0.03,30,25,Hourly,19.5,0.1,0.07,0.05,0.035,0.025,0.025,0
+1150,EQHO,51,English to Thai,1033,1054,42,1066,Cisco Systems,51,1,2,Active A,0.1,,,,0.07,0.03,25,0,Hourly,23,0.1,0.05,0.035,0.025,0.015,0.01,0
+1150,EQHO,51,English to Thai,1033,1054,42,1376,"Cisco Systems, Inc. (Legal)",51,1,2,Active A,0.1,,,,0.07,0.03,25,0,,,0.1,0.05,0.035,0.025,0.015,0.01,0
+1150,EQHO,51,English to Thai,1033,1054,42,0,,51,1,2,Active A,0.1,,,,0.07,0.03,30,0,Per Page,,0.1,0.07,0.05,0.035,0.025,0.025,0
+1150,EQHO,55,English to Vietnamese,1033,1066,17,1066,Cisco Systems,55,1,2,Active A,0.11,,,,0.07,0.04,25,0,Hourly,23,0.11,0.055,0.039,0.028,0.017,0.011,0
+1150,EQHO,55,English to Vietnamese,1033,1066,17,1376,"Cisco Systems, Inc. (Legal)",55,1,2,Active A,0.11,,,,0.07,0.04,28,0,,,0.11,0.055,0.039,0.028,0.017,0.011,0
+1150,EQHO,55,English to Vietnamese,1033,1066,17,0,,55,1,2,Active A,0.11,,,,0.07,0.04,30,25,Per Page,,0.11,0.083,0.055,0.039,0.028,0.028,0
+453054727,e-spire Bt.,28,English to Hungarian,1033,1038,46,0,,28,1,2,Active A,0.085,,,,0.06,0.04,24,24,,,0.085,0.043,0.03,0.021,0.013,0.0085,0
+453054727,e-spire Bt.,123,German to Hungarian,1031,1038,46,0,,123,1,2,Active A,0.085,,,,0.06,0.04,24,24,,,0.085,0.043,0.03,0.021,0.013,0.0085,0
+453054896,"Fislova, Dasha",105,Czech to English (US),1029,1033,1,0,,105,1,2,Active A,0.12,,,,0.09,0.03,25,25,,,0.12,0.06,0.042,0.03,0.018,0.012,0
+453054896,"Fislova, Dasha",90,Slovak to English (US),1051,1033,1,0,,90,1,2,Active A,0.12,,,,0.09,0.03,25,25,,,0.12,0.06,0.042,0.03,0.018,0.012,0
+453054717,French Translation Services Ltd.,22,English to French (Europe),1033,1036,3,0,,22,1,2,Active A,0.15,,,,0.12,0,50,50,Per Page,,0.15,0.075,0.053,0.038,0.023,0.015,0
+453054717,French Translation Services Ltd.,22,English to French (Europe),1033,1036,3,93,Microsoft Corp,22,1,2,Active A,0.15,,,,0.12,,50,50,Per Page,,0.15,0.075,0.053,0.038,0.023,0.015,0
+453054717,French Translation Services Ltd.,22,English to French (Europe),1033,1036,3,1066,Cisco Systems,22,1,2,Active A,0.15,,,,0.12,,50,50,Per Page,,0.15,0.075,0.053,0.038,0.023,0.015,0
+453054717,French Translation Services Ltd.,22,English to French (Europe),1033,1036,3,1376,"Cisco Systems, Inc. (Legal)",22,1,2,Active A,0.17,,,,0.15,,50,50,Per Page,,0.17,0.085,0.06,0.043,0.026,0.017,0
+4000,"Gaus, Linda",18,German to English (US),1031,1033,1,0,,18,1,2,Active A,0.12,0.12,0.06,0.015,0.12,0.03,,30,,,0.12,0.06,0.06,0.06,0.015,0.015,
+4000,"Gaus, Linda",18,German to English (US),1031,1033,1,29,ZF Friedrichshafen,18,1,2,Active A,0.12,,,,0.12,0.03,,30,,,0.12,0.06,0.06,0.06,0.015,0.015,
+3035,George,85,Indonesian to English (US),1057,1033,1,0,,85,2,2,Active A,0.16,,,,,45,,45,,,,,,,,,
+453054707,Helena Technical Translations B.V.,15,English to Dutch (Netherlands),1033,1043,6,1730,Oracle - Legal,15,1,3,Active B,0.18,,,,,,30,30,Hourly,35,0.18,0.09,0.063,0.045,0.027,0.018,
+453054707,Helena Technical Translations B.V.,15,English to Dutch (Netherlands),1033,1043,6,0,,15,1,2,Active A,0.18,0.18,,,,,55,35,Hourly,35,0.18,0.09,0.063,0.045,0.027,0.018,0
+453054707,Helena Technical Translations B.V.,157,English to Flemish,1033,2067,41,1730,Oracle - Legal,157,1,2,Active A,0.18,,,,,,30,35,Hourly,35,0.18,0.09,0.063,0.045,0.027,0.018,
+453054707,Helena Technical Translations B.V.,157,English to Flemish,1033,2067,41,0,,157,1,3,Active B,0.18,,,,,,,35,Per Page,35,0.18,0.09,0.063,0.045,0.027,0.018,0
+453054707,Helena Technical Translations B.V.,265,French to Dutch,1036,1043,6,0,,265,1,2,Active A,0.18,,,,,,55,35,Hourly,35,0.18,0.09,0.063,0.045,0.027,0.018,0
+453054707,Helena Technical Translations B.V.,217,German to Dutch (Netherlands),1031,1043,6,0,,217,1,2,Active A,0.18,0.18,,,,,55,35,Hourly,35,0.18,0.09,0.063,0.045,0.027,0.018,0
+453054707,Helena Technical Translations B.V.,266,Spanish to Dutch,3082,1043,6,0,,266,1,2,Active A,0.18,,,,,,55,35,Hourly,35,0.18,0.09,0.063,0.045,0.027,0.018,0
+3945,Hermes Traducciones y Servicios Linguist.,195,English to Catalan,1033,1027,123,0,,195,1,2,Active A,0.13,,,,0.12,0.024,36,36,Hourly,30,0.13,0.06,0.05,0.033,0.02,0.013,0
+3945,Hermes Traducciones y Servicios Linguist.,48,English to Spanish (Spain),1033,1034,7,1730,Oracle - Legal,48,1,2,Active A,0.15,,,,0.12,0.03,36,0,Hourly,30,0.15,0.075,0.053,0.038,0.023,0.015,
+3945,Hermes Traducciones y Servicios Linguist.,48,English to Spanish (Spain),1033,1034,7,0,,48,1,1,Active preferred,0.13,0.12,0.06,0.03,0.12,0.024,36,36,Hourly,30,0.13,0.06,0.05,0.033,0.02,0.013,0
+3945,Hermes Traducciones y Servicios Linguist.,48,English to Spanish (Spain),1033,1034,7,93,Microsoft Corp,48,1,2,Active A,0.11,,,,0.09,0.02,36,0,Hourly,30,0.11,0.055,0.039,0.028,0.017,0.011,0
+3945,Hermes Traducciones y Servicios Linguist.,48,English to Spanish (Spain),1033,1034,7,1066,Cisco Systems,48,1,1,Active preferred,0.11,,,,0.09,0.02,36,0,Hourly,30,0.11,0.055,0.039,0.028,0.017,0.011,0
+3945,Hermes Traducciones y Servicios Linguist.,48,English to Spanish (Spain),1033,1034,7,1376,"Cisco Systems, Inc. (Legal)",48,1,2,Active A,0.15,,,,0.12,0.03,36,0,,,0.15,0.075,0.053,0.038,0.023,0.015,0
+3945,Hermes Traducciones y Servicios Linguist.,60,German to Spanish (Spain),1031,3082,86,0,,60,1,3,Active B,0.13,0.12,0.06,0.03,0.12,0.024,,,,,0.12,0.06,0.06,0.06,0.03,0.03,0
+1480,"Higgins, Hilary",18,German to English (US),1031,1033,1,0,,18,1,1,Active preferred,0.14,0.13,0.07,0.04,0.13,0.03,32,32,,,0.14,0.07,0.049,0.035,0.021,0.014,0
+1480,"Higgins, Hilary",18,German to English (US),1031,1033,1,29,ZF Friedrichshafen,18,1,1,Active preferred,0.12,,,,0.12,0.03,32,32,,,0.12,0.05,0.05,0.05,0,0.015,0
+453054682,"Highduke, Dmitrie",54,English to Ukrainian,1033,1058,83,0,,54,1,2,Active A,0.07,0.06,0.04,0.024,0.05,0.03,15,10,Per Page,,0.053,0.035,0.035,0.035,0.021,0.021,
+3384,IndicTrans Multi-Ligual Solutions,5,English to Arabic,1033,1025,48,0,,5,1,3,Active B,0.16,,,0.085,,,,30,,,,,,,0.085,0.085,
+3384,IndicTrans Multi-Ligual Solutions,243,English to Assamese,1033,1101,135,0,,243,1,2,Active A,0.12,,,,,,30,35,,,,,,,,,
+3384,IndicTrans Multi-Ligual Solutions,95,English to Bengali,1033,1093,60,0,,95,1,2,Active A,0.12,,,,,,30,35,,,,,,,,,
+3384,IndicTrans Multi-Ligual Solutions,19,English to Farsi (Persian),1033,1065,22,0,,19,1,3,Active B,0.16,,,0.085,,,,30,,,,,,,0.085,0.085,
+3384,IndicTrans Multi-Ligual Solutions,94,English to Gujarati,1033,1095,63,0,,94,1,2,Active A,0.12,,,,,,30,35,,,,,,,,,
+3384,IndicTrans Multi-Ligual Solutions,26,English to Hindi,1033,1081,25,0,,26,1,2,Active A,0.12,,,,,,30,35,,,,,,,,,
+3384,IndicTrans Multi-Ligual Solutions,206,English to Kannada,1033,1099,127,0,,206,1,2,Active A,0.12,,,,,,30,35,,,,,,,,,
+3384,IndicTrans Multi-Ligual Solutions,32,English to Korean,1033,1042,9,0,,32,1,3,Active B,0.1,,,,,,,35,,,,,,,,,
+3384,IndicTrans Multi-Ligual Solutions,34,English to Malay,1033,1086,71,0,,34,1,2,Active A,0.11,,,0.03,,,,35,,,,,,,0.03,0.03,
+3384,IndicTrans Multi-Ligual Solutions,121,English to Malayalam,1033,1100,72,0,,121,1,2,Active A,0.12,,,,,,30,35,,,,,,,,,
+3384,IndicTrans Multi-Ligual Solutions,103,English to Marathi,1033,1102,73,0,,103,1,2,Active A,0.12,,,,,,30,35,,,,,,,,,
+3384,IndicTrans Multi-Ligual Solutions,240,English to Nepali,1033,1121,133,0,,240,1,2,Active A,0.14,,,,,,30,35,,25,,,,,,,
+3384,IndicTrans Multi-Ligual Solutions,242,English to Oriya,1033,1096,134,0,,242,1,2,Active A,0.12,,,,,,30,35,,,,,,,,,
+3384,IndicTrans Multi-Ligual Solutions,39,English to Punjabi,1033,1094,76,0,,39,1,2,Active A,0.12,,,,,,30,35,,,,,,,,,
+3384,IndicTrans Multi-Ligual Solutions,83,English to Sinhala (Sinhalese),1033,1115,28,0,,83,1,1,Active preferred,0.16,,,,,,30,35,,,,,,,,,
+3384,IndicTrans Multi-Ligual Solutions,244,English to Tamil,1033,1097,136,0,,244,1,2,Active A,0.12,,,,,,30,35,,,,,,,,,
+3384,IndicTrans Multi-Ligual Solutions,245,English to Telugu,1033,1098,137,0,,245,1,2,Active A,0.12,,,,,,30,35,,,,,,,,,
+3384,IndicTrans Multi-Ligual Solutions,93,English to Urdu,1033,1056,84,0,,93,1,2,Active A,0.12,,,,,,30,35,,,,,,,,,
+453054700,Irujo Inc. dba Spansource,47,English to Spanish (LatAm),1033,58378,78,1376,"Cisco Systems, Inc. (Legal)",47,1,2,Active A,0.075,,,,,0.03,23,,Hourly,25,0.075,0.04,0.027,0.019,0.016,0.016,0
+453054700,Irujo Inc. dba Spansource,47,English to Spanish (LatAm),1033,58378,78,1730,Oracle - Legal,47,1,2,Active A,0.075,,,,,0.03,23,,Per Page,25,0.075,0.04,0.027,0.019,0.016,0.016,
+453054700,Irujo Inc. dba Spansource,47,English to Spanish (LatAm),1033,58378,78,1066,Cisco Systems,47,1,1,Active preferred,0.075,,,,,0.03,23,,Per Page,25,0.075,0.04,0.027,0.019,0.016,0.016,
+453054700,Irujo Inc. dba Spansource,47,English to Spanish (LatAm),1033,58378,78,0,,47,1,2,Active A,0.075,,,,,0.03,23,,Hourly,25,0.075,0.04,0.027,0.019,0.016,0.016,0
+453054700,Irujo Inc. dba Spansource,47,English to Spanish (LatAm),1033,58378,78,1187,Blue Cross Blue Shield - Florida,47,1,2,Active A,0.065,,,,0.045,0.03,20,,Hourly,20,0.065,0.033,0.023,0.016,0.016,0.016,0
+453054700,Irujo Inc. dba Spansource,106,English to Spanish (Mexico),1033,2058,79,0,,106,1,2,Active A,0.075,,,,,0.03,23,,Hourly,25,0.075,0.04,0.027,0.019,0.016,0.016,0
+453054700,Irujo Inc. dba Spansource,65,English to Spanish (Puerto Rico),1033,20490,80,0,,65,1,2,Active A,0.075,,,,,0.03,23,,Hourly,25,0.075,0.04,0.027,0.019,0.016,0.016,0
+453054700,Irujo Inc. dba Spansource,65,English to Spanish (Puerto Rico),1033,20490,80,1187,Blue Cross Blue Shield - Florida,65,1,2,Active A,0.065,,,,0.045,0.03,20,,Hourly,20,0.065,0.033,0.023,0.016,0.016,0.016,0
+453054693,Janus WWI,6,English to Armenian,1033,1067,21,0,,6,1,2,Active A,0.12,0.12,0.06,0.02,0.09,0.04,32,16,Hourly,16,0.12,0.06,0.06,0.06,0.02,0.02,0
+453054693,Janus WWI,251,English to Azeri- Latin,1033,1068,140,0,,251,1,2,Active A,0.12,0.12,0.06,0.02,0.09,0.04,32,16,Hourly,16,0.12,0.12,0.06,0.06,0.02,0.02,0
+453054693,Janus WWI,251,English to Azeri- Latin,1033,1068,140,93,Microsoft Corp,251,1,2,Active A,0.08,,,,0.06,0.03,20,0,Hourly,15,0.08,0.04,0.028,0.02,0.012,0.008,0
+453054693,Janus WWI,251,English to Azeri- Latin,1033,1068,140,1066,Cisco Systems,251,1,2,Active A,0.08,,,,0.06,0.03,20,0,Hourly,15,0.08,0.04,0.028,0.02,0.012,0.008,0
+453054693,Janus WWI,13,English to Czech,1033,1029,56,0,,13,1,2,Active A,0.12,,,,0.09,0.04,,16,,,0.12,0.12,0.06,0.06,0.02,0.02,0
+453054693,Janus WWI,249,English to Georgian,1033,1079,141,0,,249,1,2,Active A,0.12,0.12,0.06,0.02,0.09,0.04,32,16,Hourly,16,0.12,0.06,0.06,0.06,0.02,0.02,0
+453054693,Janus WWI,250,English to Kazakh,1033,1087,142,0,,250,1,2,Active A,0.12,0.12,0.06,0.02,0.09,0.04,32,16,Hourly,16,0.12,0.06,0.06,0.06,0.02,0.02,0
+453054693,Janus WWI,36,English to Polish,1033,1045,43,0,,36,1,2,Active A,,,,,,,,,Per Page,,,,,,,,0
+453054693,Janus WWI,41,English to Russian,1033,1049,15,0,,41,1,2,Active A,0.06,0.06,0.03,0.01,0.055,0.02,16,16,Hourly,16,0.06,0.03,0.03,0.03,0.01,0.01,0
+453054693,Janus WWI,41,English to Russian,1033,1049,15,93,Microsoft Corp,41,1,2,Active A,0.06,,,,0.055,0.02,15,0,Hourly,15,0.06,0.03,0.021,0.015,0.009,0.006,0
+453054693,Janus WWI,41,English to Russian,1033,1049,15,1066,Cisco Systems,41,1,1,Active preferred,0.06,,,,0.055,0.02,15,0,Hourly,15,0.06,0.03,0.021,0.015,0.009,0.006,0
+453054693,Janus WWI,41,English to Russian,1033,1049,15,1376,"Cisco Systems, Inc. (Legal)",41,1,2,Active A,0.075,,,,0.055,0.02,15,0,,,0.075,0.038,0.026,0.019,0.011,0.0075,0
+453054693,Janus WWI,187,English to Tajik,1033,1064,119,0,,187,1,2,Active A,0.12,0.12,0.06,0.02,0.09,0.04,32,16,Hourly,16,0.12,0.06,0.06,0.06,0.02,0.02,0
+453054693,Janus WWI,252,English to Tatar,1033,1092,144,0,,252,1,2,Active A,0.12,0.12,0.06,0.02,0.09,0.04,32,16,Hourly,16,0.12,0.06,0.06,0.06,0.02,0.02,0
+453054693,Janus WWI,254,English to Turkmen,1033,1090,145,0,,254,1,2,Active A,0.12,0.12,0.06,0.02,0.09,0.04,32,16,Hourly,16,0.12,0.06,0.06,0.06,0.02,0.02,0
+453054693,Janus WWI,54,English to Ukrainian,1033,1058,83,0,,54,1,2,Active A,0.06,0.06,0.03,0.01,0.055,0.02,16,16,Hourly,16,0.06,0.03,0.03,0.03,0.01,0.01,0
+453054693,Janus WWI,54,English to Ukrainian,1033,1058,83,93,Microsoft Corp,54,1,2,Active A,0.06,,,,0.05,0.02,15,0,Hourly,15,0.06,0.03,0.021,0.015,0.009,0.006,0
+453054693,Janus WWI,54,English to Ukrainian,1033,1058,83,1066,Cisco Systems,54,1,2,Active A,0.06,,,,0.05,0.02,15,0,Hourly,15,0.06,0.03,0.021,0.015,0.009,0.006,0
+453054693,Janus WWI,180,English to Uzbek,1033,1091,113,0,,180,1,2,Active A,0.12,0.12,0.06,0.02,0.09,0.04,32,16,Hourly,16,0.12,0.06,0.06,0.06,0.02,0.02,0
+453054693,Janus WWI,261,German to Armenian,1031,1091,113,0,,261,1,2,Active A,0.12,0.12,0.06,0.02,0.09,0.04,32,16,Hourly,16,0.12,0.06,0.06,0.06,0.02,0.02,0
+453054693,Janus WWI,257,German to Azeri,1031,1068,140,0,,257,1,2,Active A,0.12,0.12,0.06,0.02,0.09,0.04,32,16,Hourly,16,0.12,0.06,0.06,0.06,0.02,0.02,0
+453054693,Janus WWI,255,German to Georgian,1031,1079,141,0,,255,1,2,Active A,0.12,0.12,0.06,0.02,0.09,0.04,32,16,Hourly,16,0.12,0.06,0.06,0.06,0.02,0.02,0
+453054693,Janus WWI,256,German to Kazakh,1031,1087,142,0,,256,1,2,Active A,0.12,0.12,0.06,0.02,0.09,0.04,32,16,Hourly,16,0.12,0.06,0.06,0.06,0.02,0.02,0
+453054693,Janus WWI,116,German to Russian,1031,1049,15,0,,116,1,2,Active A,0.06,0.06,0.03,0.01,0.055,0.02,16,16,Hourly,16,0.06,0.03,0.03,0.03,0.01,0.01,0
+453054693,Janus WWI,262,German to Tajik,1031,1064,119,0,,262,1,2,Active A,0.12,0.12,0.06,0.02,0.09,0.04,32,16,Hourly,16,0.12,0.06,0.06,0.06,0.02,0.02,0
+453054693,Janus WWI,258,German to Tatar,1031,1092,144,0,,258,1,2,Active A,0.12,0.12,0.06,0.02,0.09,0.04,32,16,Hourly,16,0.12,0.06,0.06,0.06,0.02,0.02,0
+453054693,Janus WWI,260,German to Turkmen,1031,1090,145,0,,260,1,2,Active A,0.12,0.12,0.06,0.02,0.09,0.04,32,16,Hourly,16,0.12,0.06,0.06,0.06,0.02,0.02,0
+453054693,Janus WWI,238,German to Ukrainian,1031,1058,83,0,,238,1,2,Active A,0.06,0.06,0.03,0.01,0.055,0.02,16,16,Hourly,16,0.06,0.03,0.03,0.03,0.01,0.01,0
+453054693,Janus WWI,264,German to Uzbek,1031,1091,113,0,,264,1,2,Active A,0.12,0.12,0.06,0.02,0.09,0.04,32,16,Hourly,16,0.12,0.06,0.06,0.06,0.02,0.02,0
+453054693,Janus WWI,68,Russian to English (US),1049,1033,1,0,,68,1,2,Active A,0.08,0.08,0.04,0.015,0.065,0.03,22,16,Hourly,16,0.08,0.04,0.04,0.04,0.015,0.015,0
+453054693,Janus WWI,222,Ukranian to English (US),1058,1033,1,0,,222,1,2,Active A,0.08,0.08,0.04,0.015,0.065,0.03,22,16,Hourly,16,0.08,0.04,0.04,0.04,0.015,0.015,0
+1528,"Johnson, Charles",56,French to English (US),1036,1033,1,0,,56,1,1,Active preferred,0.11,,,,0.11,0.03,,25,Per Page,,,,,,,,
+1528,"Johnson, Charles",61,Italian to English (US),1040,1033,1,0,,61,1,1,Active preferred,0.11,,,,0.11,0.03,,25,,,,,,,,,
+1528,"Johnson, Charles",63,Spanish to English (US),1034,1033,1,0,,63,1,2,Active A,0.11,,,,0.11,0.03,,25,,,,,,,,,
+3942,"Karolczyk, Teresa",36,English to Polish,1033,1045,43,0,,36,1,2,Active A,0.1,0.08,0.04,0.02,,0.02,,20,Hourly,20,0.08,0.04,0.04,0.04,0.02,0.02,
+2956,Kezios Translations,24,English to Greek,1033,1032,23,0,,24,2,3,Active B,0.17,,,,,,,50,,,,,,,,,
+3904,"Kita, Ledia",99,English to Albanian,1033,1052,59,0,,99,1,2,Active A,0.11,0.11,0.06,0,0.08,0.03,15,25,Hourly,30,0.11,0.06,0.06,0.06,0,0,
+453055039,"Kudo, Jennifer",62,Japanese to English (US),1041,1033,1,0,,62,1,2,Active A,0.1,,,,0.075,0.025,30,30,,,0.1,0.05,0.035,0.025,0.015,0.01,0
+3867,LCI Bretagne,22,English to French (Europe),1033,1036,3,0,,22,1,2,Active A,0.14,0.14,0.07,0.04,0.1,0.04,52,52,Hourly,50,0.14,0.07,0.07,0.07,0.04,0.02,0
+453054956,Lebras Translations,21,English to French (Canada),1033,3084,12,1730,Oracle - Legal,21,1,1,Active preferred,0.14,,,,0.105,0.035,30,30,Per Page,,0.14,0.07,0.049,0.035,0.021,0.014,
+453054956,Lebras Translations,21,English to French (Canada),1033,3084,12,1066,Cisco Systems,21,1,1,Active preferred,0.14,,,,0.105,0.035,30,30,Per Page,,0.14,0.07,0.049,0.035,0.021,0.014,
+453054956,Lebras Translations,21,English to French (Canada),1033,3084,12,0,,21,1,2,Active A,0.14,,,,0.105,0.035,30,30,Per Page,,0.14,0.07,0.049,0.035,0.021,0.014,0
+453054956,Lebras Translations,22,English to French (Europe),1033,1036,3,0,,22,1,2,Active A,0.14,,,,0.105,0.035,30,30,Per Page,,0.14,0.07,0.049,0.035,0.021,0.014,0
+453054956,Lebras Translations,22,English to French (Europe),1033,1036,3,1066,Cisco Systems,22,1,1,Active preferred,0.14,,,,0.105,0.035,30,30,Per Page,,0.14,0.07,0.049,0.035,0.021,0.014,
+453054956,Lebras Translations,22,English to French (Europe),1033,1036,3,1730,Oracle - Legal,22,1,2,Active A,0.14,,,,0.105,0.035,30,30,Per Page,,0.14,0.07,0.049,0.035,0.021,0.014,
+453054956,Lebras Translations,58,German to French (Europe),1031,1036,3,0,,58,1,2,Active A,0.14,,,,0.105,0.035,30,30,Per Page,,0.14,0.07,0.049,0.035,0.021,0.014,
+453054732,"Lee, Inkwon",66,Korean to English (US),1042,1033,1,0,,66,2,2,Active A,0.1,,,,0.07,0.03,30,25,Per Page,,,,,,,,
+453054887,"Lefebvre, Thomas",22,English to French (Europe),1033,1036,3,0,,22,1,2,Active A,0.12,,,,0.09,0.03,30,0,,,0.12,0.06,0.042,0.03,0.018,0.012,0
+3874,Lemon Tree Snc,22,English to French (Europe),1033,1036,3,0,,22,1,2,Active A,0.14,0.145,0.0725,0.029,,,38,35,Hourly,35,0.14,0.07,0.056,0.046,0.021,0.021,0
+3874,Lemon Tree Snc,22,English to French (Europe),1033,1036,3,1376,"Cisco Systems, Inc. (Legal)",22,1,2,Active A,0.15,,,,,,38,35,Hourly,35,0.15,0.075,0.0675,0.0375,0.027,0.015,0
+3874,Lemon Tree Snc,22,English to French (Europe),1033,1036,3,1730,Oracle - Legal,22,1,1,Active preferred,0.15,,,,,,38,35,Hourly,35,0.15,0.075,0.0675,0.0375,0.027,0.015,0.015
+3874,Lemon Tree Snc,22,English to French (Europe),1033,1036,3,1943,LEGAL RATES,22,1,2,Active A,0.15,,,,,,38,35,Hourly,35,0.15,0.075,0.0675,0.0375,0.027,0.015,
+3874,Lemon Tree Snc,23,English to German,1033,1031,5,1943,LEGAL RATES,23,1,2,Active A,0.16,,,,,,38,35,Hourly,35,0.16,0.08,0.072,0.04,0.029,0.016,
+3874,Lemon Tree Snc,23,English to German,1033,1031,5,1730,Oracle - Legal,23,1,1,Active preferred,0.16,,,,,,38,35,Hourly,35,0.16,0.08,0.072,0.04,0.029,0.016,0.016
+3874,Lemon Tree Snc,23,English to German,1033,1031,5,1376,"Cisco Systems, Inc. (Legal)",23,1,2,Active A,0.16,,,,,,38,35,Hourly,35,0.16,0.08,0.072,0.04,0.029,0.016,0
+3874,Lemon Tree Snc,23,English to German,1033,1031,5,0,,23,1,2,Active A,0.14,0.145,0.0725,0.029,,,38,35,Hourly,35,0.14,0.07,0.056,0.046,0.021,0.021,0
+3874,Lemon Tree Snc,30,English to Italian,1033,1040,4,0,,30,1,1,Active preferred,0.1175,0.1175,0.0675,0.027,,,35,35,Hourly,35,0.1175,0.059,0.047,0.039,0.018,0.018,0
+3874,Lemon Tree Snc,30,English to Italian,1033,1040,4,93,Microsoft Corp,30,1,2,Active A,0.1175,,,,,,,0,Per Page,,0.1175,0.059,0.053,0.029,0.021,0.021,0
+3874,Lemon Tree Snc,30,English to Italian,1033,1040,4,1066,Cisco Systems,30,1,1,Active preferred,0.1175,,,,,,,0,Per Page,,0.1175,0.059,0.053,0.029,0.021,0.021,0
+3874,Lemon Tree Snc,30,English to Italian,1033,1040,4,1730,Oracle - Legal,30,1,1,Active preferred,0.13,,,,,,35,35,Hourly,35,0.13,0.065,0.0585,0.0325,0.023,0.013,0.013
+3874,Lemon Tree Snc,30,English to Italian,1033,1040,4,1943,LEGAL RATES,30,1,2,Active A,0.13,,,,,,35,35,Hourly,35,0.13,0.065,0.0585,0.0325,0.023,0.013,
+3874,Lemon Tree Snc,30,English to Italian,1033,1040,4,1376,"Cisco Systems, Inc. (Legal)",30,1,2,Active A,0.13,,,,,,35,35,Hourly,35,0.13,0.065,0.0585,0.0325,0.023,0.013,0
+3874,Lemon Tree Snc,48,English to Spanish (Spain),1033,1034,7,0,,48,1,2,Active A,0.13,0.13,0.065,0.026,,,39,35,Hourly,35,0.13,0.065,0.065,0.033,0.026,0.026,0
+3874,Lemon Tree Snc,48,English to Spanish (Spain),1033,1034,7,1943,LEGAL RATES,48,1,2,Active A,0.14,,,,,,42,35,Hourly,35,0.14,0.07,0.063,0.035,0.025,0.014,
+3874,Lemon Tree Snc,48,English to Spanish (Spain),1033,1034,7,1730,Oracle - Legal,48,1,1,Active preferred,0.14,,,,,,42,35,Hourly,35,0.14,0.07,0.063,0.035,0.025,0.014,0.014
+3874,Lemon Tree Snc,48,English to Spanish (Spain),1033,1034,7,1376,"Cisco Systems, Inc. (Legal)",48,1,2,Active A,0.14,,,,,,42,35,Hourly,35,0.14,0.07,0.063,0.035,0.025,0.014,0
+3874,Lemon Tree Snc,59,German to Italian,1031,1040,4,0,,59,1,2,Active A,0.15,,,,,,35,35,Hourly,35,0.15,0.075,0.075,0.038,0.03,0.03,0
+3874,Lemon Tree Snc,271,Italian to German,1040,1031,5,0,,271,1,2,Active A,0.14,,,,,,43,35,Hourly,35,0.14,0.07,0.07,0.035,0.028,0.028,0
+453054667,Letras Language Solutions S.L,196,Dutch to German,1043,1031,5,0,,196,1,2,Active A,0.16,,,,0.12,0.035,3030,30,,,0.16,0.08,0.056,0.04,0.024,0.016,0
+453054667,Letras Language Solutions S.L,14,English to Danish,1033,1030,36,0,,14,1,2,Active A,0.16,0.16,0.08,0.05,0.12,0.04,30,35,,,0.16,0.08,0.08,0.08,0.05,0.05,
+453054667,Letras Language Solutions S.L,20,English to Finnish,1033,1035,40,0,,20,1,2,Active A,0.16,0.16,0.08,0.05,0.12,0.04,30,35,,,0.16,0.08,0.08,0.08,0.05,0.05,
+453054667,Letras Language Solutions S.L,35,English to Norwegian (Bokmål),1033,1044,39,0,,35,1,2,Active A,0.15,0.15,0.07,0.04,0.11,0.03,30,35,,,0.15,0.07,0.07,0.07,0.04,0.04,
+453054667,Letras Language Solutions S.L,49,English to Swedish,1033,1053,38,0,,49,1,2,Active A,0.15,0.15,0.07,0.04,0.11,0.03,30,35,,,0.15,0.07,0.07,0.07,0.04,0.04,0
+453054667,Letras Language Solutions S.L,115,German to Danish,1031,1030,36,0,,115,1,2,Active A,0.16,0.16,0.08,0.05,0.12,0.04,30,35,,,0.16,0.08,0.08,0.08,0.05,0.05,0
+453054667,Letras Language Solutions S.L,217,German to Dutch (Netherlands),1031,1043,6,0,,217,1,2,Active A,0.14,0.14,0.07,0.04,0.11,0.03,30,35,,,0.14,0.07,0.07,0.07,0.04,0.04,0
+453054667,Letras Language Solutions S.L,219,German to Finnish,1031,1035,40,0,,219,1,2,Active A,0.16,0.16,0.08,0.05,0.12,0.04,30,35,,,0.16,0.08,0.08,0.08,0.05,0.05,0
+453054667,Letras Language Solutions S.L,58,German to French (Europe),1031,1036,3,0,,58,1,2,Active A,0.15,0.15,0.07,0.04,0.11,0.03,30,35,,,0.15,0.07,0.07,0.07,0.04,0.04,0
+453054667,Letras Language Solutions S.L,220,German to Norwegian,1031,1044,39,0,,220,1,2,Active A,0.16,0.16,0.08,0.05,0.12,0.04,30,35,,,0.16,0.08,0.08,0.08,0.05,0.05,0
+453054667,Letras Language Solutions S.L,221,German to Swedish,1031,1053,38,0,,221,1,2,Active A,0.15,0.15,0.07,0.04,0.11,0.03,30,35,,,0.15,0.07,0.07,0.07,0.04,0.04,0
+453055097,LexisPlus Translations,47,English to Spanish (LatAm),1033,58378,78,0,,47,1,2,Active A,0.1,,,,0.07,0.02,30,30,,,0.1,0.08,0.06,0.04,0.03,0.03,0
+453055097,LexisPlus Translations,47,English to Spanish (LatAm),1033,58378,78,1730,Oracle - Legal,47,1,1,Active preferred,0.1,,,,0.07,0.02,30,30,Per Page,,0.1,0.08,0.06,0.04,0.03,0.03,
+3732,"Liu, Claire Yun-fang",2,Chinese to English (US),1028,1033,1,0,,2,1,1,Active preferred,0.16,,,,,0.05,,40,,,,,,,,,
+453054906,"Liu, Xin",2,Chinese to English (US),1028,1033,1,0,,2,2,2,Active A,0.11,,,,0.11,0.03,30,30,,,0.11,0.055,0.039,0.028,0.017,0.011,0
+453054906,"Liu, Xin",2,Chinese to English (US),1028,1033,1,1376,"Cisco Systems, Inc. (Legal)",2,2,2,Active A,0.11,,,,0.11,0.03,30,30,,,0.11,0.055,0.039,0.028,0.017,0.011,0
+453054731,Localization Care,289,Albanian to English,1052,1033,1,0,,289,1,2,Active A,0.11,,,,0.083,0.028,30,20,Per Page,,0.11,0.055,0.039,0.028,0.017,0.011,0
+453054731,Localization Care,194,Bosnian to English (US),8218,1033,1,0,,194,1,2,Active A,0.13,,,,0.098,0.033,30,20,Per Page,,0.13,0.065,0.046,0.033,0.02,0.013,0
+453054731,Localization Care,125,Croatian to English (US),1050,1033,1,0,,125,1,2,Active A,0.11,,,,0.083,0.028,30,20,Per Page,,0.11,0.055,0.039,0.028,0.017,0.011,0
+453054731,Localization Care,99,English to Albanian,1033,1052,59,1376,"Cisco Systems, Inc. (Legal)",99,1,2,Active A,0.11,,,,,,30,20,,,0.11,0.055,0.039,0.028,0.017,0.011,0
+453054731,Localization Care,99,English to Albanian,1033,1052,59,0,,99,1,2,Active A,0.11,,,,,,30,20,,,0.11,0.055,0.039,0.028,0.017,0.011,0
+453054731,Localization Care,149,English to Belarusian,1033,1059,88,0,,149,1,2,Active A,0.1,,,,,,30,30,,,0.1,0.05,0.035,0.025,0.015,0.01,0
+453054731,Localization Care,7,English to Bosnian,1033,8218,13,1730,Oracle - Legal,7,1,2,Active A,0.11,,,,,,30,20,Per Page,,0.11,0.055,0.039,0.028,0.017,0.011,
+453054731,Localization Care,7,English to Bosnian,1033,8218,13,1376,"Cisco Systems, Inc. (Legal)",7,1,2,Active A,0.11,,,,,,30,20,,,0.11,0.055,0.039,0.028,0.017,0.011,0
+453054731,Localization Care,7,English to Bosnian,1033,8218,13,0,,7,1,2,Active A,0.11,,,,,,30,20,,,0.11,0.055,0.039,0.028,0.017,0.011,0
+453054731,Localization Care,12,English to Croatian,1033,1050,51,0,,12,1,2,Active A,0.09,,,,,,30,15,,,0.09,0.045,0.032,0.023,0.014,0.009,0
+453054731,Localization Care,12,English to Croatian,1033,1050,51,1376,"Cisco Systems, Inc. (Legal)",12,1,2,Active A,0.09,,,,,,30,15,,,0.09,0.045,0.032,0.023,0.014,0.009,0
+453054731,Localization Care,12,English to Croatian,1033,1050,51,1730,Oracle - Legal,12,1,1,Active preferred,0.09,,,,,,30,15,Per Page,,0.09,0.045,0.032,0.023,0.014,0.009,
+453054731,Localization Care,13,English to Czech,1033,1029,56,0,,13,1,2,Active A,0.105,,,,0.079,0.026,30,30,,,0.105,0.053,0.037,0.026,0.016,0.011,0
+453054731,Localization Care,28,English to Hungarian,1033,1038,46,1730,Oracle - Legal,28,1,3,Active B,0.08,,,,,,25,15,Per Page,,0.08,0.04,0.028,0.02,0.012,0.008,
+453054731,Localization Care,28,English to Hungarian,1033,1038,46,1376,"Cisco Systems, Inc. (Legal)",28,1,3,Active B,0.08,,,,,,25,15,Per Page,,0.08,0.04,0.028,0.02,0.012,0.008,0
+453054731,Localization Care,28,English to Hungarian,1033,1038,46,0,,28,1,3,Active B,0.08,,,,,,25,15,Per Page,,0.08,0.04,0.028,0.02,0.012,0.008,
+453054731,Localization Care,138,English to Macedonian,1033,1071,49,0,,138,1,2,Active A,0.14,,,,,,30,20,,,0.14,0.07,0.049,0.035,0.021,0.014,0
+453054731,Localization Care,138,English to Macedonian,1033,1071,49,1376,"Cisco Systems, Inc. (Legal)",138,1,2,Active A,0.14,,,,,,30,20,,,0.14,0.07,0.049,0.035,0.021,0.014,0
+453054731,Localization Care,36,English to Polish,1033,1045,43,1376,"Cisco Systems, Inc. (Legal)",36,1,2,Active A,0.085,,,,,0.02,25,15,,,0.085,0.043,0.03,0.021,0.013,0.0085,0
+453054731,Localization Care,36,English to Polish,1033,1045,43,1730,Oracle - Legal,36,1,1,Active preferred,0.085,,,,,0.02,25,15,Per Page,,0.085,0.043,0.03,0.021,0.013,0.0085,
+453054731,Localization Care,36,English to Polish,1033,1045,43,0,,36,1,2,Active A,0.085,,,,0.06,0.02,25,25,,,0.085,0.043,0.03,0.021,0.013,0.0085,0
+453054731,Localization Care,36,English to Polish,1033,1045,43,93,Microsoft Corp,36,1,2,Active A,0.085,,,,0.06,0.02,25,,,,0.085,0.043,0.03,0.021,0.013,0.0085,0
+453054731,Localization Care,36,English to Polish,1033,1045,43,1066,Cisco Systems,36,1,2,Active A,0.085,,,,0.06,0.02,25,,,,0.085,0.043,0.03,0.021,0.013,0.0085,0
+453054731,Localization Care,40,English to Romanian,1033,1048,44,1730,Oracle - Legal,40,1,2,Active A,0.08,,,,,,30,20,Per Page,,0.08,0.04,0.028,0.02,0.012,0.008,
+453054731,Localization Care,40,English to Romanian,1033,1048,44,0,,40,1,2,Active A,0.08,,,,,0.02,30,30,Per Page,,0.008,0.04,0.028,0.02,0.012,0.008,0
+453054731,Localization Care,114,English to Serbian (Latin),1033,2074,58,1376,"Cisco Systems, Inc. (Legal)",114,1,2,Active A,0.11,,,,,,30,20,,,0.11,0.055,0.039,0.028,0.017,0.011,0
+453054731,Localization Care,114,English to Serbian (Latin),1033,2074,58,1730,Oracle - Legal,114,1,2,Active A,0.11,,,,,,30,20,Per Page,,0.11,0.055,0.039,0.028,0.017,0.011,
+453054731,Localization Care,114,English to Serbian (Latin),1033,2074,58,0,,114,1,2,Active A,0.11,,,,,,30,20,,,0.11,0.055,0.039,0.028,0.017,0.011,0
+453054731,Localization Care,44,English to Slovak,1033,1051,45,1730,Oracle - Legal,44,1,2,Active A,0.105,,,,0.079,0.026,30,30,Per Page,,0.105,0.053,0.037,0.026,0.016,0.011,
+453054731,Localization Care,44,English to Slovak,1033,1051,45,0,,44,1,2,Active A,0.105,,,,0.079,0.026,30,30,,,0.105,0.053,0.037,0.026,0.016,0.011,0
+453054731,Localization Care,45,English to Slovenian,1033,1060,47,1376,"Cisco Systems, Inc. (Legal)",45,1,2,Active A,0.1,,,,,,30,20,,,0.1,0.05,0.035,0.025,0.015,0.01,0
+453054731,Localization Care,45,English to Slovenian,1033,1060,47,1730,Oracle - Legal,45,1,2,Active A,0.1,,,,,,30,20,Per Page,,0.1,0.05,0.035,0.025,0.015,0.01,
+453054731,Localization Care,45,English to Slovenian,1033,1060,47,0,,45,1,2,Active A,0.1,,,,,,30,20,,,0.1,0.05,0.035,0.025,0.015,0.01,0
+453054731,Localization Care,208,German to Polish,1031,1045,43,0,,208,1,2,Active A,0.089,,,,,,25,,Per Page,,0.089,0.045,0.031,0.022,0.013,0.009,
+453054731,Localization Care,91,Hungarian to English (US),1038,1033,1,0,,91,1,2,Active A,0.105,,,,0.079,0.026,30,20,Per Page,,0.105,0.053,0.037,0.026,0.016,0.011,0
+453054731,Localization Care,139,Macedonian to English (US),1071,1033,1,0,,139,1,2,Active A,0.14,,,,0.105,0.035,35,20,Per Page,,0.14,0.07,0.049,0.035,0.021,0.014,0
+453054731,Localization Care,74,Polish to English (US),1045,1033,1,0,,74,1,2,Active A,0.1,,,,0.075,0.025,30,20,Per Page,,0.1,0.05,0.035,0.025,0.015,0.01,0
+453054731,Localization Care,89,Romanian to English (US),1048,1033,1,0,,89,1,2,Active A,0.09,,,,,0.032,30,20,Per Page,,0.009,0.045,0.032,0.023,0.014,0.009,0
+453054731,Localization Care,137,Serbian to English (US),2074,1033,1,0,,137,1,2,Active A,0.11,,,,0.083,0.028,30,20,Per Page,,0.11,0.055,0.039,0.028,0.017,0.011,0
+453054731,Localization Care,92,Slovenian to English (US),1051,1033,1,0,,92,1,2,Active A,0.11,,,,0.083,0.028,30,20,Per Page,,0.11,0.055,0.039,0.028,0.017,0.011,0
+453054961,"Martin Mombelly, Cesar",47,English to Spanish (LatAm),1033,58378,78,0,,47,1,2,Active A,0.035,,,,,0.012,9,,,,0.035,0.018,0.012,0.009,0.005,0.004,0
+453054952,Master Translation Services (MTS),10,English to Chinese (Simp),1033,2052,11,0,,10,1,2,Active A,0.06,,,,0.041,0.014,25,25,Hourly,25,0.06,0.03,0.021,0.015,0.009,0.006,0
+453054952,Master Translation Services (MTS),11,English to Chinese (Trad),1033,1028,10,0,,11,1,2,Active A,0.07,,,,0.053,0.019,25,25,,25,0.07,0.035,0.025,0.018,0.011,0.007,0
+453054952,Master Translation Services (MTS),11,English to Chinese (Trad),1033,1028,10,1730,Oracle - Legal,11,1,2,Active A,0.07,,,,0.053,0.019,25,25,Hourly,25,0.07,0.035,0.025,0.018,0.011,0.007,
+453054952,Master Translation Services (MTS),27,English to Hmong,1033,1129,55,0,,27,1,2,Active A,0.16,,,,0.12,0.04,25,25,Hourly,25,0.16,0.16,0.16,0.16,0.16,0.048,
+453054980,"Mejia, Rodrigo",47,English to Spanish (LatAm),1033,58378,78,0,,47,1,2,Active A,0.04,,,,,0.013,9,,,,0.04,0.02,0.014,0.01,0.006,0.004,0
+453054838,"Mitchel, Stephanie",56,French to English (US),1036,1033,1,0,,56,1,2,Active A,0.13,,,,0.098,0.033,30,,,,0.13,0.065,0.045,0.033,0.02,0.013,0
+453054838,"Mitchel, Stephanie",56,French to English (US),1036,1033,1,1376,"Cisco Systems, Inc. (Legal)",56,1,2,Active A,0.13,,,,0.098,0.033,30,,,,0.13,0.065,0.045,0.033,0.02,0.013,0
+453055220,Monarch Translations,47,English to Spanish (LatAm),1033,58378,78,0,,47,1,2,Active A,0.04,,,,0.03,0.01,10,,Per Page,,0.03,0.02,0.014,0.01,0.006,0.004,0
+453054844,mts.bp,37,English to Portuguese (Braz),1033,1046,37,0,,37,1,2,Active A,0.08,,,,0.06,0.02,25,,Per Page,25,0.08,0.04,0.028,0.02,0.012,0.008,0
+453054844,mts.bp,37,English to Portuguese (Braz),1033,1046,37,1730,Oracle - Legal,37,1,1,Active preferred,0.08,,,,0.06,0.02,25,,Hourly,25,0.08,0.04,0.028,0.02,0.012,0.008,
+453054844,mts.bp,37,English to Portuguese (Braz),1033,1046,37,1066,Cisco Systems,37,1,1,Active preferred,0.08,,,,0.06,0.02,25,,Hourly,25,0.08,0.04,0.028,0.02,0.012,0.008,
+453054730,"Mulson, Katarzyna",74,Polish to English (US),1045,1033,1,0,,74,1,2,Active A,0.08,,,,0.05,0.03,25,25,,,0.08,0.04,0.028,0.02,0.012,0.008,0
+453054653,"Multiservice Gateway, Inc.",37,English to Portuguese (Braz),1033,1046,37,0,,37,1,2,Active A,0.15,,,,0.113,0.045,25,25,,,0.15,0.075,0.053,0.038,0.023,0.015,0
+453054653,"Multiservice Gateway, Inc.",47,English to Spanish (LatAm),1033,58378,78,0,,47,1,1,Active preferred,0.08,0.09,0.04,0.02,0.058,0.04,25,25,Hourly,15,0.08,0.04,0.028,0.02,0.012,0.008,0
+453054653,"Multiservice Gateway, Inc.",47,English to Spanish (LatAm),1033,58378,78,1066,Cisco Systems,47,1,2,Active A,0.08,,,,0.058,0.04,25,25,Per Page,,0.08,0.04,0.028,0.02,0.012,0.008,
+453054653,"Multiservice Gateway, Inc.",106,English to Spanish (Mexico),1033,2058,79,0,,106,1,2,Active A,0.08,,,,0.058,0.04,25,25,Per Page,,0.08,0.04,0.028,0.02,0.012,0.008,
+453054653,"Multiservice Gateway, Inc.",128,Portuguese to English (US),1046,1033,1,0,,128,1,2,Active A,0.17,,,,,,,,Per Page,,,,,,,,
+453054653,"Multiservice Gateway, Inc.",63,Spanish to English (US),1034,1033,1,0,,63,1,2,Active A,0.13,,,,0.085,0.045,25,25,Hourly,15,0.13,0.065,0.046,0.033,0.02,0.013,0
+453055246,"Munch, David",23,English to German,1033,1031,5,0,,23,3,2,Active A,,,,,,,25,,Hourly,,,,,,,,
+453054978,"Nolasco, Hector",47,English to Spanish (LatAm),1033,58378,78,0,,47,1,2,Active A,0.04,,,,,0.013,9,,,,0.04,0.02,0.014,0.01,0.006,0.004,0
+453055118,NordicTrans,14,English to Danish,1033,1030,36,1730,Oracle - Legal,14,1,2,Active A,0.15,,,,0.113,0.038,30,30,,,0.15,0.075,0.053,0.038,0.023,0.015,0
+453055118,NordicTrans,15,English to Dutch (Netherlands),1033,1043,6,1730,Oracle - Legal,15,1,2,Active A,0.13,,,,0.098,0.033,30,30,,,0.13,0.065,0.046,0.033,0.02,0.013,0
+453055118,NordicTrans,20,English to Finnish,1033,1035,40,1730,Oracle - Legal,20,1,2,Active A,0.15,,,,0.113,0.038,30,30,,,0.15,0.075,0.053,0.038,0.023,0.015,0
+453055118,NordicTrans,157,English to Flemish,1033,2067,41,0,,157,1,2,Active A,0.15,,,,0.113,0.038,30,30,Per Page,,0.15,0.075,0.053,0.038,0.023,0.015,
+453055118,NordicTrans,35,English to Norwegian (Bokmål),1033,1044,39,1730,Oracle - Legal,35,1,2,Active A,0.15,,,,0.113,0.038,30,30,,,0.15,0.075,0.053,0.038,0.023,0.015,0
+453055118,NordicTrans,49,English to Swedish,1033,1053,38,1730,Oracle - Legal,49,1,2,Active A,0.15,,,,0.113,0.038,30,30,,,0.15,0.075,0.053,0.038,0.023,0.015,0
+3884,NuCleo Group,41,English to Russian,1033,1049,15,0,,41,1,1,Active preferred,0.06,0.06,0.03,0.015,,0.03,15,15,Hourly,15,0.06,0.03,0.03,0.03,0.015,0.01,
+3884,NuCleo Group,41,English to Russian,1033,1049,15,1730,Oracle - Legal,41,1,1,Active preferred,0.06,,,,,0.03,15,15,Hourly,15,0.06,0.03,0.03,0.03,0.015,0.01,
+3884,NuCleo Group,54,English to Ukrainian,1033,1058,83,1730,Oracle - Legal,54,1,2,Active A,0.06,,,,,0.03,15,15,Hourly,15,0.06,0.03,0.03,0.03,0.015,0.01,
+3884,NuCleo Group,54,English to Ukrainian,1033,1058,83,0,,54,1,1,Active preferred,0.06,0.06,0.03,0.015,,0.03,15,15,Hourly,15,0.06,0.03,0.03,0.03,0.015,0.01,
+3884,NuCleo Group,248,French to Russian,1036,1049,15,0,,248,1,2,Active A,0.06,0.06,0.03,0.015,,0.03,15,15,Hourly,15,0.06,0.03,0.03,0.03,0.015,0.01,
+3884,NuCleo Group,116,German to Russian,1031,1049,15,0,,116,1,2,Active A,0.06,0.06,0.03,0.015,0.03,0.03,15,15,Hourly,15,0.06,0.03,0.03,0.03,0.015,0.01,
+3884,NuCleo Group,68,Russian to English (US),1049,1033,1,0,,68,1,2,Active A,0.08,0.08,0.04,0.02,0.04,0.04,15,15,Hourly,15,0.08,0.04,0.04,0.04,0.02,0.01,
+453054713,Ocean Translations - WIRE,47,English to Spanish (LatAm),1033,58378,78,0,,47,1,2,Active A,0.08,,,,,0.03,20,20,Hourly,20,0.08,0.04,0.028,0.02,0.012,0.008,0
+453054713,Ocean Translations - WIRE,47,English to Spanish (LatAm),1033,58378,78,93,Microsoft Corp,47,1,2,Active A,0.07,,,,,0.03,20,0,Hourly,20,0.07,0.035,0.025,0.018,0.011,0.007,0
+453054713,Ocean Translations - WIRE,47,English to Spanish (LatAm),1033,58378,78,1066,Cisco Systems,47,1,2,Active A,0.07,,,,,0.03,20,0,Hourly,20,0.07,0.035,0.025,0.018,0.011,0.007,0
+453054713,Ocean Translations - WIRE,47,English to Spanish (LatAm),1033,58378,78,1376,"Cisco Systems, Inc. (Legal)",47,1,2,Active A,0.07,,,,,0.03,20,0,,,0.07,0.035,0.025,0.018,0.011,0.009,0
+453054713,Ocean Translations - WIRE,47,English to Spanish (LatAm),1033,58378,78,1730,Oracle - Legal,47,1,2,Active A,0.07,,,,,0.03,20,0,Hourly,20,0.07,0.035,0.025,0.018,0.011,0.009,
+453054713,Ocean Translations - WIRE,63,Spanish to English (US),1034,1033,1,0,,63,1,2,Active A,0.11,,,,,0.03,25,25,Hourly,20,0.11,0.055,0.045,0.035,0.025,0.011,0
+453055284,Omniverbal,290,Spanish (LatAm) to English (US),58378,1033,1,0,,290,2,2,Active A,0.09,,,,0.06,0.04,25,25,Per Page,,0.068,0.045,0.032,0.023,0.014,0.009,
+453055284,Omniverbal,290,Spanish (LatAm) to English (US),58378,1033,1,1906,Oracle Non-Legal,290,2,2,Active A,0.12,,,,0.08,0.05,30,30,Per Page,,0.09,0.06,0.042,0.03,0.018,0.012,
+453055244,"OneDocument, S.L.",23,English to German,1033,1031,5,0,,23,1,2,Active A,0.11,,,,0.073,0.0378,25,,Hourly,20,0.11,0.055,0.039,0.028,0.017,0.011,
+453055244,"OneDocument, S.L.",131,English to Icelandic,1033,1039,64,0,,131,1,2,Active A,0.02,,,,0.133,0.067,35,,Hourly,20,0.02,0.1,0.07,0.05,0.03,0.02,
+453055244,"OneDocument, S.L.",311,English to Luxembourgish,1033,1134,168,0,,311,1,2,Active A,0.15,,,,0.1,0.05,30,,Hourly,20,0.15,0.075,0.053,0.038,0.023,0.015,
+453055244,"OneDocument, S.L.",48,English to Spanish (Spain),1033,1034,7,0,,48,1,2,Active A,0.09,,,,0.06,0.03,25,,Hourly,20,0.09,0.045,0.032,0.023,0.014,0.009,
+453054928,Orient Translation Services,53,English to Turkish,1033,1055,30,0,,53,1,1,Active preferred,0.08,,,,0.06,0.02,20,20,,,0.08,0.04,0.028,0.02,0.012,0.008,0
+453054928,Orient Translation Services,53,English to Turkish,1033,1055,30,1730,Oracle - Legal,53,1,2,Active A,0.08,,,,0.06,0.02,20,20,Per Page,,0.08,0.04,0.028,0.02,0.012,0.008,
+453054819,"Pals, Liming",2,Chinese to English (US),1028,1033,1,1376,"Cisco Systems, Inc. (Legal)",2,1,2,Active A,0.1,,,,0.07,0.03,25,,,,0.1,0.05,0.035,0.025,0.015,0.01,0
+453054819,"Pals, Liming",2,Chinese to English (US),1028,1033,1,0,,2,1,2,Active A,0.1,,,,0.07,0.03,25,,,,0.1,0.05,0.035,0.025,0.015,0.01,0
+453054888,Paramount Culture Communication,10,English to Chinese (Simp),1033,2052,11,0,,10,1,2,Active A,0.06,,,,0.05,0.02,20,0,,,0.06,0.03,0.021,0.015,0.009,0.006,0
+453054888,Paramount Culture Communication,11,English to Chinese (Trad),1033,1028,10,0,,11,1,2,Active A,0.06,,,,0.05,0.02,20,0,,,0.06,0.03,0.021,0.015,0.009,0.006,0
+453054767,"Perez, Gema",48,English to Spanish (Spain),1033,1034,7,0,,48,1,2,Active A,0.09,,,,0.06,0.04,25,0,,0,0.09,0.045,0.032,0.023,0.014,0.009,0
+453054767,"Perez, Gema",48,English to Spanish (Spain),1033,1034,7,1376,"Cisco Systems, Inc. (Legal)",48,1,2,Active A,0.09,,,,0.06,0.04,25,0,,0,0.09,0.045,0.032,0.023,0.014,0.009,0
+453054866,"Placke, Saskia",3,Dutch to English (US),1043,1033,1,1376,"Cisco Systems, Inc. (Legal)",3,1,2,Active A,0.15,,,,0.12,0.03,35,0,Per Page,,0.15,0.075,0.053,0.038,0.023,0.015,0
+453054866,"Placke, Saskia",3,Dutch to English (US),1043,1033,1,0,,3,1,2,Active A,0.15,,,,0.12,0.03,35,0,Per Page,,0.15,0.075,0.053,0.038,0.023,0.015,0
+453054866,"Placke, Saskia",15,English to Dutch (Netherlands),1033,1043,6,0,,15,1,2,Active A,0.15,,,,0.12,0.03,35,0,Per Page,,0.15,0.075,0.053,0.038,0.023,0.015,0
+453054866,"Placke, Saskia",15,English to Dutch (Netherlands),1033,1043,6,1376,"Cisco Systems, Inc. (Legal)",15,1,2,Active A,0.15,,,,0.12,0.03,35,0,Per Page,,0.15,0.075,0.053,0.038,0.023,0.015,0
+453054866,"Placke, Saskia",15,English to Dutch (Netherlands),1033,1043,6,1730,Oracle - Legal,15,1,2,Active A,0.15,,,,0.12,0.03,35,0,Per Page,,0.15,0.075,0.053,0.038,0.023,0.015,
+453055243,"Provencher, Monique",21,English to French (Canada),1033,3084,12,0,,21,1,2,Active A,0.06,,,,,0.03,15,15,Per Page,,0.045,0.03,0.021,0.015,0.009,0.006,0
+453055243,"Provencher, Monique",56,French to English (US),1036,1033,1,0,,56,1,2,Active A,0.06,,,,,0.03,15,15,Per Page,,0.045,0.03,0.021,0.015,0.009,0.006,
+3991,Qwertyworks Touchbase,50,English to Tagalog,1033,1124,54,0,,50,1,2,Active A,0.08,0.06,0.036,0.018,,0.03,22,20,,,0.08,0.04,0.028,0.02,0.012,0.008,0
+453054715,Rheinschrift Übersetzungen,23,English to German,1033,1031,5,0,,23,1,1,Active preferred,0.14,,,,,0.05,35,35,,,0.14,0.07,0.049,0.035,0.021,0.014,0
+453054715,Rheinschrift Übersetzungen,23,English to German,1033,1031,5,1376,"Cisco Systems, Inc. (Legal)",23,1,2,Active A,0.14,,,,0.11,0.03,35,0,,,0.14,0.07,0.049,0.035,0.021,0.014,0
+453054715,Rheinschrift Übersetzungen,23,English to German,1033,1031,5,1730,Oracle - Legal,23,1,2,Active A,0.14,,,,0.11,0.03,35,0,Per Page,,0.14,0.07,0.049,0.035,0.021,0.014,
+453054715,Rheinschrift Übersetzungen,23,English to German,1033,1031,5,1066,Cisco Systems,23,1,1,Active preferred,0.14,,,,,0.05,35,35,Per Page,,0.14,0.07,0.049,0.035,0.021,0.014,
+453054715,Rheinschrift Übersetzungen,18,German to English (US),1031,1033,1,0,,18,1,2,Active A,0.15,,,,0.12,0.03,35,35,,,0.15,0.07,0.07,0.07,0,0,0
+453054715,Rheinschrift Übersetzungen,18,German to English (US),1031,1033,1,29,ZF Friedrichshafen,18,1,2,Active A,0.15,,,,0.12,0.03,35,35,,,0.15,0.07,0.07,0.07,0,0,0
+453054715,Rheinschrift Übersetzungen,58,German to French (Europe),1031,1036,3,0,,58,1,2,Active A,0.16,,,,,,35,35,Hourly,,0.16,0.08,0.056,0.04,0.024,0.016,
+453054881,"Richards, Helene Olsen",35,English to Norwegian (Bokmål),1033,1044,39,0,,35,1,2,Active A,0.16,,,,0.14,0.02,25,,,,0.16,0.08,0.056,0.04,0.024,0.016,0
+3946,Rose Leilani,50,English to Tagalog,1033,1124,54,0,,50,1,1,Active preferred,0.07,0.07,0.05,0.03,0.05,0.03,,15,Hourly,,0.07,0.05,0.05,0.05,0.03,0.03,
+453055221,"Rossa, Marina",30,English to Italian,1033,1040,4,0,,30,1,2,Active A,0.055,,,,0.055,0.025,23,,Per Page,,0.041,0.028,0.019,0.014,0.008,0.006,0
+453054979,"Rugo, Denise",47,English to Spanish (LatAm),1033,58378,78,0,,47,1,2,Active A,0.04,,,,,0.013,,9,,,0.04,0.02,0.014,0.01,0.006,0.004,0
+1990,"Ruppaner-Lind, Frieda",23,English to German,1033,1031,5,0,,23,1,3,Active B,,,,,0.13,,,40,,,,,,,,,
+453054756,"Senturk, Yusuf Z.",53,English to Turkish,1033,1055,30,1376,"Cisco Systems, Inc. (Legal)",53,1,2,Active A,,,,,,,45,,,,,,,,,,
+453055190,"Shamebo, Daniel",52,English to Tongan,1033,1075,81,1265,California Family Health Council,52,1,2,Active A,0.38,,,,0,,95,,,,0,,0,0,0,,0
+453054929,"Soares, Sara",38,English to Portuguese (Port),1033,2070,50,0,,38,1,2,Active A,0.08,,,,0.08,0.03,30,30,,,0.08,0.04,0.28,0.02,0.012,0.008,0
+453054706,Surrey Translation Bureau,270,English to English (Australia),1033,3081,146,0,,270,1,2,Active A,,,,,,0.04,,40,,,,,,,,,
+453054706,Surrey Translation Bureau,76,English to English (UK),1033,2057,2,0,,76,1,2,Active A,,,,,,0.03,,40,,,,,,,,,
+453054849,Swesteng Languages OÜ,132,English to Estonian,1033,1061,62,0,,132,1,2,Active A,0.14,,,,0.1,0.04,25,,,,0.14,0.07,0.049,0.035,0.021,0.014,0
+453054849,Swesteng Languages OÜ,132,English to Estonian,1033,1061,62,1376,"Cisco Systems, Inc. (Legal)",132,1,2,Active A,0.14,,,,0.1,0.04,25,,,,0.14,0.07,0.049,0.035,0.021,0.014,0
+453054849,Swesteng Languages OÜ,132,English to Estonian,1033,1061,62,1730,Oracle - Legal,132,1,1,Active preferred,0.14,,,,0.1,0.04,25,,Per Page,,0.14,0.07,0.049,0.035,0.021,0.014,
+453054849,Swesteng Languages OÜ,129,English to Latvian,1033,1062,68,0,,129,1,2,Active A,0.14,,,,0.1,0.04,25,,Per Page,,0.14,0.07,0.049,0.035,0.021,0.014,
+453054849,Swesteng Languages OÜ,129,English to Latvian,1033,1062,68,1730,Oracle - Legal,129,1,2,Active A,0.14,,,,0.1,0.04,25,,Per Page,,0.14,0.07,0.049,0.035,0.021,0.014,
+453054849,Swesteng Languages OÜ,130,English to Lithuanian,1033,1063,69,1730,Oracle - Legal,130,1,2,Active A,0.14,,,,0.1,0.04,25,,Per Page,,0.14,0.07,0.049,0.035,0.021,0.014,
+453054849,Swesteng Languages OÜ,130,English to Lithuanian,1033,1063,69,0,,130,1,2,Active A,0.14,,,,0.1,0.04,25,,Per Page,,0.14,0.07,0.049,0.035,0.021,0.014,
+453055116,Targem Translations,6,English to Armenian,1033,1067,21,0,,6,1,3,Active B,0.24,,,,0.18,0.06,60,60,Per Page,,0.24,0.24,0.24,0.24,0.24,0.24,0
+453055116,Targem Translations,95,English to Bengali,1033,1093,60,0,,95,1,3,Active B,0.23,,,,0.173,0.058,60,60,Per Page,,0.23,0.115,0.081,0.058,0.035,0.023,0
+453055116,Targem Translations,22,English to French (Europe),1033,1036,3,0,,22,1,2,Active A,0.14,,,,0.1,0.06,30,30,Per Page,,0.14,0.07,0.05,0.04,0.02,0.01,
+453055116,Targem Translations,23,English to German,1033,1031,5,0,,23,1,2,Active A,0.14,,,,0.1,0.06,30,30,Per Page,,0.14,0.07,0.05,0.04,0.02,0.01,0
+453055116,Targem Translations,25,English to Hebrew,1033,1037,24,0,,25,1,2,Active A,0.12,,,,0.11,0.03,30,30,Per Page,,0.12,0.06,0.042,0.03,0.018,0.012,
+453055116,Targem Translations,25,English to Hebrew,1033,1037,24,1730,Oracle - Legal,25,1,2,Active A,0.12,,,,0.11,0.03,30,30,,,0.12,0.06,0.042,0.03,0.018,0.012,0
+453055116,Targem Translations,30,English to Italian,1033,1040,4,0,,30,1,2,Active A,0.11,,,,0.08,0.05,30,30,Per Page,,0.11,0.06,0.04,0.03,0.02,0.01,0
+453055116,Targem Translations,31,English to Japanese,1033,1041,8,0,,31,1,2,Active A,0.165,,,,0.124,0.041,30,30,,,0.165,0.083,0.058,0.041,0.025,0.017,0
+453055116,Targem Translations,31,English to Japanese,1033,1041,8,1720,BI Worldwide,31,1,2,Active A,0.165,,,,0.124,0.041,30,30,Per Page,,0.165,0.083,0.058,0.041,0.025,0.017,0
+453055116,Targem Translations,9,English to Khmer (Cambodian),1033,1107,14,0,,9,1,3,Active B,0.23,,,,0.173,0.058,60,60,Per Page,,0.23,0.115,0.081,0.058,0.035,0.023,0
+453055116,Targem Translations,37,English to Portuguese (Braz),1033,1046,37,0,,37,1,2,Active A,0.13,,,,0.098,0.033,30,30,,,0.13,0.065,0.046,0.033,0.02,0.013,0
+453055116,Targem Translations,37,English to Portuguese (Braz),1033,1046,37,1720,BI Worldwide,37,1,2,Active A,0.13,,,,0.098,0.033,30,30,Per Page,,0.13,0.065,0.046,0.033,0.02,0.013,
+453055116,Targem Translations,38,English to Portuguese (Port),1033,2070,50,1720,BI Worldwide,38,1,2,Active A,0.13,,,,0.098,0.033,30,30,Per Page,,0.13,0.065,0.046,0.033,0.02,0.013,0
+453055116,Targem Translations,48,English to Spanish (Spain),1033,1034,7,0,,48,1,2,Active A,0.11,,,,0.08,0.05,30,30,Per Page,,0.11,0.06,0.04,0.03,0.02,0.01,
+453054712,Technical Translations,24,English to Greek,1033,1032,23,0,,24,1,2,Active A,0.08,,,,0.06,0.02,30,30,,,0.08,0.04,0.028,0.02,0.012,0.008,0
+453054712,Technical Translations,24,English to Greek,1033,1032,23,93,Microsoft Corp,24,1,2,Active A,0.08,,,,0.06,0.02,20,0,,,0.08,0.04,0.028,0.02,0.012,0.008,0
+453054712,Technical Translations,24,English to Greek,1033,1032,23,1066,Cisco Systems,24,1,2,Active A,0.08,,,,0.06,0.02,20,0,,,0.08,0.04,0.028,0.02,0.012,0.008,0
+453054712,Technical Translations,268,German to Greek,1031,1032,23,0,,268,1,2,Active A,0.08,,,,0.06,0.02,30,30,,,0.08,0.04,0.028,0.02,0.012,0.008,0
+453054712,Technical Translations,209,Greek to English (US),1032,1033,1,0,,209,1,2,Active A,0.08,,,,0.06,0.02,30,30,,,0.08,0.04,0.028,0.02,0.012,0.008,0
+453054712,Technical Translations,269,Greek to German,1032,1031,5,0,,269,1,2,Active A,0.08,,,,0.06,0.02,30,30,,,0.08,0.04,0.028,0.02,0.012,0.008,0
+3988,Telehea Translation,52,English to Tongan,1033,1075,81,0,,52,1,1,Active preferred,0.23,,,,0.15,0.07,,25,,,,,,,,,
+1100,Terralingua Traducoes S/C Ltda.,37,English to Portuguese (Braz),1033,1046,37,0,,37,1,2,Active A,0.1,0.08,0.05,,,0.03,30,30,Hourly,30,0.1,0.05,0.025,0.025,0.015,0.01,0
+3990,"Tipi-Faitua, Breda",43,English to Samoan,1033,8251,57,0,,43,1,1,Active preferred,0.2,,,,0.15,0.05,,25,,,,,,,,,
+453054679,TIPS,38,English to Portuguese (Port),1033,2070,50,1730,Oracle - Legal,38,1,1,Active preferred,0.094,,,,0.065,0.035,25,0,Per Page,,0.0994,0.047,0.033,0.024,0.014,0.0094,0
+453054679,TIPS,38,English to Portuguese (Port),1033,2070,50,0,,38,1,2,Active A,0.11,0.11,0.055,,0.08,0.04,30,25,Hourly,,0.11,0.055,0.055,0.055,0.03,0.03,0
+453054679,TIPS,38,English to Portuguese (Port),1033,2070,50,93,Microsoft Corp,38,1,2,Active A,0.09,,,,0.065,0.035,25,0,,,0.09,0.045,0.032,0.023,0.014,0.009,0
+453054679,TIPS,38,English to Portuguese (Port),1033,2070,50,1066,Cisco Systems,38,1,2,Active A,0.09,,,,0.065,0.035,25,0,,,0.09,0.045,0.032,0.023,0.014,0.009,0
+453054679,TIPS,38,English to Portuguese (Port),1033,2070,50,1376,"Cisco Systems, Inc. (Legal)",38,1,2,Active A,0.094,,,,0.065,0.035,25,0,,,0.094,0.047,0.033,0.024,0.014,0.0094,0
+453054679,TIPS,218,German to Portuguese (Port),1031,2070,50,0,,218,1,2,Active A,0.135,0.135,0.065,,0.12,0.05,30,25,Hourly,,0.135,0.065,0.065,0.065,0.04,0.04,0
+453055271,Traduservice,47,English to Spanish (LatAm),1033,58378,78,0,,47,1,2,Active A,0.08,,,,0.053,0.027,30,30,Per Page,,0.08,0.04,0.028,0.02,0.012,0.08,0
+453055271,Traduservice,290,Spanish (LatAm) to English (US),58378,1033,1,0,,290,1,2,Active A,0.1,,,,0.067,0.033,30,30,Per Page,,0.1,0.05,0.035,0.025,0.015,0.01,
+453054674,Tranda Globalization,10,English to Chinese (Simp),1033,2052,11,0,,10,1,3,Active B,0.08,0.08,0.04,,0.05,0.03,12,12,Hourly,12,0.08,0.04,0.04,0.04,,,
+453054674,Tranda Globalization,11,English to Chinese (Trad),1033,1028,10,0,,11,1,3,Active B,0.08,0.08,0.04,,0.05,0.03,12,12,Hourly,12,0.08,0.04,0.04,0.04,,,
+453054674,Tranda Globalization,29,English to Indonesian,1033,1057,26,0,,29,1,2,Active A,0.11,0.11,0.055,,0.08,0.03,12,12,Hourly,12,0.11,0.055,0.055,0.055,,,
+453054674,Tranda Globalization,31,English to Japanese,1033,1041,8,0,,31,1,2,Active A,0.13,0.13,0.065,,0.1,0.03,12,12,Hourly,12,0.13,0.065,0.065,0.065,,,
+453054674,Tranda Globalization,32,English to Korean,1033,1042,9,0,,32,1,2,Active A,0.1,0.1,0.05,,0.07,0.03,12,12,Hourly,12,0.1,0.05,0.05,0.05,,,
+453054674,Tranda Globalization,34,English to Malay,1033,1086,71,0,,34,1,2,Active A,0.11,0.11,0.055,,0.08,0.03,12,12,Hourly,12,0.11,0.055,0.055,0.055,,,
+453054674,Tranda Globalization,51,English to Thai,1033,1054,42,0,,51,1,2,Active A,0.11,0.11,0.055,,0.08,0.03,12,12,Hourly,12,0.11,0.055,0.055,0.055,,,
+453054674,Tranda Globalization,55,English to Vietnamese,1033,1066,17,0,,55,1,3,Active B,0.1,0.1,0.05,,0.07,0.03,12,12,Hourly,12,0.1,0.05,0.05,0.05,,,
+453054674,Tranda Globalization,112,German to Chinese (Simplified),1031,2052,11,0,,112,1,2,Active A,0.08,0.08,0.04,,0.05,0.03,12,12,Hourly,12,0.08,0.04,0.04,0.04,,,
+453054674,Tranda Globalization,113,German to Chinese (Traditional),1031,1028,10,0,,113,1,2,Active A,0.08,0.08,0.04,,0.05,0.03,12,12,Hourly,12,0.08,0.04,0.04,0.04,,,
+453054674,Tranda Globalization,227,German to Indonesian,1031,1057,26,0,,227,1,2,Active A,0.11,0.11,0.055,,0.05,0.03,12,12,Hourly,12,0.11,0.055,0.055,0.055,,,
+453054674,Tranda Globalization,224,German to Japanese,1031,1041,8,0,,224,1,2,Active A,0.13,0.13,0.065,,0.1,0.03,12,12,Hourly,12,0.13,0.065,0.065,0.065,,,
+453054674,Tranda Globalization,223,German to Korean,1031,1042,9,0,,223,1,2,Active A,0.1,0.1,0.05,,0.07,0.03,12,12,Hourly,12,0.1,0.05,0.05,0.05,,,
+453054674,Tranda Globalization,225,German to Malay,1031,1086,71,0,,225,1,2,Active A,0.11,0.11,0.055,,0.05,0.03,12,12,Hourly,12,0.11,0.055,0.055,0.055,,,
+453054674,Tranda Globalization,226,German to Thai,1031,1054,42,0,,226,1,2,Active A,0.11,0.11,0.055,,0.05,0.03,12,12,Hourly,12,0.11,0.055,0.055,0.055,,,
+453054674,Tranda Globalization,228,German to Vietnamese,1031,1066,17,0,,228,1,2,Active A,0.1,0.1,0.05,,0.07,0.03,12,12,Hourly,12,0.1,0.05,0.05,0.05,,,
+1786,"Translation Source, Ltd.",21,English to French (Canada),1033,3084,12,0,,21,2,3,Active B,0.14,0.14,0.07,0.04,,0.03,50,50,Hourly,40,0.14,0.07,0.07,0.07,0.04,0.04,
+1786,"Translation Source, Ltd.",22,English to French (Europe),1033,1036,3,0,,22,2,3,Active B,0.14,0.14,0.07,0.04,,,50,50,Hourly,40,0.14,0.07,0.07,0.07,0.04,0.04,
+1786,"Translation Source, Ltd.",30,English to Italian,1033,1040,4,0,,30,2,3,Active B,0.13,0.13,0.08,0.04,,0.03,50,50,Hourly,40,0.13,0.08,0.08,0.08,0.04,0.04,
+1786,"Translation Source, Ltd.",37,English to Portuguese (Braz),1033,1046,37,0,,37,2,3,Active B,0.14,0.14,0.07,0.04,,,50,50,Hourly,40,0.14,0.07,0.07,0.07,0.04,0.04,
+1786,"Translation Source, Ltd.",38,English to Portuguese (Port),1033,2070,50,0,,38,2,3,Active B,0.14,0.14,0.07,0.04,,,50,50,Hourly,40,0.14,0.07,0.07,0.07,0.04,0.04,
+1786,"Translation Source, Ltd.",47,English to Spanish (LatAm),1033,58378,78,0,,47,1,3,Active B,0.08,0.08,0.04,0.02,0.06,0.02,50,40,Hourly,40,0.08,0.04,0.04,0.04,0.02,0.02,
+1786,"Translation Source, Ltd.",48,English to Spanish (Spain),1033,1034,7,0,,48,2,3,Active B,0.13,0.13,0.08,0.04,,0.03,50,50,Hourly,40,0.13,0.08,0.08,0.08,0.04,0.04,
+1786,"Translation Source, Ltd.",63,Spanish to English (US),1034,1033,1,0,,63,2,3,Active B,0.14,,,,0.12,,50,50,,,,,,,,,
+453054666,Translingua,132,English to Estonian,1033,1061,62,1730,Oracle - Legal,132,1,2,Active A,0.11,,,,0.09,0.02,20,0,Per Page,,0.11,0.055,0.04,0.022,0.017,0.011,
+453054666,Translingua,132,English to Estonian,1033,1061,62,0,,132,1,2,Active A,0.11,0.11,0.06,0.04,0.08,0.03,20,25,,,0.11,0.055,0.04,0.022,0.017,0.011,0
+453054666,Translingua,132,English to Estonian,1033,1061,62,93,Microsoft Corp,132,1,2,Active A,0.11,,,,0.09,0.02,20,0,,,0.11,0.055,0.04,0.022,0.017,0.011,0
+453054666,Translingua,132,English to Estonian,1033,1061,62,1066,Cisco Systems,132,1,2,Active A,0.11,,,,0.09,0.02,20,0,,,0.11,0.055,0.04,0.022,0.017,0.011,0
+453054666,Translingua,129,English to Latvian,1033,1062,68,1730,Oracle - Legal,129,1,2,Active A,0.11,,,,0.09,0.02,20,0,Per Page,,0.11,0.055,0.04,0.022,0.017,0.011,
+453054666,Translingua,129,English to Latvian,1033,1062,68,0,,129,1,2,Active A,0.11,0.11,0.06,0.04,0.08,0.03,20,25,,,0.11,0.055,0.04,0.022,0.017,0.011,0
+453054666,Translingua,129,English to Latvian,1033,1062,68,93,Microsoft Corp,129,1,2,Active A,0.11,,,,0.09,0.02,20,0,,,0.11,0.055,0.04,0.022,0.017,0.011,0
+453054666,Translingua,129,English to Latvian,1033,1062,68,1066,Cisco Systems,129,1,2,Active A,0.11,,,,0.09,0.02,20,0,,,0.11,0.055,0.04,0.022,0.017,0.011,0
+453054666,Translingua,130,English to Lithuanian,1033,1063,69,0,,130,1,2,Active A,0.11,0.11,0.03,0.04,0.08,0.03,20,25,,,0.11,0.055,0.04,0.022,0.017,0.011,0
+453054666,Translingua,130,English to Lithuanian,1033,1063,69,93,Microsoft Corp,130,1,2,Active A,0.11,,,,0.09,0.02,20,0,,,0.11,0.055,0.04,0.022,0.017,0.011,0
+453054666,Translingua,130,English to Lithuanian,1033,1063,69,1066,Cisco Systems,130,1,2,Active A,0.11,,,,0.09,0.02,20,0,,,0.11,0.055,0.04,0.022,0.017,0.011,0
+453054805,"Triantaphyllou, Costas",24,English to Greek,1033,1032,23,1376,"Cisco Systems, Inc. (Legal)",24,1,2,Active A,0.08,,,,0.06,0.03,25,,,,0.08,0.04,0.028,0.02,0.012,0.008,0
+453054805,"Triantaphyllou, Costas",24,English to Greek,1033,1032,23,1730,Oracle - Legal,24,1,1,Active preferred,0.08,,,,0.06,0.03,25,,Per Page,,0.08,0.04,0.028,0.02,0.012,0.008,
+453054805,"Triantaphyllou, Costas",24,English to Greek,1033,1032,23,0,,24,1,2,Active A,0.08,,,,0.06,0.03,25,,,,0.08,0.04,0.028,0.02,0.012,0.008,0
+453055248,UBIK srl,30,English to Italian,1033,1040,4,0,,30,1,2,Active A,0.11,,,,0.073,0.037,30,,Per Page,,0.11,0.055,0.039,0.028,0.017,0.011,
+453054719,Urban Translation Services,195,English to Catalan,1033,1027,123,1546,Hewlett-Packard Company,195,1,2,Active A,0.1,,,,0.075,0.025,25,0,Per Page,,0.075,0.05,0.035,0.025,0.015,0.01,
+453054719,Urban Translation Services,48,English to Spanish (Spain),1033,1034,7,1546,Hewlett-Packard Company,48,1,2,Active A,0.1,,,,0.075,0.025,25,0,Per Page,,0.075,0.05,0.035,0.025,0.015,0.01,
+453054719,Urban Translation Services,53,English to Turkish,1033,1055,30,1730,Oracle - Legal,53,1,1,Active preferred,0.08,,,,0.06,0.02,25,0,Hourly,25,0.08,0.04,0.028,0.02,0.012,0.008,0
+453054719,Urban Translation Services,53,English to Turkish,1033,1055,30,0,,53,1,2,Active A,0.08,,,,0.06,0.02,25,0,Hourly,25,0.08,0.04,0.028,0.02,0.012,0.008,0
+453054719,Urban Translation Services,53,English to Turkish,1033,1055,30,93,Microsoft Corp,53,1,2,Active A,0.08,,,,0.06,0.02,25,0,Hourly,25,0.08,0.04,0.028,0.02,0.012,0.008,0
+453054719,Urban Translation Services,53,English to Turkish,1033,1055,30,1066,Cisco Systems,53,1,2,Active A,0.08,,,,0.06,0.02,25,0,Hourly,25,0.08,0.04,0.028,0.02,0.012,0.008,0
+453054719,Urban Translation Services,53,English to Turkish,1033,1055,30,1376,"Cisco Systems, Inc. (Legal)",53,1,2,Active A,0.08,,,,0.06,0.02,25,0,Per Page,,0.08,0.04,0.028,0.02,0.012,0.008,0
+453054719,Urban Translation Services,53,English to Turkish,1033,1055,30,1546,Hewlett-Packard Company,53,1,2,Active A,0.08,,,,0.06,0.02,25,0,Per Page,,0.06,0.04,0.028,0.02,0.012,0.008,
+453055206,Vanenberg Translations,14,English to Danish,1033,1030,36,0,,14,1,2,Active A,0.15,,,,0.113,0.038,,,,,,0.075,0.053,0.038,0.023,0.015,0
+453055206,Vanenberg Translations,20,English to Finnish,1033,1035,40,0,,20,1,2,Active A,0.15,,,,0.113,0.038,,,,,,0.075,0.053,0.038,0.023,0.015,0
+453055206,Vanenberg Translations,35,English to Norwegian (Bokmål),1033,1044,39,0,,35,1,2,Active A,0.15,,,,0.113,0.038,,,,,,0.075,0.053,0.038,0.023,0.015,0
+453055206,Vanenberg Translations,45,English to Slovenian,1033,1060,47,0,,45,1,2,Active A,0.12,,,,0.09,0.03,,,,,,0.06,0.042,0.03,0.018,0.012,0
+453054985,viaLanguage - Panama,37,English to Portuguese (Braz),1033,1046,37,0,,37,1,1,Active preferred,,,,,,,,,Per Page,,,,,,,,
+453054985,viaLanguage - Panama,47,English to Spanish (LatAm),1033,58378,78,0,,47,1,1,Active preferred,0.04,,,,0.04,0.03,13.2,,,,0.04,0.02,0.014,0.01,0.006,0.004,0
+453054982,"Villalobos, Gustavo",47,English to Spanish (LatAm),1033,58378,78,0,,47,1,2,Active A,0.03,,,,,0.01,9,,,,0.03,0.015,0.011,0.008,0.005,0.003,0
+4008,Vinatranet,87,English to Burmese/Myanmar,1033,1109,61,0,,87,1,1,Active preferred,0.12,0.12,,,0.09,0.03,25,25,Hourly,25,0.12,,,,,,
+4008,Vinatranet,27,English to Hmong,1033,1129,55,0,,27,1,2,Active A,0.16,0.16,,,0.12,0.04,30,30,Hourly,25,0.16,,,,,,
+4008,Vinatranet,29,English to Indonesian,1033,1057,26,0,,29,1,2,Active A,0.11,0.11,,,0.08,0.03,25,25,Hourly,25,0.11,0.055,0.039,0.028,0.017,0.011,0
+4008,Vinatranet,29,English to Indonesian,1033,1057,26,1730,Oracle - Legal,29,1,1,Active preferred,0.11,,,,0.08,0.03,25,25,Hourly,25,0.11,0.055,0.039,0.028,0.017,0.011,
+4008,Vinatranet,162,"English to Karen, S’gaw",1033,1110,95,0,,162,1,2,Active A,0.16,0.16,,,0.12,0.04,30,30,Hourly,30,0.16,,,,,,
+4008,Vinatranet,9,English to Khmer (Cambodian),1033,1107,14,0,,9,1,2,Active A,0.12,0.12,,,0.09,0.03,25,25,Hourly,25,0.12,,,,,,
+4008,Vinatranet,33,English to Lao,1033,1108,67,0,,33,1,2,Active A,0.12,0.12,,,0.09,0.03,25,25,Hourly,25,0.12,,,,,,
+4008,Vinatranet,34,English to Malay,1033,1086,71,0,,34,1,2,Active A,0.12,0.12,,,0.09,0.03,25,25,Hourly,25,0.12,0.07,0.05,0.035,0.02,0.02,0
+4008,Vinatranet,97,English to Mongolian,1033,1104,31,0,,97,1,2,Active A,0.12,0.12,,,0.09,0.03,25,25,Hourly,25,0.12,,,,,,
+4008,Vinatranet,51,English to Thai,1033,1054,42,0,,51,1,2,Active A,0.1,0.11,,,0.08,0.03,25,25,Hourly,25,0.1,0.05,0.035,0.025,0.015,0.01,0
+4008,Vinatranet,55,English to Vietnamese,1033,1066,17,0,,55,1,2,Active A,0.1,0.1,,,0.08,0.03,25,25,Hourly,20,0.1,0.05,0.035,0.025,0.015,0.01,0
+4008,Vinatranet,188,Vietnamese to English (US),1066,1033,1,0,,188,1,2,Active A,0.1,0.1,,,0.08,0.03,20,25,Hourly,20,0.1,0.05,0.035,0.025,0.015,0.01,0
+453055239,"Vindras, Fabien",22,English to French (Europe),1033,1036,3,0,,22,1,2,Active A,0.06,,,,0.06,0.03,20,,Per Page,,0.045,0.03,0.021,0.015,0.009,0.006,0
+453055042,"Voloshin, Abram",41,English to Russian,1033,1049,15,0,,41,1,2,Active A,0.12,,,,0.09,0.03,30,30,,,0.12,0.06,0.042,0.03,0.018,0.012,0
+453054669,Webdunia Inc.,243,English to Assamese,1033,1101,135,0,,243,1,2,Active A,0.09,0.09,,,0.06,0.03,12,20,Hourly,10,0.09,0.045,0.032,0.023,0.014,0.009,0
+453054669,Webdunia Inc.,95,English to Bengali,1033,1093,60,0,,95,1,2,Active A,0.09,0.09,,,0.06,0.03,12,20,Hourly,10,0.09,0.045,0.032,0.023,0.014,0.009,0
+453054669,Webdunia Inc.,94,English to Gujarati,1033,1095,63,0,,94,1,2,Active A,0.09,0.09,,,0.06,0.03,12,20,Hourly,10,0.09,0.045,0.032,0.023,0.014,0.009,0
+453054669,Webdunia Inc.,26,English to Hindi,1033,1081,25,0,,26,1,2,Active A,0.09,0.09,,,0.06,0.03,12,20,Hourly,10,0.09,0.045,0.032,0.023,0.014,0.009,0
+453054669,Webdunia Inc.,206,English to Kannada,1033,1099,127,0,,206,1,2,Active A,0.09,0.09,,,0.06,0.03,12,20,Hourly,10,0.09,0.045,0.032,0.023,0.014,0.009,0
+453054669,Webdunia Inc.,247,English to Kashmiri,1033,2144,139,0,,247,1,2,Active A,0.11,0.11,,,0.08,0.03,13,20,Hourly,10,0.11,0.055,0.039,0.028,0.017,0.011,0
+453054669,Webdunia Inc.,246,English to Konkani,1033,1111,138,0,,246,1,2,Active A,0.09,0.09,,,0.06,0.03,12,20,Hourly,10,0.09,0.045,0.032,0.023,0.014,0.009,0
+453054669,Webdunia Inc.,121,English to Malayalam,1033,1100,72,0,,121,1,2,Active A,0.09,0.09,,,0.06,0.03,12,20,Hourly,10,0.09,0.045,0.032,0.023,0.014,0.009,0
+453054669,Webdunia Inc.,103,English to Marathi,1033,1102,73,0,,103,1,2,Active A,0.09,0.09,,,0.06,0.03,12,20,Hourly,10,0.09,0.045,0.032,0.023,0.014,0.009,0
+453054669,Webdunia Inc.,240,English to Nepali,1033,1121,133,0,,240,1,2,Active A,0.11,0.11,,,0.08,0.03,13,20,Hourly,10,0.11,0.055,0.039,0.028,0.017,0.011,0
+453054669,Webdunia Inc.,242,English to Oriya,1033,1096,134,0,,242,1,2,Active A,0.09,0.09,,,0.06,0.03,12,20,Hourly,10,0.09,0.045,0.032,0.023,0.014,0.009,0
+453054669,Webdunia Inc.,39,English to Punjabi,1033,1094,76,0,,39,1,2,Active A,0.09,0.09,,,0.06,0.03,12,20,Hourly,10,0.09,0.045,0.032,0.023,0.014,0.009,0
+453054669,Webdunia Inc.,83,English to Sinhala (Sinhalese),1033,1115,28,0,,83,1,2,Active A,0.1,,,,,,30,20,Hourly,10,0.1,0.05,0.035,0.025,0.015,0.01,
+453054669,Webdunia Inc.,244,English to Tamil,1033,1097,136,0,,244,1,2,Active A,0.09,0.09,,,0.06,0.03,12,20,Hourly,10,0.09,0.045,0.032,0.023,0.014,0.009,0
+453054669,Webdunia Inc.,245,English to Telugu,1033,1098,137,0,,245,1,2,Active A,0.09,0.09,,,0.06,0.03,12,20,Hourly,10,0.09,0.045,0.032,0.023,0.014,0.009,0
+453054669,Webdunia Inc.,93,English to Urdu,1033,1056,84,0,,93,1,2,Active A,0.09,0.09,,,0.06,0.03,12,20,Hourly,10,0.09,0.045,0.032,0.023,0.014,0.009,0
+453054669,Webdunia Inc.,314,Urdu to English (US),1056,1033,1,0,,314,1,2,Active A,0.1,,,,,,,20,Per Page,,,,,,,,
+453055216,"Weinstock, Justin",85,Indonesian to English (US),1057,1033,1,0,,85,1,2,Active A,0.102,,,,0.068,0.034,20,0,Hourly,0,0.077,0.051,0.036,0.026,0.015,0.01,0
+453054908,Win and Winnow Communications,21,English to French (Canada),1033,3084,12,0,,21,1,2,Active A,0.15,,,,0.123,0.1,45,45,,,0.15,0.075,0.053,0.038,0.023,0.015,0
+453054908,Win and Winnow Communications,63,Spanish to English (US),1034,1033,1,0,,63,1,2,Active A,0.11,,,,0.09,0.05,30,30,,,0.11,0.055,0.039,0.028,0.017,0.011,0
+453055213,"Wong, Johnson",2,Chinese to English (US),1028,1033,1,0,,2,1,2,Active A,0.064,,,,,0.032,20,,Per Page,,0.048,0.032,0.022,0.016,0.01,0.006,0
+3212,Wordbusters Translations,14,English to Danish,1033,1030,36,0,,14,1,2,Active A,0.15,0.15,0.075,0.0375,,0.06,50,35,,,0.15,0.075,0.075,0.075,0.0375,0.0375,
+3212,Wordbusters Translations,14,English to Danish,1033,1030,36,93,Microsoft Corp,14,1,2,Active A,0.15,,,,0.12,0.03,35,0,,,0.15,0.075,0.053,0.038,0.023,0.015,0
+3212,Wordbusters Translations,14,English to Danish,1033,1030,36,1066,Cisco Systems,14,1,2,Active A,0.15,,,,0.12,0.03,35,0,,,0.15,0.075,0.053,0.038,0.023,0.015,0
+3212,Wordbusters Translations,14,English to Danish,1033,1030,36,1730,Oracle - Legal,14,1,2,Active A,0.15,,,,0.12,0.03,35,0,Per Page,,0.15,0.075,0.053,0.038,0.023,0.015,
+3212,Wordbusters Translations,20,English to Finnish,1033,1035,40,1730,Oracle - Legal,20,1,2,Active A,0.15,,,,0.12,0.03,35,0,Per Page,,0.15,0.075,0.053,0.038,0.023,0.015,
+3212,Wordbusters Translations,20,English to Finnish,1033,1035,40,0,,20,1,1,Active preferred,0.14,0.14,0.07,0.035,,0.05,50,35,Hourly,50,0.14,0.07,0.07,0.07,0.035,0.035,
+3212,Wordbusters Translations,20,English to Finnish,1033,1035,40,93,Microsoft Corp,20,1,2,Active A,0.15,,,,0.12,0.03,35,0,,,0.15,0.075,0.053,0.038,0.023,0.015,0
+3212,Wordbusters Translations,20,English to Finnish,1033,1035,40,1066,Cisco Systems,20,1,2,Active A,0.15,,,,0.12,0.03,35,0,,,0.15,0.075,0.053,0.038,0.023,0.015,0
+3212,Wordbusters Translations,35,English to Norwegian (Bokmål),1033,1044,39,1730,Oracle - Legal,35,1,2,Active A,0.15,,,,0.12,0.03,35,0,Per Page,,0.15,0.075,0.053,0.038,0.023,0.015,
+3212,Wordbusters Translations,35,English to Norwegian (Bokmål),1033,1044,39,0,,35,1,2,Active A,0.15,0.15,0.075,0.0375,,0.06,50,35,,,0.15,0.075,0.075,0.075,0.0375,0.0375,
+3212,Wordbusters Translations,35,English to Norwegian (Bokmål),1033,1044,39,93,Microsoft Corp,35,1,2,Active A,0.15,,,,0.12,0.03,35,0,,,0.15,0.075,0.053,0.038,0.023,0.015,0
+3212,Wordbusters Translations,35,English to Norwegian (Bokmål),1033,1044,39,1066,Cisco Systems,35,1,2,Active A,0.15,,,,0.12,0.03,35,0,,,0.15,0.075,0.053,0.038,0.023,0.015,0
+3212,Wordbusters Translations,211,English to Norwegian (Nynorsk),1033,2068,129,0,,211,1,2,Active A,0.15,,,,,0.06,50,35,Hourly,,0.15,0.75,0.75,0.75,0.0375,0.0375,
+3212,Wordbusters Translations,49,English to Swedish,1033,1053,38,0,,49,1,2,Active A,0.14,0.14,0.07,0.035,,0.05,50,35,Hourly,50,0.14,0.07,0.07,0.07,0.035,0.035,
+3212,Wordbusters Translations,49,English to Swedish,1033,1053,38,93,Microsoft Corp,49,1,2,Active A,0.15,,,,0.12,0.03,35,0,,,0.15,0.075,0.053,0.038,0.023,0.015,0
+3212,Wordbusters Translations,49,English to Swedish,1033,1053,38,1066,Cisco Systems,49,1,2,Active A,0.15,,,,0.12,0.03,35,0,,,0.15,0.075,0.053,0.038,0.023,0.015,0
+453055290,"Zhou, Joe",2,Chinese to English (US),1028,1033,1,0,,2,2,2,Active A,0.09,,,,,0.03,25,0,Per Page,,,,,,,,

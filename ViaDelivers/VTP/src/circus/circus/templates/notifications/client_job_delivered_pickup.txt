@@ -1,0 +1,17 @@
+{% load humanize %}{% load currency_filter %}A delivered job has been picked up by a customer. Details of the picked-up job are as follows:
+
+•	User ID: {{ project.client_poc.get_full_name|safe }} ({{ project.client_poc.email }})
+
+•	Job Number : {{ project.job_number }}
+
+•	Source Language : {{ project.source_locale }}
+•	Target Language : {{ tla.task.service.target }}
+
+•	Document Name: {{ tla.name|safe }}
+•	Pick-up Date: {{ tla.downloaded|date:"r" }}
+
+For more information, please visit {{ vtp_url }}.
+
+________________________________________
+
+{% include 'notifications/_email_footer.txt' %}

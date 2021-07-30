@@ -1,0 +1,26 @@
+{% load bootstrap %}
+{% load i18n %}
+{% load humanize %}
+
+<div id="set-permission-(( group.id ))" class="permission-access-form">
+    <p><h3>{% trans "Set the permissions for" %} "(( group.name ))"</h3></p>
+<table class="table table-responsive">
+    <thead>
+    <tr>
+        <th>{% trans "Permissions" %}</th>
+        <th>{% trans "Access" %}</th>
+        <th>{% trans "Content Type" %}</th>
+    </tr>
+    </thead>
+    <tbody>
+        <tr ng-repeat="permission in permissions">
+            <td>(( permission.perm_name ))</td>
+            <td>
+            <input class="user_permissions group_toggle" type="checkbox" value="((group.id))" data-permission="(( permission.perm_id ))" data-group="group_permissions"
+                   ng-checked="permission.status" {% if not request.user.is_client_organization_administrator  %} disabled {% endif %}>
+            </td>
+            <td ng-repeat="content_type in permission.perm_content_type">(( content_type.replace("Dwh_", "") ))</td>
+        </tr>
+    </tbody>
+</table>
+</div>

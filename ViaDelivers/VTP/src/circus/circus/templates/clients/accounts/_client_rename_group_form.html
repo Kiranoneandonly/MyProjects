@@ -1,0 +1,15 @@
+{% load bootstrap %}
+{% load i18n %}
+{% load humanize %}
+<div id="rename-group-(( group.id ))" class="delivery-form">
+    <form action="/client/groups/((group.id))/rename/edit" method="post" class="form-horizontal">
+        {% csrf_token %}
+        <p><h3>{% trans "Rename the Group" %} "(( group.name ))"</h3></p>
+        <table class="table table-responsive">
+            <tr>
+                <td><input type="text" name="rename_group" value="((group.name))" /></td>
+                <td><input type="submit" value="Rename"/></td>
+            </tr>
+        </table>
+    </form>
+</div>

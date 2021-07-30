@@ -1,0 +1,61 @@
+{% extends "shared/external/theme_base.html" %}
+{% load i18n %}
+{% load bootstrap %}
+
+{% block title %}{% blocktrans with client_type=client.client_type|capfirst %}My {{ client_type }}{% endblocktrans %}{% endblock %}
+
+{% block css %}{% endblock %}
+
+{% block content_breadcrumb %}
+    <ul class="breadcrumb">
+        <li><i class="fa fa-home"></i> <a href="/">{% trans "Home" %}</a> <span class="divider"><i class="fa fa-chevron-right"></i></span></li>
+        <li class="active">
+            {% blocktrans with client_type=client.client_type|capfirst %}
+                My {{ client_type }}
+            {% endblocktrans %}
+        </li>
+    </ul>
+{% endblock %}
+
+{% block content_header %}
+    <div class="row-fluid">
+        <div class="span6"><h1 class="manage-users-header">
+            {% blocktrans with client_type=client.client_type|capfirst %}
+                My {{ client_type }}
+            {% endblocktrans %}
+        </h1></div>
+    </div>
+{% endblock %}
+
+
+{% block content %}
+    <div class="row">
+        {% include "clients/accounts/_manager_menu.html" with current='organization' %}
+        <div class="span8">
+            <div class="row-fluid">
+                <div class="span12">
+                    <h2 class="dashHead no-margin" >
+                        <i class="fa fa-user"></i>
+                        {% trans client.client_type|capfirst %}
+                    </h2>
+                    <div class="dashWidget">
+                        <form novalidate class="form-horizontal" method="post" target="">
+                            {% csrf_token %}
+                            <fieldset>
+                                {{ form|bootstrap }}
+                            </fieldset>
+                            <div class="control-group">
+                                <div class="controls">
+                                    <button type="submit" class="btn btn-primary">{% blocktrans %}Update{% endblocktrans %}</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block script %}
+{% endblock %}

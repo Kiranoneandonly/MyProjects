@@ -1,0 +1,40 @@
+{% load i18n %}
+
+<h2 class="dashHead"><i class="fa fa-book"></i> {% trans "Get Started" %}</h2>
+<div class="dashWidget getStartedWidget noPadding">
+    <div class="row-fluid">
+        <div class="row-fluid">
+        <h3>{% trans "Upload and Go! Get Instant Estimate..." %}</h3>
+        </div>
+        <div class="row-fluid">
+            <div class="span8">
+            {% trans "See how easy it is to have global Translation, Estimating, and Project management at your fingertips!" %}
+            <a href="http://www.viadelivers.com/what-we-do/technology/translation-portal/user-guide" target="_blank">{% trans "Watch a quick overview video now." %}<i class="fa fa-share"></i></a>
+            </div>
+            {% if secure_hierarchy %}
+                {% if user.can_access_client_job_order %}
+                    <div class="span2 pull-right">
+                    <a class="btn btn-primary pull-right start_job_button" href="{% url 'client_new_project_start' %}" TITLE="{% trans "Start Estimate" %}"><i class="fa fa-plus-circle fa-white"></i> {% trans "Start" %}</a>
+                    </div>
+                    {%  if is_phi_secure_client %}
+                    <div class="span2 pull-right">
+                        <a class="btn btn-danger pull-right start_job_button" href="{% url 'client_new_phi_project_start' %}" TITLE="{% trans "Start PHI Estimate" %}"><i class="fa fa-user-md"></i> {% trans "Start PHI" %}</a>
+                    </div>
+                    {% endif %}
+                {% endif %}
+            {% else %}
+                <div class="span2 pull-right">
+                    <a class="btn btn-primary pull-right start_job_button" href="{% url 'client_new_project_start' %}" TITLE="{% trans "Start Estimate" %}"><i class="fa fa-plus-circle fa-white"></i> {% trans "Start" %}</a>
+                </div>
+            {% endif %}
+        </div>
+        <div class="row-fluid">
+            <hr class="soften"/>
+        </div>
+        <div class="row-fluid">
+            <h3><i class="fa fa-handshake-o" title="{% trans "Give 10. Get 10." %}"></i> {% blocktrans %}Give 10. Get 10.{% endblocktrans %}</h3> {% blocktrans %}Know someone who would benefit from using the VIA Translation Platform?{% endblocktrans %}
+            {% blocktrans %}<a href="http://www2.viadelivers.com/l/17482/2017-03-08/7yy7vs" target="_blank">Let us know</a> and we will give you each a <em>10% discount</em> on your next translation project.{% endblocktrans %}
+        </p>
+        </div>
+    </div>
+</div>

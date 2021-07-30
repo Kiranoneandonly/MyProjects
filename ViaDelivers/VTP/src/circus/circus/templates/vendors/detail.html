@@ -1,0 +1,205 @@
+{% extends "vendors/theme_base.html" %}
+{% load i18n %}
+{% load humanize %}
+{% load currency_filter %}
+
+{% block content_header %}
+{% endblock %}
+
+{% block css %}
+    <link rel="stylesheet" href="{{ STATIC_URL }}vendors/css/upload-form.css" type="text/css" media="all"/>
+    <link rel="stylesheet" href="{{ STATIC_URL }}vendors/css/detail.css" type="text/css" media="all"/>
+{% endblock %}
+
+{% block content_breadcrumb %}
+    <div class="breadcrumb">
+        <span><i class="fa fa-home"></i></span>
+        <span><a href="{% url 'vendor_dashboard' %}">{% trans "Home" %}</a></span>
+        <span class="divider"><i class="fa fa-chevron-right"></i></span>
+        <span class="active">{% trans "Job"  %} {{ task.project.job_number }}</span>
+        {{ block.super }}
+    </div>
+{% endblock %}
+
+{% block content %}
+{% if task.project.is_phi_secure_job %}
+       {% include 'shared/components/phi_secure_client_job_notification.html' %}
+{% endif %}
+<div class="job-detail-container">
+
+    <div class="tabbable"> <!-- Only required for left/right tabs -->
+      <ul class="nav nav-tabs">
+        <li{% if active_tab == 'details' %} class="active"{% endif %}><a href="#tabWork" data-toggle="tab"><i class="fa fa-cog"></i> {% trans "Work" %}</a></li>
+        {% if task.project.has_workflow_sub_tasks and task.is_translation_task_parent %}
+            <li{% if active_tab == 'sub_tasks' %} class="active"{% endif %}><a href="#tabSubtasks" data-toggle="tab"><i class="fa fa-tasks"></i> {% blocktrans %}Tasks{% endblocktrans %}</a></li>
+        {% endif %}
+        <li{% if active_tab == 'information' %} class="active"{% endif %}><a href="#tabInformation" data-toggle="tab"><i class="fa fa-flask"></i> {% trans "Information" %}</a></li>
+        <li{% if active_tab == 'job_messages' %} class="active"{% endif %}><a href="#tabMessenger" data-toggle="tab"><i class="fa fa-comments-o"></i> {% blocktrans %}Messages{% endblocktrans %}</a></li>
+      </ul>
+
+      <div class="tab-content">
+        <div class="tab-pane{% if active_tab == 'details' %} active{% endif %}" id="tabWork">
+            {% include "vendors/detail_work.html" %}
+        </div>
+        <div class="tab-pane{% if active_tab == 'information' %} active{% endif %}" id="tabInformation">
+            {% include "vendors/detail_information.html" %}
+        </div>
+        <div class="tab-pane{% if active_tab == 'job_messages' %} active{% endif %}" id="tabMessenger">
+            {% include "vendors/vendor_project_comments.html" %}
+        </div>
+        {% if task.project.has_workflow_sub_tasks and task.is_translation_task_parent %}
+            <div class="tab-pane{% if active_tab == 'sub_tasks' %} active{% endif %}" id="tabSubtasks">
+                {% include "vendors/sub_tasks_details.html" %}
+            </div>
+        {% endif %}
+      </div>
+    </div>
+
+</div>
+{% endblock %}
+
+{% block script %}
+    <script src="{{ STATIC_URL }}shared/js/jquery.lightbox_me.js"></script>
+    <script src="{{ STATIC_URL }}shared/js/disable_after_click.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}shared/js/data-confirm.js"></script>
+    <script>
+        $('.out-upload-btn').click(function(e) {
+            var task_id = $(this).attr('id').split('-').pop();
+            $('#delivery-upload-' + task_id).lightbox_me({
+                centered: true,
+                onLoad: function() {
+                    //
+                }
+            });
+            e.preventDefault();
+        });
+
+        $('.input-upload-btn').click(function(e) {
+            var task_id = $(this).attr('id').split('-').pop();
+            $('#delivery-upload-input-' + task_id).lightbox_me({
+                centered: true,
+                onLoad: function() {
+                    //
+                }
+            });
+            e.preventDefault();
+        });
+
+        $('.download_file_check').click(function () {
+
+                var filename = $(this).text();
+                if (filename.indexOf('.') >= 0) {
+                    return true;
+                } else {
+                    alert("{% blocktrans %}Invalid File previously uploaded{% endblocktrans %}");
+                    return false;
+
+                }
+
+        });
+
+        $('.sup-upload-btn').click(function(e) {
+            var task_id = $(this).attr('id').split('-').pop();
+            $('#delivery-support-upload-' + task_id).lightbox_me({
+                centered: true,
+                onLoad: function() {
+                    //
+                }
+            });
+            e.preventDefault();
+        });
+        //To check whether the uploaded delivery kit have the correct analysis code in its name.
+        $('button#delivery_kit').click(function() {
+            var analysis_code = $('input#analysis_code').val();
+            var del_kit = '';
+            $('input[name="file"]').each(function(index){
+            	if($(this).val()){
+            	del_kit = $(this).val();
+            	}
+            });
+            var delivery_kit = del_kit.replace("C:\\fakepath\\", "");
+            if (del_kit == "") {
+                alert("Please select a file name.")
+                return false
+            }
+            if($(this).parents('.trans-upload-form').length) {
+                if (delivery_kit.indexOf(analysis_code) != -1) {
+                    return true
+                } else {
+                    var conf = confirm("{% blocktrans %}The uploaded file name contains wrong analysis code. Are you sure to continue and upload anyway?{% endblocktrans %}");
+                    if (conf) return true;
+                    else return false;
+                }
+            }else{
+                return true;
+            }
+            return false
+        });
+        $('button#delivery_support_kit').click(function() {
+            var analysis_code = $('input#analysis_code').val();
+            var del_kit = '';
+            $('input[name="file"]').each(function(index){
+            	if($(this).val()){
+            	del_kit = $(this).val();
+            	}
+            });
+            var delivery_kit = del_kit.replace("C:\\fakepath\\", "");
+            if (del_kit == "") {
+                alert("Please select a file name.")
+                return false
+            }
+        });
+
+
+        $(document).ready(function () {
+            $('#comment_submit').click(function(){
+                if(!$('#id_comment').val()) {
+                    alert("{% blocktrans %}Please enter message{% endblocktrans %}");
+                    return false;
+                }
+            });
+
+            $("input[name='comment_reply_vendor']").click(function(){
+                $('#id_comment').val('@' + $(this).attr('data') + ', ');
+                $('#id_comment').focus();
+            });
+
+            $('.mark-as-read-btn').click(function () {
+                var url = '{{ request.path }}';
+                var that = $(this);
+                $.ajax({
+                    type: 'POST',
+                    url: "#",
+                    data: {
+                        "comment_id": that.attr('data-comment-id'),
+                        "csrfmiddlewaretoken": $('form input[name="csrfmiddlewaretoken"]').val()
+                    }
+                }).success(function (data) {
+                    that.hide()
+                });
+            });
+
+            $('.mark-all-as-read-btn').click(function () {
+                var url = '{{ request.path }}';
+                var that = $(this);
+                $.ajax({
+                    type: 'POST',
+                    url: "#",
+                    data: {
+                        "request_user_id": that.attr('data-comment-id'),
+                        "comment_project_id": that.attr('data-project-id'),
+                        "csrfmiddlewaretoken": $('form input[name="csrfmiddlewaretoken"]').val()
+                    }
+                }).success(function (data) {
+                    that.hide();
+                    $('.mark-as-read-btn').hide();
+                    $('#comments-notification-bell').removeClass().addClass('btn btn-inverse');
+                });
+            });
+
+        });
+
+    </script>
+
+
+{% endblock %}

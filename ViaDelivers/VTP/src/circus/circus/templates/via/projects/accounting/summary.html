@@ -1,0 +1,192 @@
+{% extends "via/projects/detail/base.html" %}
+{% load i18n %}
+{% load bootstrap %}
+
+{% block content %}
+<div id="accounting-summary">
+<form novalidate action="{% url 'via_job_accounting_summary' project.id as url %}" method="POST" class="form-horizontal">
+    {% csrf_token %}
+<div class="row-fluid">
+    {% include "via/projects/accounting/_base.html" %}
+    <div class="span4">
+        <h2>Original</h2>
+        {{ form.ca_invoice_number|bootstrap }}
+        <div class="control-group">
+            <label class="control-label" for="id_original_price">{{ form.original_price.label_tag }}</label>
+            <div class="controls">
+                <div class="input-append">
+                    <span class="add-on">$</span>
+                    <input id="id_original_price" name="original_price" type="text"
+                        value="{{ form.original_price.value|floatformat:"2" }}"
+                        {% if invoices_or_orders_exist %}disabled{% endif %} />
+                </div>
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="id_original_invoice_count">{{ form.original_invoice_count.label_tag }}</label>
+            <div class="controls">
+                <input id="id_original_invoice_count" name="original_invoice_count" type="text"
+                    value="{{ form.original_invoice_count.value }}"
+                    {% if invoices_or_orders_exist %}disabled{% endif %} />
+            </div>
+        </div>
+        {{ form.revenue_recognition_month|bootstrap }}
+    </div>
+    <!-- Total Change Orders -->
+    <div class="span4">
+        <h2>Billing</h2>
+        <div class="control-group">
+            <label class="control-label" for="job-overview-total-change-orders">Total Change Orders:</label>
+            <div class="controls">
+                <div class="input-prepend">
+                    <span class="add-on">$</span>
+                    <input type="text" id="job-overview-total-change-orders" value="{{ sum_change_orders|floatformat:"2" }}" disabled />
+                </div>
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="job-overview-sum-invoices-sent">Billed:</label>
+            <div class="controls">
+                <div class="input-prepend">
+                    <span class="add-on">$</span>
+                    <input type="text" id="job-overview-sum-invoices-sent" disabled value="{{ sum_via_invoices_sent|floatformat:"2" }}" />
+                </div>
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="job-overview-yet-to-bill">Yet to Bill:</label>
+            <div class="controls">
+                <div class="input-prepend">
+                    <span class="add-on">$</span>
+                    <input type="text" id="job-overview-yet-to-bill" disabled value="{{ sum_via_invoices_yet_to_send|floatformat:"2" }}"/>
+                </div>
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="job-overview-invoice-order-discrepancy">Invoice/Order Discrepancy:</label>
+            <div class="controls">
+                <div class="input-prepend">
+                    <span class="add-on">$</span>
+                    <input type="text" id="job-overview-invoice-order-discrepancy" disabled value="{{ invoice_order_discrepancy|floatformat:"2" }}"/>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row-fluid">
+    <div class="span4 offset1">
+        <hr />
+        <h2>Profit</h2>
+        <div class="control-group">
+            <label class="control-label" for="job-overview-total-amount">Total Amount:</label>
+            <div class="controls">
+                <div class="input-prepend">
+                    <span class="add-on">$</span>
+                    <input type="text" id="job-overview-total-amount" disabled value="{{ sum_via_invoices_all|floatformat:"2" }}"/>
+                </div>
+            </div>
+        </div>
+
+        <div class="control-group">
+            <label class="control-label" for="job-overview-total-spend">Total Spend:</label>
+            <div class="controls">
+                <div class="input-prepend">
+                    <span class="add-on">$</span>
+                    <input type="text" id="job-overview-total-spend" disabled value="{{ total_spend|floatformat:"2" }}"/>
+                </div>
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="job-overview-actual-gm">Actual GM:</label>
+            <div class="controls">
+                <div class="input-prepend">
+                    <span class="add-on">$</span>
+                    <input type="text" id="job-overview-actual-gm" disabled value="{{ actual_gm|floatformat:"2" }}"/>
+                </div>
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="job-overview-total-estimated-gm">Estimated GM:</label>
+            <div class="controls">
+                <div class="input-prepend">
+                    <span class="add-on">$</span>
+                    <input type="text" id="job-overview-total-estimated-gm" disabled value="{{ estimated_gm|floatformat:"2" }}"/>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="span4">
+        <hr />
+
+        <h2>Cash</h2>
+        <div class="control-group">
+            <label class="control-label" for="job-overview-invoice-count">Total Invoice Count:</label>
+            <div class="controls">
+                <div class="input-prepend">
+                    <input type="text" id="job-overview-invoice-count" value="{{ project.via_invoices.count }}" disabled />
+                </div>
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="job-overview-invoices-paid">Invoices Paid:</label>
+            <div class="controls">
+                <div class="input-prepend">
+                    <input type="text" id="job-overview-invoices-paid" value="{{ project.paid_via_invoices.count }}"  disabled />
+                </div>
+            </div>
+        </div>
+        <div class="control-group span8" style="margin-top:10px;">
+            <div class="well" style="padding-bottom:24px;">
+                <input type="submit" class="btn btn-primary pull-right"
+                {% if invoices_or_orders_exist  %}value="{% blocktrans %}Save{% endblocktrans %}"
+                {% else %}value="{% blocktrans %}Generate Invoices{% endblocktrans %}"
+                {% endif %}/>
+            </div>
+        </div>
+    </div>
+</div>
+</form>
+
+
+
+<div class="row-fluid">
+    <hr />
+    <div class="span10 offset1">
+        <!-- Invoicing Notes -->
+        <div class="job-overview-invoicing-notes">
+            <h3>{% blocktrans %}Invoicing Notes:{% endblocktrans %}</h3>
+            <ul>
+                {% for note in project.invoicing_notes %}
+    {#                                    <li>#}
+    {#                                        12 JAN 2013 - Sent Inv #432123c - Becky Q.#}
+    {#                                        <a href="#" class="pull-right">...</a>#}
+    {#                                    </li>#}
+                {% endfor %}
+            </ul>
+        </div>
+    <!-- Notes -->
+        <div class="job-overview-notes">
+            <h3 class="boxed">{% trans "Notes" %}
+                <a href="#" class="pull-right">{% blocktrans %}add note{% endblocktrans %}</a>
+            </h3>
+            <ul>
+                {% for note in project.nodes %}
+        {#                            <li>#}
+        {#                                12 JAN 2013 - Only okay to invoice complete job - PM Y.#}
+        {#                                <a href="#" class="pull-right">...</a>#}
+        {#                            </li>#}
+                {% empty %}
+                    <li>{% blocktrans %}No Notes{% endblocktrans %}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</div>
+</div>
+<script type="text/javascript">
+  $(function() {
+    $('#id_revenue_recongition_month').datetimepicker({});
+  });
+</script>
+
+{% endblock %}

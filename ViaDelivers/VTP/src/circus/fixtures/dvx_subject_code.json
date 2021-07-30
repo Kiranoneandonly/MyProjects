@@ -1,0 +1,74 @@
+[
+{
+  "model": "clients.teamserversubject",
+  "pk": 1,
+  "fields": {
+    "is_deleted": false,
+    "created": "2014-08-07T18:18:33.125Z",
+    "modified": "2014-08-07T18:18:33.126Z",
+    "code": "corporate",
+    "description": "Corporate",
+    "dvx_subject_code": "1"
+  }
+},
+{
+  "model": "clients.teamserversubject",
+  "pk": 2,
+  "fields": {
+    "is_deleted": false,
+    "created": "2014-08-07T18:18:33.125Z",
+    "modified": "2014-08-07T18:18:33.126Z",
+    "code": "healthcare",
+    "description": "Healthcare",
+    "dvx_subject_code": "2"
+  }
+},
+{
+  "model": "clients.teamserversubject",
+  "pk": 3,
+  "fields": {
+    "is_deleted": false,
+    "created": "2014-08-07T18:18:33.125Z",
+    "modified": "2014-08-07T18:18:33.126Z",
+    "code": "legal",
+    "description": "Legal",
+    "dvx_subject_code": "3"
+  }
+},
+{
+  "model": "clients.teamserversubject",
+  "pk": 4,
+  "fields": {
+    "is_deleted": false,
+    "created": "2014-08-07T18:18:33.125Z",
+    "modified": "2014-08-07T18:18:33.126Z",
+    "code": "education",
+    "description": "K-12 (Education)",
+    "dvx_subject_code": "4"
+  }
+},
+{
+  "model": "clients.teamserversubject",
+  "pk": 5,
+  "fields": {
+    "is_deleted": false,
+    "created": "2014-08-07T18:18:33.125Z",
+    "modified": "2014-08-07T18:18:33.126Z",
+    "code": "healthcare_strategic",
+    "description": "Healthcare Strategic",
+    "dvx_subject_code": "5"
+  }
+},
+{
+  "model": "clients.teamserversubject",
+  "pk": 6,
+  "fields": {
+    "is_deleted": false,
+    "created": "2014-08-07T18:18:33.125Z",
+    "modified": "2014-08-07T18:18:33.126Z",
+    "code": "government",
+    "description": "Government",
+    "dvx_subject_code": "6"
+  }
+}
+]

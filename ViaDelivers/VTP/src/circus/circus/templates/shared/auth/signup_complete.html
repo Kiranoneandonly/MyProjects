@@ -1,0 +1,40 @@
+{% extends "shared/external/theme_base.html" %}
+{% load i18n %}
+{% load bootstrap %}
+
+{% block title %}{% trans "Create Account Complete" %}{% endblock %}
+
+{% block css %}{% endblock %}
+{% block search_menu %}{% endblock %}
+{% block login_menu %}{% endblock %}
+{% block content_breadcrumb %}{% endblock %}
+{% block navbar_menu %}{% endblock %}
+
+{% block content_header %}
+    <div class="row-fluid">
+        <div class="span6 center"><h1 class="signup-header">{% blocktrans %}Go check your inbox!{% endblocktrans %}</h1></div>
+    </div>
+    <hr class="soften"/>
+{% endblock %}
+
+{% block content %}
+    <div class="row-fluid">
+        <div class="span6 center">
+            <h2 class="verify-account">{% trans "Verify Your Account" %}</h2>
+            <p>{% blocktrans %}
+                You have been sent an email with an activation link that will enable your account.  Please check your email.
+                {% endblocktrans %}
+            </p>
+            <p>
+                {% blocktrans %}
+                Please contact <a href="{{ contactus_form }}" target="_blank">VIA</a> if you need further assistance.
+                {% endblocktrans %}
+            </p>
+        </div>
+        <div class="span6 center">
+            <div class="span6 center">
+                <a href="{% url 'login' %}" class="btn btn-large btn-primary btn-block"><i class="fa fa-arrow-circle-left"></i> {% blocktrans %}Return to Sign in{% endblocktrans %}</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}

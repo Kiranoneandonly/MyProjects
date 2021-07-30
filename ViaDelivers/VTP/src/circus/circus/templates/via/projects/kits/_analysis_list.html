@@ -1,0 +1,302 @@
+{% load i18n %}
+{% load bootstrap %}
+{% load currency_filter %}
+{% load get_item %}
+
+{% if not project.can_edit_analysis %}
+    <div class="row-fluid">
+        <div class="span10">
+        {% trans "Current project state doesn't allow editing the analysis." %}
+        </div>
+        <div class="span2 text-right">
+        {% if project.kit.analysis_code %}
+            <small>{% trans "Analysis Code:" %}
+                <code class="analysis_code">{{ project.kit.analysis_code }}</code>
+            </small>
+            <br/>
+        {% endif %}
+        </div>
+    </div>
+{% else %}
+    {% if project_memory_bank_discount_exists %}
+        {% if global_mbd_exists %}
+            <div class="pull-right">
+                <form novalidate action="" method="post">
+                    {% csrf_token %}
+                    <button type="submit" id="reset_global_mbd_standard" value={{ project.id }} name="reset_global_mbd_standard" class="btn small-btn btn-danger" title="{% trans "Reset to Standard MBD %" %}"><i class="fa fa-times"></i> {% trans "Standard MBD %" %}</button>
+                </form>
+            </div>
+        {% endif %}
+        <div class="pull-right">
+            <a id="mbd-global-edit-btn-{{ project.id }}" class="mbd-edit-btn"  href="#" style="font-weight: bold"><i class="fa fa-edit"></i> {% trans "Edit All MBD %" %}</a>&nbsp;
+            {% include "via/projects/kits/assets/analysis/mbd_global_edit.html" %}
+        </div>
+    {% endif %}
+{% endif %}
+
+<div class="row-fluid">
+    <div class="span12">
+        {% if project.kit %}
+            <div class="accordion" id="analysis_accordion">
+            {% if not target_analyses %}
+                <div>
+                    <span>{% blocktrans %}No Target Languages{% endblocktrans %}</span>
+                </div>
+            {% else %}
+            {% for target, analyses in target_analyses.items %}
+                <div class="accordion-group">
+                    <div class="accordion-heading">
+                        <h5>
+                            <a data-parent="#analysis_accordion" data-toggle="collapse" href="#collapse{{ target.id }}" class="accordion-toggle">
+                                <div class="row-fluid">
+                                    <div class="span10">
+                                        <span class="accordion-icon">{% if target_analyses|length == 1 %}-{% else %}+{% endif %}</span>
+                                         {{ project.source_locale }} {% blocktrans %}to{% endblocktrans %} {{ target }}
+                                    </div>
+                                    <div class="span1 text-right">
+                                         {% blocktrans %}Total:{% endblocktrans %} {{ analyses.total_words }}
+                                    </div>
+                                    {% if analyses.memory_bank_discount_exists %}
+                                    <div class="span1 text-right">
+                                         {% blocktrans %}MBD:{% endblocktrans %} {{ analyses.total_memory_bank_discount }}%
+                                    </div>
+                                    {% endif %}
+                                </div>
+                            </a>
+                        </h5>
+                    </div>
+                    <div id="collapse{{ target.id }}"
+                    class="accordion-body collapse {% if target_analyses|length == 1 %}in{%endif%}" >
+                        <div class="accordion-inner">
+                        <table class="table table-bordered table-hover table-responsive">
+                            <thead>
+                            <tr>
+                                <th>{% blocktrans %}File{% endblocktrans %}</th>
+                                <th>{% blocktrans %}Analysis{% endblocktrans %}</th>
+                                <th>{% blocktrans %}Total{% endblocktrans %}</th>
+                                <th>{% blocktrans %}Guaranteed{% endblocktrans %}</th>
+                                <th>{% blocktrans %}Exact{% endblocktrans %}</th>
+                                <th>{% blocktrans %}Duplicate{% endblocktrans %}</th>
+                                <th>{% blocktrans %}95-99{% endblocktrans %}</th>
+                                <th>{% blocktrans %}85-94{% endblocktrans %}</th>
+                                <th>{% blocktrans %}75-84{% endblocktrans %}</th>
+                                <th>{% blocktrans %}50-74{% endblocktrans %}</th>
+                                <th>{% blocktrans %}No Match{% endblocktrans %}</th>
+                                <th>{% blocktrans %}MBD{% endblocktrans %}</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% if not analyses.all|length %}
+                                <tr>
+                                    <td colspan="100%">{% blocktrans %}No Analysis files{% endblocktrans %}</td>
+                                </tr>
+                            {% else %}
+                                {% for analysis in analyses.all %}
+                                    <tr>
+                                        <td>
+                                            {% if analysis.asset.orig_file and analysis.asset.orig_file.url %}
+                                                {% if analysis.asset.file_exists %}
+                                                    <a href="{% url 'download_asset' project.id analysis.asset.id %}">{{analysis.asset.orig_name }} <i class="fa fa-download"></i></a>
+                                                {% else %}
+                                                    {{ analysis.asset.orig_name }}
+                                                {% endif %}
+                                            {% else %}
+                                                {{ analysis.asset.orig_name }}
+                                                <a data-toggle="popover" class="file_help">
+                                                    <i class="fa fa-question"></i>
+                                                </a>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if project.can_edit_analysis %}
+                                                <a href="{% url 'kits_asset_analysis_edit' analysis.id %}"><i class="fa fa-edit"></i> {% trans "Edit" %}</a>
+                                            {% else %}
+                                                <a href="{% url 'kits_asset_analysis' analysis.id %}">{% trans "View" %}</a>
+                                            {% endif %}
+                                        </td>
+                                        <td>{{ analysis.total_wordcount }}</td>
+                                        <td>{{ analysis.guaranteed }}</td>
+                                        <td>{{ analysis.exact }}</td>
+                                        <td>{{ analysis.duplicate }}</td>
+                                        <td>{{ analysis.fuzzy9599 }}</td>
+                                        <td>{{ analysis.fuzzy8594 }}</td>
+                                        <td>{{ analysis.fuzzy7584 }}</td>
+                                        <td>{{ analysis.fuzzy5074 }}</td>
+                                        <td>{{ analysis.no_match }}</td>
+                                        <td></td>
+                                    </tr>
+                                {% endfor %}
+                                <tr class="grand-total-row bg-gray">
+                                   <td>{% blocktrans %}Totals:{% endblocktrans %}</td>
+                                   <td></td>
+                                   <td>{{ analyses.total_words }}</td>
+                                   <td>{{ analyses.total_guaranteed }}</td>
+                                   <td>{{ analyses.total_exact }}</td>
+                                   <td>{{ analyses.total_duplicate }}</td>
+                                   <td>{{ analyses.total_fuzzy9599 }}</td>
+                                   <td>{{ analyses.total_fuzzy8594 }}</td>
+                                   <td>{{ analyses.total_fuzzy7584 }}</td>
+                                   <td>{{ analyses.total_fuzzy5074 }}</td>
+                                   <td>{{ analyses.total_no_match }}</td>
+                                   <td>
+                                        {% if analyses.memory_bank_discount_exists %}
+                                            {{ analyses.total_memory_bank_discount }}%
+                                        {% else %}
+                                            {% blocktrans %}n/a{% endblocktrans %}
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% if analyses.memory_bank_discount_exists %}
+                                    <tr class="grand-total-row bg-gray">
+                                        <td>{% blocktrans %}Words %:{% endblocktrans %}</td>
+                                        <td></td>
+                                        <td></td>
+                                        <td>{{ analyses.word_percentage_guaranteed }}%</td>
+                                        <td>{{ analyses.word_percentage_exact }}%</td>
+                                        <td>{{ analyses.word_percentage_duplicate }}%</td>
+                                        <td>{{ analyses.word_percentage_fuzzy9599 }}%</td>
+                                        <td>{{ analyses.word_percentage_fuzzy8594 }}%</td>
+                                        <td>{{ analyses.word_percentage_fuzzy7584 }}%</td>
+                                        <td>{{ analyses.word_percentage_fuzzy5074 }}%</td>
+                                        <td>{{ analyses.word_percentage_no_match }}%</td>
+                                        <td></td>
+                                    </tr>
+                                    <tr class="grand-total-row">
+                                       <td>{% blocktrans %}MBD %:{% endblocktrans %}</td>
+                                       <td>
+                                           {% if project.can_edit_analysis %}
+                                                <a id="mbd-edit-btn-{{ analyses.translation_task_client_price_id }}" class="mbd-edit-btn"  href="#" style="font-weight: normal" ><i class="fa fa-edit"></i> {% trans "Edit" %}</a>
+                                                {% include "via/projects/kits/assets/analysis/mbd_edit.html" %}
+                                           {% endif %}
+                                       </td>
+                                       <td></td>
+                                       <td>{{ analyses.mbd_total_guaranteed|percent }}</td>
+                                       <td>{{ analyses.mbd_total_exact|percent }}</td>
+                                       <td>{{ analyses.mbd_total_duplicate|percent }}</td>
+                                       <td>{{ analyses.mbd_total_fuzzy9599|percent }}</td>
+                                       <td>{{ analyses.mbd_total_fuzzy8594|percent }}</td>
+                                       <td>{{ analyses.mbd_total_fuzzy7584|percent }}</td>
+                                       <td>{{ analyses.mbd_total_fuzzy5074|percent }}</td>
+                                       <td>{{ analyses.mbd_total_no_match|percent }}</td>
+                                       <td></td>
+                                    </tr>
+                                    <tr class="grand-total-row bg-gray">
+                                       <td>{% blocktrans %}Leveraged rate:{% endblocktrans %}</td>
+                                       <td></td>
+                                       <td>{{ analyses.leveraged_rate_total }}%</td>
+                                       <td>{{ analyses.leveraged_rate_guaranteed }}%</td>
+                                       <td>{{ analyses.leveraged_rate_exact }}%</td>
+                                       <td>{{ analyses.leveraged_rate_duplicate }}%</td>
+                                       <td>{{ analyses.leveraged_rate_fuzzy9599 }}%</td>
+                                       <td>{{ analyses.leveraged_rate_fuzzy8594 }}%</td>
+                                       <td>{{ analyses.leveraged_rate_fuzzy7584 }}%</td>
+                                       <td>{{ analyses.leveraged_rate_fuzzy5074 }}%</td>
+                                       <td>{{ analyses.leveraged_rate_no_match }}%</td>
+                                       <td></td>
+                                    </tr>
+                                {% endif %}
+                            {% endif %}
+                            </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+            {%  endif %}
+            </div>
+        {% else %}
+            <p>{% blocktrans %}No localization kit{% endblocktrans %}</p>
+        {% endif %}
+    </div>
+</div>
+
+{% if can_edit_job %}
+<div class="row-fluid">
+{% if project.can_edit_analysis %}
+    <div class="offset1 span5">
+        <div class="importlog">
+            <h5>{% blocktrans %}Import&nbsp;DVX&nbsp;Log{% endblocktrans %}</h5>
+            <form novalidate action="" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="control-group">
+                    <label class="control-label" for="id_analysis_file">{{ form.analysis_file.label_tag }}</label>
+                    <div class="controls">
+                        <input id="id_analysis_file" name="analysis_file" type="file" required />
+                    </div>
+                </div>
+                <button name="analysis_file_import" type="submit" class="btn btn-success">{% trans "Upload" %}</button>
+            </form>
+        </div>
+    </div>
+    <div class="span6">
+        {% if not project.is_phi_secure_job %}
+        {% with project.kit.analyzing as analyzing %}
+        <h5>{% blocktrans %}Re-Analyze{% endblocktrans %}</h5>
+        {% if analyzing %}
+            <p><i class="fa fa-spinner fa-pulse fa-2x fa-fw"></i> {% blocktrans %}Analysis is queued.{% endblocktrans %}</p>
+        {% elif kit_vm.blockers %}
+            <p class="text-error">{% blocktrans %}Cannot perform analysis:{% endblocktrans %}</p>
+            <ul>{% for blocker in kit_vm.blockers %}
+                <li>{{ blocker }}</li>
+            {% endfor %}</ul>
+        {% else %}
+            <p>{% blocktrans %}Current analysis will be removed.{% endblocktrans %}</p>
+        {% endif %}
+        <form novalidate action="{% url 'queue_analysis' project.kit.id %}" method="post">
+            {% csrf_token %}
+            <button type="submit" id="analyze_button"
+                    {% if analyzing or kit_vm.blockers %}disabled{% endif %}
+                    class="btn btn-success disable_after_click"><i class="fa fa-flask"></i> {% trans "Analyze" %}</button>
+        </form>
+        {% if project.kit.analysis_code %}
+            <small>{% trans "Analysis Code:" %}
+                <code class="analysis_code">{{ project.kit.analysis_code }}</code>
+            </small>
+        {% endif %}
+        {% endwith %}
+        {% endif %}
+    </div>
+{% endif %}
+{% endif %}
+</div>
+<br/><br/>
+
+<script>
+$(function () {
+    $('.file_help').popover({
+        html: true,
+        title: "{% blocktrans %}Where Is The File?{% endblocktrans %}",
+        content: '{% blocktrans %}This language analysis is not associated with a specific file uploaded by the client. To find the source file, please go to the Source tab.{% endblocktrans %}'
+    });
+    $('.mbd-edit-btn').click(function(e) {
+        var ttcp_id = $(this).attr('id').split('-').pop();
+        $('#mbd-edit-' + ttcp_id + ', #mbd-global-edit-' + ttcp_id).lightbox_me({
+            centered: true,
+            onLoad: function() {
+                //
+            }
+        });
+        e.preventDefault();
+    });
+});
+$(document).on('click', 'button#analyze_button', function (e) {
+    var conf = confirm('{% blocktrans %}Are you sure?{% endblocktrans %}');
+    if (conf)
+        return true;
+    else{
+        e.preventDefault();
+        $('button#analyze_button').removeClass('disabled');
+        $('button#analyze_button').removeAttr('style');
+        $('i.fa').removeClass('fa-spinner fa-spin');
+        return false;
+    }
+})
+$(document).on('click', 'button#reset_global_mbd_standard', function (e) {
+    var conf = confirm('{% blocktrans %}Are you sure you want to reset to Standard MBD %?{% endblocktrans %}');
+    if (conf)
+        return true;
+    else{
+        return false;
+    }
+})
+</script>

@@ -1,0 +1,20 @@
+{% extends "via/theme_base.html" %}
+{% load i18n %}
+{% load bootstrap %}
+
+{% block content %}
+<div class="offset4 span3">
+<form novalidate action="{% url 'via_job_invoice_delete' project.id invoice.id %}" method="POST">
+    {% csrf_token %}
+    <div class="row-fluid">
+        <h1>Delete Invoice</h1>
+        <p>Are you sure you want to delete Invoice {{ invoice.pk }}?</p>
+    </div>
+    <div class="right form-actions">
+        <a href="{% url 'via_job_accounting_invoice_list' project.id %}" class="btn">Cancel</a>
+        <input type="submit" class="btn btn-primary" value="Delete" />
+    </div>
+    <div class="clearfix"></div>
+</form>
+</div>
+{% endblock %}

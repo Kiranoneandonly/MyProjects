@@ -1,0 +1,71 @@
+{% extends template %}
+{% load i18n %}
+{% load bootstrap %}
+{% load static %}
+
+{% block title %}{% blocktrans %}Reporting Dashboard{% endblocktrans %}{% endblock title %}
+
+{% block page_title %}{% trans "Dashboard" %}{% endblock page_title %}
+
+{% block content %}
+    
+    <div class="row-fluid" style="float: left">
+    <link media="all" href="{% static 'nvd3/src/nv.d3.css' %}" type="text/css" rel="stylesheet" />
+    <link rel="stylesheet" href="{{ STATIC_URL }}shared/css/datetimepicker.css" media="screen"/>
+    <script type="text/javascript" src='{% static 'd3/d3.min.js' %}'></script>
+    <script type="text/javascript" src='{% static 'nvd3/nv.d3.min.js' %}'></script>
+
+    
+
+    {% load nvd3_tags %}
+    {% include_chart_jscss %}
+    {% if date_tag %}
+        {% load_chart charttype chartdata chartcontainer %}
+    {% else %}
+        {% load_chart charttype chartdata chartcontainer %}
+    {% endif %}
+    {% include_container chartcontainer 400 600 %}
+    </div>
+    
+    <div id="date_period_id" style="float: left; padding-top:50px">
+    <form novalidate action="" method="post" class="form-horizontal">
+        {% csrf_token %}
+        
+        <div class="span12">
+            <span>Start Date: </span><div class="input-append date form_datetime">
+                <input name="start_date" type="text" class="span2" value="Select start date" data-date-format="yyyy-mm-dd" id="start_date" /><span class="add-on"><i class="icon-calendar"></i></span>
+            </div>
+            <div>&nbsp;</div>
+            <span>End Date: </span><div class="input-append date form_datetime">
+                <input name="end_date" type="text" class="span2" value="Select end date" data-date-format="yyyy-mm-dd" id="end_date" /><span class="add-on"><i class="icon-calendar"></i></span>
+            </div>
+        </div>
+        <div class="span6">
+            <div class="span12">
+                <button type="submit" class="btn btn-primary report_ajax" >{% blocktrans %}Check the Report{% endblocktrans %}</button>
+            </div>
+        </div>
+      
+    </form>
+    </div>  
+    <script>
+        $(document).ready(function() {
+            $('#content').css('padding', '100px 50px')
+            $("#start_date, #end_date").datetimepicker("setDate", new Date());
+            
+            $("#start_date, #end_date").datetimepicker({format: 'yyyy-mm-dd'});
+            $('#start_date,#end_date').on('changeDate', function() {
+                var start = $('#start_date').datetimepicker('getDate');
+                var end = $('#end_date').datetimepicker('getDate');
+                //alert((start))
+                if (start > end) {
+                    alert("Start date should be lesser than End date!");
+                }
+                $(this).datetimepicker('hide');
+                
+            });
+            
+            
+        }); 
+    </script>
+{% endblock %}

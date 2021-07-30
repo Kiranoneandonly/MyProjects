@@ -1,0 +1,91 @@
+.qq-upload-file {
+    width: auto;
+    padding: 0 20px 0 15px;
+    line-height: 18px;
+    text-align: left;
+    word-wrap: break-word;
+    display: block;
+}
+.remove-button, .qq-upload-spinner {
+    margin-right: 0px;
+    float: right;
+    display: block;
+    font-weight: normal;
+    font-size: 16px;
+}
+.remove-button a {
+    color: #8f1811
+}
+
+.qq-upload-button {
+    margin: auto;
+}
+.qq-upload-list li.qq-upload-success {
+    background-color: #cff2d0;
+    color: #333333;
+    /*margin-top: 10px;*/
+}
+.qq-upload-list ul {
+    list-style-type: none;
+    height: 30px;
+    line-height: 30px;
+}
+
+.qq-upload-button {
+    background: blue;
+
+    /* stolen from btn-primary */
+    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+    background-color: #006dcc;
+    *background-color: #0044cc;
+    background-image: -moz-linear-gradient(top, #0088cc, #0044cc);
+    background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#0088cc), to(#0044cc));
+    background-image: -webkit-linear-gradient(top, #0088cc, #0044cc);
+    background-image: -o-linear-gradient(top, #0088cc, #0044cc);
+    background-image: linear-gradient(to bottom, #0088cc, #0044cc);
+    background-repeat: repeat-x;
+    border-color: #0044cc #0044cc #002a80;
+    border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff0088cc', endColorstr='#ff0044cc', GradientType=0);
+    filter: progid:DXImageTransform.Microsoft.gradient(enabled=false);
+}
+
+
+.qq-drop-processing {
+    display:none;
+}
+.qq-drop-processing-spinner {
+    background:url("../img/processing.gif");
+}
+.qq-upload-spinner {
+    background:url("../img/loading.gif");
+}
+.qq-edit-filename-icon {
+    background:url("../img/edit.gif");
+}
+.qq-upload-list li {
+    background-color: #cff2d0;
+}
+
+#filedrag
+{
+	display: none;
+	font-weight: bold;
+	text-align: center;
+	padding: 1em 0;
+	margin: 1em 0;
+	color: #555;
+	border: 2px dashed #555;
+	border-radius: 7px;
+	cursor: default;
+    padding-left: 2px
+}
+
+#filedrag.hover
+{
+	color: #f00;
+	border-color: #f00;
+	border-style: solid;
+	box-shadow: inset 0 3px 4px #888;
+}
+

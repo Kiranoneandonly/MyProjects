@@ -1,0 +1,32 @@
+{% load i18n %}
+<div>
+    <h2 class="dashHead"><i class="fa fa-book"></i> {{ project_list.title }}</h2>
+    <div class="dashWidget {% if project_list.projects %}noPadding{% endif %}">
+        {% for project in project_list.projects %}
+            <a href="{% url target_view project.id %}">
+                <div class="projectBox">
+                    <h4>{{ project.job_number }}</h4>
+                    <div>
+                        <strong>
+                            {% blocktrans with language_count=project.language_count %}
+                                {{ language_count }} Languages
+                            {% endblocktrans %}
+                        </strong>
+                        {% if project.is_completed_status %}
+                            {% trans "Completed:" %} {{ project.completed }}
+                        {% else %}
+                            {% trans "Due:" %} {{ project.due }}
+                        {% endif %}
+
+                    </div>
+                    <div class="progress progress-small progress-{{ project.job_status_color }}">
+                        <div class="bar" style="width:100%;"></div>
+                    </div>
+                </div>
+            </a>
+        {% empty %}
+            <h4>{% trans "No Jobs" %}</h4>
+        {% endfor %}
+    </div>
+    <br/>
+</div>

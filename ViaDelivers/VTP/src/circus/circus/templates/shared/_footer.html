@@ -1,0 +1,31 @@
+{% load i18n %}
+
+<div class="navbar navbar-fixed-bottom footer">
+    <div class="row-fluid">
+          <div class="span12">
+              <div class="span8 offset2 muted credit pagination-centered">
+                    &copy; {% now "Y" %} VIA, Inc.
+
+                    <span class="viadeliverslinks">
+                    |
+                    <a href="http://www.viadelivers.com/what-we-do/technology/translation-portal" target="_blank" class="footerlink">{% trans "About" %}</a> |
+                    <a href="http://www.viadelivers.com/translation-portal-faq" target="_blank" class="footerlink">{% trans "FAQ" %}</a> |
+                    {% if user.is_authenticated and user.is_client %}
+                        <a href="http://www.viadelivers.com/wp-content/uploads/2016/05/VIA-Translation-Platform-User-Guide.pdf" target="_blank" class="footerlink">{% trans "Help" %}</a> |
+                    {% endif %}
+                    <a href="{% url 'terms_via' %}" target="_blank" class="footerlink">{% trans "Terms" %}</a> |
+                    <a href="http://www.viadelivers.com/privacy-policy" target="_blank" class="footerlink">{% trans "Privacy" %}</a> |
+                    {% if user.id and user.is_vendor %}
+                    <a href="http://supplierbilling.vialanguage.com" target="_blank" class="footerlink">{% blocktrans %}Supplier Portal{% endblocktrans %}</a> |
+                    {% endif %}
+                    <a href="http://www.viadelivers.com" target="_blank" class="footerlink">www.viadelivers.com</a>
+                    </span>
+              </div>
+              <div class="span2">
+                <span class="muted credit pull-right move-right">
+                    Powered&nbsp;by&nbsp;<img src="{{ STATIC_URL }}shared/img/via.png" alt="{{ APP_FULL_NAME }}" title="{{ APP_FULL_NAME }}" class="powered">
+                </span>
+              </div>
+        </div>
+    </div>
+</div>

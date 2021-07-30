@@ -1,0 +1,104 @@
+# -*- coding: utf-8 -*-
+# <nbformat>3.0</nbformat>
+
+# <codecell>
+# This works in ipython-notebook. Being able to run the plots outside of the
+# notebook would require a bit of matplotlib configuration.
+%matplotlib inline
+
+# <codecell>
+
+from IPython.display import display, display_html, HTML
+import matplotlib.pyplot as plt
+import json
+
+# <codecell>
+
+INPUT_FILENAME = raw_input("loadtest json filename: ")
+
+with open(INPUT_FILENAME) as infile:
+    response_json = json.load(infile)
+
+len(response_json)
+
+# <codecell>
+
+start_times = [record['start'] for record in response_json]
+min_start = min(start_times)
+
+# <codecell>
+
+# Recalibrate start and stop times to be relative to the earliest start time.
+
+for record in response_json:
+    record['start'] -= min_start
+    record['stop'] -= min_start
+
+# <codecell>
+
+def response_color(record):
+    if record.get('http_status') == 200:
+        if record.get('api_status') == 0:
+            return 'green'
+        else:
+            return 'yellow'
+    else:
+        return 'red'
+
+# <codecell>
+
+def response_label(record):
+    job_id = record.get('jobID', '-')
+    filename = record.get('file', '')
+    return "%s\n%s" % (job_id, filename)
+
+# <codecell>
+
+# Turn our records into sequences of plot attributes.
+
+bottom = range(len(response_json))
+width = [record['elapsed'] for record in response_json]
+left = [record['start'] for record in response_json]
+colors = [response_color(record) for record in response_json]
+labels = [response_label(record) for record in response_json]
+
+# <codecell>
+
+# Horizontal bar chart.
+rects = plt.barh(bottom, width, left=left, color=colors)
+
+# barh doesn't come with labels for each bar, but we can use the returned list of
+# rectangles to figure out where to draw them.
+for label, rect in zip(labels, rects):
+    height = rect.get_height()
+    plt.text(rect.get_x() + 0.5, rect.get_y(), label, ha='left', va='top')
+
+plt.gcf().set_size_inches(7, len(response_json)/2)
+plt.gca().invert_yaxis()  # put y=0 at the top.
+plt.show()
+
+# <codecell>
+
+def html_iframe(page):
+    """Display this string inside an iframe.
+    
+    Because if you just HTML() an entire HTML page, it may load styles
+    and scripts which interfere with the notebook.
+    """
+    s = ('<iframe src="data:text/html;base64,%s" style="width: 100%%; height: 50em;"></iframe>' %
+         (page.encode('base64').replace('\n',''),))
+    return HTML(s)
+
+# <codecell>
+
+# Show any error pages.
+
+for record in response_json:
+    if 'error_content' in record:
+        display("#%s: %s" % (record.get('worker'), record.get('jobID')))
+        display_html(html_iframe(record['error_content']))
+
+# <codecell>
+
+# [record for record in response_json if record.get('api_status') != 0]
+

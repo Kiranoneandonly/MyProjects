@@ -1,0 +1,59 @@
+{% load bootstrap %}
+{% load i18n %}
+{% load humanize %}
+
+{% if task.is_translation %}
+    {% if file_pair.output.file %}
+        <a id="replace-btn-{{ file_pair.trans_kit.id }}"
+            class="btn btn-inverse small-btn upload-btn out-upload-btn" href="#">
+            <i class="fa fa-upload fa-white"></i>
+            {% blocktrans %}Replace Delivery{% endblocktrans %}
+        </a>
+    {% else %}
+        <a id="upload-btn-{{ file_pair.trans_kit.id }}"
+            class="btn btn-inverse small-btn upload-btn out-upload-btn" href="#">
+            <i class="fa fa-upload fa-white"></i>
+            {% blocktrans %}Upload Delivery{% endblocktrans %}
+        </a>
+    {% endif %}
+    <div id="delivery-upload-{{ file_pair.trans_kit.id }}" class="delivery-form trans-upload-form">
+        <h3>{% trans "Upload Task Deliverable" %}</h3>
+        <p>
+            {{ task.service.service_type }}:
+            {{ task.quantity|floatformat:-2|intcomma }}
+            {{ task.service.unit_of_measure }}
+        </p>
+        <p>
+            {% trans "Please upload translation for:" %}
+            {{ file_pair.trans_kit.input_file_name }}
+        </p>
+        {{ file_pair.trans_kit.vendor_tltk_upload_form.as_form_html }}
+    </div>
+{% else %}
+    {% if file_pair.output.file %}
+        <a id="replace-btn-{{ file_pair.la.id }}"
+            class="btn small-btn btn-inverse upload-btn out-upload-btn" href="#">
+            <i class="fa fa-upload fa-white"></i>
+            {% blocktrans %}Replace Delivery{% endblocktrans %}
+        </a>
+    {% else %}
+        <a id="upload-btn-{{ file_pair.la.id }}"
+            class="btn small-btn btn-inverse upload-btn out-upload-btn" href="#">
+            <i class="fa fa-upload fa-white"></i>
+            {% blocktrans %}Upload Delivery{% endblocktrans %}
+        </a>
+    {% endif %}
+    <div id="delivery-upload-{{ file_pair.la.id }}" class="delivery-form">
+        <h3>{% trans "Upload Task Deliverable" %}</h3>
+        <p>
+            {{ task.service.service_type }}:
+            {{ task.quantity|floatformat:-2|intcomma }}
+            {{ task.service.unit_of_measure }}
+        </p>
+        <p>
+            {% trans "Please upload new file for:" %}
+            {{ file_pair.la.input_file_name }}
+        </p>
+        {{ file_pair.la.vendor_tla_upload_form.as_form_html }}
+    </div>
+{%  endif %}

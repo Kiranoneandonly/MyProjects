@@ -1,0 +1,127 @@
+{% extends template %}
+{% load i18n %}
+{% load bootstrap %}
+{% load static %}
+
+{% block title %}{% blocktrans %}Reporting Dashboard{% endblocktrans %}{% endblock title %}
+
+{% block content %}
+
+    <div class="breadcrumb">
+        <span><i class="fa fa-home"></i></span>
+        <span><a href="{% url dash_board %}">{% trans "Home" %}</a></span>
+        <span class="divider"><i class="fa fa-chevron-right"></i></span>
+        <span class="active">{% trans "Reports" %}</span>
+        <span class="divider"><i class="fa fa-chevron-right"></i></span>
+        <span class="active">{% trans "Customer" %}</span>
+        <span class="divider"><i class="fa fa-chevron-right"></i></span>
+        <span class="active">{% if request.user.is_client%}
+                 <a href="{% url 'total_price_per_word_client_portal' %}">{% trans "Total Price per Word" %}</a>
+             {% else %}
+                <a href="{% url 'total_price_per_word' %}">{% trans "Total Price per Word" %}</a>
+             {% endif %}
+        </span>
+        <span class="divider"><i class="fa fa-chevron-right"></i></span>
+        <span class="active">{% trans "Per Language" %}</span>
+        {{ block.super }}
+    </div>
+
+    <div class="row-fluid">
+        <div class="span12">
+        {% if jobs_dict.items %}
+        {% for key,value in jobs_dict.items %}
+            <div class="row-fluid">
+                    <div id="costs{{ key }}" class="hc_report_chart"></div>
+            </div>
+            {% if not forloop.last %}
+                <hr/>
+            {% endif %}
+        {% endfor %}
+        {% else %}
+            <div class="row-fluid">
+                <div class="span12 pagination-centered">
+                    <h1>No Data Found</h1>
+                </div>
+            </div>
+        {% endif %}
+        </div>
+    </div>
+
+    <br/>
+    
+<script type="text/javascript" src='{% static 'js/highcharts.js' %}'></script>
+<script>
+
+ $(function () {
+     {% for key,value in jobs_dict.items %}
+        $('#costs{{ key }}').highcharts({
+            chart: {
+                borderColor: '#CCCCCC',
+                borderWidth: 1,
+                type: 'line',
+                marginRight: 75,
+                marginBottom: 25
+            },
+            colors: [
+               '#492970',
+               '#f28f43',
+               '#77a1e5',
+               '#c42525',
+               '#a6c96a',
+               '#2f7ed8',
+               '#0d233a',
+               '#8bbc21',
+               '#910000',
+               '#1aadce'
+            ],
+            credits: {
+                enabled: false
+            },
+            title: {
+                text: '{{ value.target.0|safe }}: Total Price per Word',
+                x: -20 //center
+            },
+            subtitle: {
+                text: '',
+                x: -20
+            },
+            xAxis: {
+                categories: {{ value.month|safe }}
+            },
+            yAxis: {
+                title: {
+                    text: ''
+                },
+                plotLines: [{
+                    value: 0,
+                    width: 1,
+                    color: '#808080'
+                }]
+            },
+            tooltip: {
+                valueSuffix: ''
+            },
+            legend: {
+                layout: 'vertical',
+                align: 'right',
+                verticalAlign: 'top',
+                x: -10,
+                y: 100,
+                borderWidth: 0
+            },
+            series: [{
+                name: 'Price per Word',
+                data: {{ value.total_price_per_word|safe }}
+            }]
+        });
+
+
+
+         {% endfor %}
+
+    });
+
+    </script>
+
+{% endblock content %}
+

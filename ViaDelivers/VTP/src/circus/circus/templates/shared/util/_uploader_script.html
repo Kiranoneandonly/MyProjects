@@ -1,0 +1,96 @@
+{% load i18n %}
+
+ <script type="text/template" id="qq-template-bootstrap">
+    <div class="qq-uploader-selector qq-uploader span12">
+        <div class="qq-upload-drop-area-selector qq-upload-drop-area span12" qq-hide-dropzone>
+            <span>Drag & Drop files here to upload</span>
+        </div>
+        <div class="qq-upload-button-selector qq-upload-button btn btn-primary" style="width: auto;">
+            <div><i class="icon-upload icon-white"></i> Click or Drag & Drop</div>
+        </div>
+{#        <span class="qq-drop-processing-selector qq-drop-processing">#}
+{#            <span>Processing dropped files...</span>#}
+{#            <span class="qq-drop-processing-spinner-selector qq-drop-processing-spinner"></span>#}
+{#        </span>#}
+        <ul class="qq-upload-list-selector qq-upload-list" style="text-align: center;">
+            <li>
+                <span class="qq-upload-file-selector qq-upload-file"></span>
+                <span class="qq-upload-size-selector qq-upload-size"></span>
+                <a class="qq-upload-cancel-selector qq-upload-cancel" href="#">Cancel</a>
+                <span class="qq-upload-status-text-selector qq-upload-status-text"></span>
+            </li>
+        </ul>
+    </div>
+</script>
+
+<script type="text/javascript" src="{{ STATIC_URL }}shared/js/fine-uploader.min.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}shared/js/url.min.js"></script>
+<script type='text/javascript'>
+    function remove_asset(e) {
+        e.preventDefault();
+        var that = this;
+        $.ajax({
+            type: 'POST',
+            url: $(that).attr("href")
+        }).success( function(data){
+            $(that).parent().parent().remove();
+        }).error( function(jqXHR, textStatus, errorThrown){
+            $(that).parent().addClass('error');
+        });
+    }
+
+    function createUploader() {
+
+        var debug_uploader = url('?debug_uploader');
+
+        // Show a message on the console so devs know we're active
+        if ( window.console && window.console.log ) {
+            window.console.log("debug_uploader: " + decodeURIComponent(debug_uploader));
+        }
+        debug_uploader = (debug_uploader == '' || debug_uploader == null ? false : true);
+        // Show a message on the console so devs know we're active
+        if ( window.console && window.console.log ) {
+            window.console.log("debug_uploader: " + decodeURIComponent(debug_uploader));
+        }
+
+        var uploader = new qq.FineUploader({
+            element: document.getElementById('fine-uploader'),
+            debug: debug_uploader,
+            demoMode: false,
+            retry: {
+               enableAuto: true
+            },
+            maxConnections: 10,
+            multiple: true,
+            request: {
+                endpoint: '{% url 'kit_upload_file' project.id %}',
+                params: {
+                    asset_type: "{{asset_type}}"
+                }
+            },
+            validation: {
+                sizeLimit: 209715200 // 200 MB = 200 * a Megabyte is 1,048,576 bytes or 1,024 Kilobytes
+            },
+            text: {
+                uploadButton: '{% trans "Click or Drag & Drop" %}'
+            },
+            template: 'qq-template-bootstrap',
+            callbacks: {
+                onComplete: function(id, fileName, responseJSON) {
+                    if (responseJSON.success) {
+                        {# FIXME: This is url('client_delete_asset'), but we can't use the url() template function because this is evaluated with callback data. #}
+                        $(uploader.getItemByFileId(id)).prepend('<span class="remove-button"><a class="remove-asset-link" href="/client/assets/' + responseJSON.id + '/delete"><i class="fa fa-times"></i></a></span>');
+                        $('.remove-asset-link').click(remove_asset);
+                        location.reload(); // Temporary fix
+                    }
+                }
+            }
+        });
+    }
+
+    $(document).ready(function() {
+        $('.remove-asset-link').click(remove_asset);
+    });
+
+    window.onload = createUploader;
+</script>

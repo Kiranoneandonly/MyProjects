@@ -1,0 +1,16 @@
+{% load humanize %}{% load currency_filter %}Notification regarding a task.
+
+Job: {{ task.project.job_number }}.
+Client: {{ task.project.client.name }} ({{ task.project.client_poc.get_full_name }}).
+
+Task: {{ task.service.service_type }}.
+Assigned: {{ task.assigned_to }}.
+Source: {{ task.service.source }}, Target: {{ task.service.target }}.
+
+Notes: {{ pm_message }}.
+
+For more information, please visit {{ vtp_url }}.
+
+________________________________________
+
+{% include 'notifications/_email_footer.txt' %}

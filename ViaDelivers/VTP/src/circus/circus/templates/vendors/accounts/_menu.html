@@ -1,0 +1,8 @@
+{% load i18n %}
+<div class="span3 well">
+    <ul class="nav nav-list">
+        <li {% if current == 'profile' %}class="active"{% endif %}><a href="{% url 'vendor_edit_profile' %}">{% blocktrans %}My Profile{% endblocktrans %}</a></li>
+        <li><a href="{% url 'avatar_change' %}">{% blocktrans %}Set Avatar{% endblocktrans %}</a></li>
+        <li><a href="{% url 'avatar_delete' %}">{% blocktrans %}Delete Avatar{% endblocktrans %}</a></li>
+    </ul>
+</div>

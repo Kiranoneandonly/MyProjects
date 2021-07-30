@@ -1,0 +1,28 @@
+{% load humanize %}{% load currency_filter %}
+
+{% include 'notifications/_email_base_top.html' %}
+
+<table style="font-family: Helvetica, Verdana, Tahoma, Arial, sans-serif; font-size: 100%; line-height: 1.5; width: 100%; margin: 0; padding: 1px;">
+    <tr style="font-family: Helvetica, Verdana, Tahoma, Arial, sans-serif; font-size: 100%; line-height: 1.5; margin: 0; padding: 1px;">
+        <td style="font-family: Helvetica, Verdana, Tahoma, Arial, sans-serif; font-size: 100%; line-height: 1.5; margin: 0; padding: 1px;">
+            <p style="font-family: Helvetica, Verdana, Tahoma, Arial, sans-serif; font-size: 14px; line-height: 1.5; font-weight: normal; margin: 0 0 10px; padding: 1px;">
+                A delivered job has been picked up by a customer. Details of the picked-up job are as follows:
+            </p>
+            <p style="font-family: Helvetica, Verdana, Tahoma, Arial, sans-serif; font-size: 14px; line-height: 1.5; font-weight: normal; margin: 0 0 10px; padding: 1px;">
+            <ul style="font-family: Helvetica, Verdana, Tahoma, Arial, sans-serif; font-size: 12px; line-height: 1.5; font-weight: normal; margin: 0 20px 10px; padding: 1px;">
+                <li style="list-style-type:none;">User ID: {{ project.client_poc.get_full_name|safe }} ({{ project.client_poc.email }})</li>
+                <li style="list-style-type:none;">Job Number: {{ project.job_number }}</li><br/>
+                <li style="list-style-type:none;">Source Language : {{ project.source_locale }}</li>
+                <li style="list-style-type:none;">Target Language : {{ tla.task.service.target }}</li><br/>
+                <li style="list-style-type:none;">Document Name: {{ tla.name|safe }}</li>
+                <li style="list-style-type:none;">Pick-up Date: {{ tla.downloaded|date:"r" }}</li>
+            </ul>
+            </p>
+            <p style="font-family: Helvetica, Verdana, Tahoma, Arial, sans-serif; font-size: 14px; line-height: 1.5; font-weight: normal; margin: 0 0 10px; padding: 1px;">
+                For more information, please visit the <a href="{{ vtp_url }}">VIA Translation Platform</a>.
+            </p>
+        </td>
+    </tr>
+</table>
+
+{% include 'notifications/_email_base_bottom.html' %}

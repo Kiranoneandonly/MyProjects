@@ -1,0 +1,85 @@
+{% load i18n %}
+{% load currency_filter %}
+{% load sorting_field_parameter %}
+{% load bootstrap %}
+
+{% block content %}
+    <form novalidate action="" method="post" class="form-horizontal">
+        {% csrf_token %}
+        <input type="hidden" name="set_large_jobs_approvers" value="False" id="set_large_jobs_approvers">
+        <div class="row-fluid table-responsive">
+            <table class="table table-bordered table-hover">
+                <thead>
+                <tr>
+                    <th class="col col-job-id"><span>{% trans "Job" %}</span></th>
+                    <th class="col col-price">{% trans "Price" %}</th>
+                    <th class="col col-pm">{% trans "Project Manager" %}</th>
+                    <th class="col col-ae">{% trans "Ops Manager" %}</th>
+                    <th class="col col-tsg">{% trans "Sales Manager" %}</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td class="col col-job-id">
+                        <a href="{% url 'via_job_detail_overview' project.id %}"><span>{{ project.job_number }}</span></a>
+                    </td>
+
+                    <td class="col col-price">
+                        {% with project_price=project.price %}
+                            {% if project_price %}
+                                {{ project_price|currency }}
+                            {% endif %}
+                        {% endwith %}
+                    </td>
+                    <td class="col col-pm">{{ form.project_manager_approver|bootstrap }}</td>
+                    <td class="col col-ae">{{ form.ops_management_approver|bootstrap }}</td>
+                    <td class="col col-tsg">{{ form.sales_management_approver|bootstrap }}</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="row-fluid">
+            <div class="span8">
+                <div class="accordion" id="accordionNotes">
+                  <div class="accordion-group">
+                    <div class="accordion-heading">
+                      <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordionNotes" href="#collapseNotesOne">
+                        <i class="fa fa-comments-o"></i> <b>{% blocktrans %}Notes{% endblocktrans %}</b>
+                      </a>
+                    </div>
+                    <div id="collapseNotesOne" class="accordion-body collapse in">
+                      <div class="accordion-inner">
+                          <div class="row-fluid">
+                            {{ form.large_job_approval_notes|bootstrap }}
+                          </div>
+                          <br/>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+            </div>
+            <div class="span4">
+                <div class="row-fluid">
+                    <div class="span8">
+                        {{ form.large_job_approval_timestamp|bootstrap }}
+                    </div>
+                    <div class="span4">
+                        <button type="submit" class="btn btn-large btn-primary pull-right">{% blocktrans %}Save{% endblocktrans %}</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+{% endblock %}
+
+{% block script %}
+    <script>
+        $(document).ready(function () {
+
+            $('#id_project_manager_approver').select2();
+            $('#id_ops_management_approver').select2();
+            $('#id_sales_management_approver').select2();
+
+        });
+   </script>
+{% endblock %}

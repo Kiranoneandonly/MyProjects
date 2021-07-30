@@ -1,0 +1,115 @@
+{% load i18n %}
+{% load currency_filter %}
+{% load mathfilters %}
+{% load get_item %}
+
+<div class="row-fluid">
+    <div class="assets">
+        <table class="table table-bordered table-striped table-condensed asset-table">
+            <tr>
+                <th>{% blocktrans %}Source Files{% endblocktrans %}</th>
+                <th>{% blocktrans %}Total{% endblocktrans %}</th>
+                <th>{% blocktrans %}Guaranteed{% endblocktrans %}</th>
+                <th>{% blocktrans %}Exact{% endblocktrans %}</th>
+                <th>{% blocktrans %}Duplicate{% endblocktrans %}</th>
+                <th>{% blocktrans %}95-99{% endblocktrans %}</th>
+                <th>{% blocktrans %}85-94{% endblocktrans %}</th>
+                <th>{% blocktrans %}75-84{% endblocktrans %}</th>
+                <th>{% blocktrans %}50-74{% endblocktrans %}</th>
+                <th>{% blocktrans %}No Match{% endblocktrans %}</th>
+                <th>{% blocktrans %}Cost / Word{% endblocktrans %}</th>
+                <th>{% blocktrans %}Price / Word{% endblocktrans %}</th>
+                <th>{% blocktrans %}Cost{% endblocktrans %}</th>
+                <th>{% blocktrans %}Raw Price{% endblocktrans %}</th>
+                <th><abbr title="{% trans "Memory Bank Discount" %}">{% trans "MBD" context "Memory Bank Discount"%}</abbr></th>
+                <th>{% blocktrans %}Std Price{% endblocktrans %}</th>
+                <th>{% trans "Std GM" %}</th>
+                <th>{% blocktrans %}Exp Price{% endblocktrans %}</th>
+                <th>{% trans "Exp GM" %}</th>
+            </tr>
+        {% if not task.assets.count %}
+            <tr>
+                <td colspan=100%>{% blocktrans %}No assets{% endblocktrans %}</td>
+            </tr>
+        {% else %}
+            {% for target, analyses in target_analyses.items %}
+                {% if task.service.target == target %}
+                    {% for analysis in analyses.all %}
+                <tr>
+                        <td>
+                            {% if analysis.asset.file_exists %}
+                                <a href="{% url 'download_asset' task.project.id analysis.asset.id %}">{{analysis.asset.orig_name }}</a>
+                            {% else %}
+                                {{ analysis.asset.orig_name }}
+                            {% endif %}
+                        </td>
+
+                        <td class="number-cell">{{ analysis.total_wordcount|default_if_none:0 }}</td>
+                        <td class="number-cell">{{ analysis.guaranteed|default_if_none:0 }}</td>
+                        <td class="number-cell">{{ analysis.exact|default_if_none:0 }}</td>
+                        <td class="number-cell">{{ analysis.duplicate|default_if_none:0 }}</td>
+                        <td class="number-cell">{{ analysis.fuzzy9599|default_if_none:0 }}</td>
+                        <td class="number-cell">{{ analysis.fuzzy8594|default_if_none:0 }}</td>
+                        <td class="number-cell">{{ analysis.fuzzy7584|default_if_none:0 }}</td>
+                        <td class="number-cell">{{ analysis.fuzzy5074|default_if_none:0 }}</td>
+                        <td class="number-cell">{{ analysis.no_match|default_if_none:0 }}</td>
+                        <td class="number-cell">{{ task.translationtask.vendor_rates.word_rate|default_if_none:0|currency }}</td>
+                        <td class="number-cell">{{ task.translationtask.client_price.word_rate|default_if_none:0|currency }}</td>
+
+                        {% get_taskassetquote task analysis.asset as asset_price_object %}
+                        <td class="number-cell">{{ asset_price_object.asset_total_cost|default_if_none:0|currency }}</td>
+                        <td class="number-cell">{{ asset_price_object.asset_raw_price|default_if_none:0|currency }}</td>
+                        <td class="number-cell">{{ asset_price_object.asset_mbd|default_if_none:0|percent }}</td>
+                        <td class="number-cell">{{ asset_price_object.asset_net_price|default_if_none:0|currency }}</td>
+                        <td class="number-cell">{{ asset_price_object.asset_gm|default_if_none:0|percent }}</td>
+                        <td class="number-cell">{{ asset_price_object.asset_express_net_price|default_if_none:0|currency }}</td>
+                        <td class="number-cell">{{ asset_price_object.asset_express_gm|default_if_none:0|percent }}</td>
+
+                </tr>
+                {% endfor %}
+                <tr>
+                    {% asset_minimum_price_object task analysis.asset as asset_object %}
+                    {% if asset_object.asset_is_minimum_price %}
+                        <td>{% blocktrans %}Minimum Job{% endblocktrans %}</td>
+                        <td colspan="9"><!-- no analysis--></td>
+                        <td><!-- word_rate N/A --></td>
+                        <td><!-- word_rate N/A --></td>
+                        <td class="number-cell">{{ asset_object.asset_total_cost|default_if_none:0|currency }}</td>
+                        <td class="number-cell">{{ asset_object.asset_raw_price|default_if_none:0|currency }}</td>
+                        <td class="number-cell">{{ asset_object.asset_mbd|default_if_none:0|percent }}</td>
+                        <td class="number-cell">{{ asset_object.asset_net_price|default_if_none:0|currency }}</td>
+                        <td class="number-cell">{{ asset_object.asset_gm|default_if_none:0|percent }}</td>
+                        <td class="number-cell">{{ asset_object.asset_express_net_price|default_if_none:0|currency }}</td>
+                        <td class="number-cell">{{ asset_object.asset_express_gm|default_if_none:0|percent }}</td>
+                    {% endif %}
+                </tr>
+            <tr class="grand-total-row">
+                <td>
+                    <span class="grand-total-label">{% blocktrans %}Grand Total{% endblocktrans %}</span>
+                </td>
+
+               <td class="number-cell">{{ analyses.total_words|default_if_none:0 }}</td>
+               <td class="number-cell">{{ analyses.total_guaranteed|default_if_none:0 }}</td>
+               <td class="number-cell">{{ analyses.total_exact|default_if_none:0 }}</td>
+               <td class="number-cell">{{ analyses.total_duplicate|default_if_none:0 }}</td>
+               <td class="number-cell">{{ analyses.total_fuzzy9599|default_if_none:0 }}</td>
+               <td class="number-cell">{{ analyses.total_fuzzy8594|default_if_none:0 }}</td>
+               <td class="number-cell">{{ analyses.total_fuzzy7584|default_if_none:0 }}</td>
+               <td class="number-cell">{{ analyses.total_fuzzy5074|default_if_none:0 }}</td>
+               <td class="number-cell">{{ analyses.total_no_match|default_if_none:0 }}</td>
+             {% endif %}
+            {% endfor %}
+                <td class="number-cell">{{ task.translationtask.vendor_rates.word_rate|default_if_none:0|currency }}</td>
+                <td class="number-cell">{{ task.translationtask.client_price.word_rate|default_if_none:0|currency }}</td>
+                <td class="number-cell">{{ task.quote_total_cost|default_if_none:0|currency }}</td>
+                <td class="number-cell">{{ task.raw_price|default_if_none:0|currency }}</td>
+                <td class="number-cell">{{ task.mbd|default_if_none:0|percent }}</td>
+                <td class="number-cell">{{ task.net_price|default_if_none:0|currency }}</td>
+                <td class="number-cell">{{ task.gm|default_if_none:0|percent }}</td>
+                <td class="number-cell">{{ task.express_net_price|default_if_none:0|currency }}</td>
+                <td class="number-cell">{{ task.express_gm|default_if_none:0|percent }}</td>
+            </tr>
+        {% endif %}
+        </table>
+    </div>
+</div>

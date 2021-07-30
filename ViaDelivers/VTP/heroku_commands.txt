@@ -1,0 +1,842 @@
+========================================================================================================================================
+========================================================================================================================================
+-- PYCHARM SETTINGS ENV VARIABLES
+========================================================================================================================================
+========================================================================================================================================
+PYTHONUNBUFFERED=1
+DJANGO_SETTINGS_MODULE=circus.settings.local
+VIA_API_JAMS_VS_DEBUG=True
+
+
+======================================================================================================================================
+======================================================================================================================================
+-- pip-tools
+======================================================================================================================================
+https://github.com/jazzband/pip-tools
+
+pip-compile --output-file requirements.txt requirements.in
+pip-compile --output-file requirements-local.txt requirements-local.in
+
+pip-sync requirements-local.txt
+
+
+
+======================================================================================================================================
+======================================================================================================================================
+-- HEROKU DEPLOY ISSUE
+======================================================================================================================================
+======================================================================================================================================
+
+remote: -----> Installing requirements with pip
+remote: ImportError: No module named site
+
+On circus-dev can you please try unsetting PYTHONPATH and PYTHONHOME:
+
+
+
+$ heroku config:unset PYTHONPATH --app circus-dev
+$ heroku config:unset PYTHONHOME --app circus-dev
+
+
+======================================================================================================================================
+======================================================================================================================================
+-- HEROKU VTP-WALMART-US
+======================================================================================================================================
+======================================================================================================================================
+heroku pg:backups restore 'https://vtp-walmart-us.s3.amazonaws.com/heroku.vtp-us.red-20150512.dump' DATABASE_URL -a vtp-walmart-us
+
+
+git push vtp-walmart-us master
+
+
+heroku run python src/circus/manage.py syncdb --app vtp-walmart-us
+heroku run python src/circus/manage.py migrate --app vtp-walmart-us
+
+
+heroku run python src/circus/manage.py migrate --fake projects 0019_merge_20161102_1727 --app vtp-walmart-us
+heroku run python src/circus/manage.py migrate projects 0020_rebuild_projectquote_price_data --app vtp-walmart-us
+
+
+
+heroku run python src/circus/manage.py loaddata data.json --app vtp-walmart-us
+
+
+======================================================================================================================================
+======================================================================================================================================
+-- HEROKU VTP-WALMART-EU
+======================================================================================================================================
+======================================================================================================================================
+https://vtp-walmart-eu.s3.amazonaws.com/vtp-walmart-eu
+
+heroku pg:backups restore 'https://s3.eu-central-1.amazonaws.com/vtp-walmart-eu/db/heroku.vtp-wmt-us.db-20151007.dump' DATABASE_URL -a vtp-walmart-eu
+
+heroku pg:copy vtp-walmart-us::DATABASE_URL DATABASE_URL -a vtp-walmart-eu
+
+postgres://qffkwktxeagxdz:J5rNtVMd0dHgRfMc6S8uYRB2_9@ec2-54-195-248-72.eu-west-1.compute.amazonaws.com:5432/d50aq50g9ii8hb
+
+
+git push vtp-walmart-eu master
+
+
+heroku run python src/circus/manage.py syncdb --app vtp-walmart-eu
+heroku run python src/circus/manage.py migrate --app vtp-walmart-eu
+
+
+heroku run python src/circus/manage.py migrate --fake projects 0019_merge_20161102_1727 --app vtp-walmart-eu
+heroku run python src/circus/manage.py migrate projects 0020_rebuild_projectquote_price_data --app vtp-walmart-eu
+
+
+https://devcenter.heroku.com/articles/ssl-endpoint
+==========================================================
+heroku certs:add PEM KEY --app vtp-walmart-eu
+heroku certs --app vtp-walmart-eu
+
+Endpoint                      Common Name(s)                          Expires               Trusted
+----------------------------  --------------------------------------  --------------------  -------
+vtp-walmart-eu.herokuapp.com  translation-walmart-eu.viadelivers.net  2018-10-07 23:59 UTC  True
+
+
+heroku certs:add server.crt server.key --app vtp-walmart-eu
+heroku certs:info --app vtp-walmart-eu
+
+heroku certs:remove --app vtp-walmart-eu
+
+
+======================================================================================================================================
+======================================================================================================================================
+-- HEROKU VTP-PROD
+======================================================================================================================================
+======================================================================================================================================
+
+git push vtp-prod master
+
+https://devcenter.heroku.com/articles/django-assets
+heroku labs:enable user-env-compile --app via-translation-portal
+
+
+heroku run python src/circus/manage.py syncdb --app via-translation-portal
+heroku run python src/circus/manage.py migrate --app via-translation-portal
+
+
+heroku run python src/circus/manage.py migrate --fake projects 0019_merge_20161102_1727 --app via-translation-portal
+heroku run python src/circus/manage.py migrate projects 0020_rebuild_projectquote_price_data --app via-translation-portal
+
+
+
+-- django 1.9.x upgrade migrations
+heroku run python src/circus/manage.py migrate --app via-translation-portal
+heroku run python src/circus/manage.py migrate --fake-initial --app via-translation-portal
+heroku run python src/circus/manage.py migrate accounts --fake --app via-translation-portal
+heroku run python src/circus/manage.py migrate accounts 0003 --app via-translation-portal
+heroku run python src/circus/manage.py migrate accounts --app via-translation-portal
+heroku run python src/circus/manage.py migrate --fake-initial --app via-translation-portal
+heroku run python src/circus/manage.py migrate activity_log --fake --app via-translation-portal
+heroku run python src/circus/manage.py migrate invoices --fake --app via-translation-portal
+heroku run python src/circus/manage.py migrate notifications --fake --app via-translation-portal
+heroku run python src/circus/manage.py migrate projects --fake --app via-translation-portal
+heroku run python src/circus/manage.py migrate quality_defects --fake --app via-translation-portal
+heroku run python src/circus/manage.py migrate preferred_vendors --fake --app via-translation-portal
+heroku run python src/circus/manage.py migrate prices --fake --app via-translation-portal
+heroku run python src/circus/manage.py migrate sessions --fake --app via-translation-portalno
+heroku run python src/circus/manage.py migrate --app via-translation-portal
+
+heroku run python src/circus/manage.py create_pricing_default_tep --app via-translation-portal
+heroku run python src/circus/manage.py create_pricing_default_non_translation --app via-translation-portal
+
+heroku run python src/circus/manage.py create_job_task_and_po "46017T14" --app via-translation-portal > POs_20140304_46017T14.log
+
+heroku run python src/circus/manage.py create_job_task_and_po --app via-translation-portal > POs_20140214.log
+
+
+heroku run python src/circus/manage.py create_vendors_etl --app via-translation-portal > create_vendors_etl_vtp-prod.log
+heroku run python src/circus/manage.py create_vendors_pricing_etl --app via-translation-portal > create_vendors_pricing_etl_vtp-prod.log
+heroku run python src/circus/manage.py create_vendors_navex_pricing_etl --app via-translation-portal > create_vendors_navex_pricing_etl_vtp-prod.log
+heroku run python src/circus/manage.py create_vendors_preferred_order_etl --app via-translation-portal > create_vendors_preferred_order_etl_vtp-prod.log
+
+heroku run python src/circus/manage.py create_clients_etl --app via-translation-portal > create_clients_etl_vtp-prod.log
+heroku run python src/circus/manage.py create_clients_emaildomains_etl --app via-translation-portal > create_clients_emaildomains_etl_vtp-prod.log
+heroku run python src/circus/manage.py create_clients_pricing_etl --app via-translation-portal > create_clients_pricing_etl_vtp-prod.log
+heroku run python src/circus/manage.py create_clients_contacts_etl --app via-translation-portal > create_clients_contacts_etl_vtp-prod.log
+
+heroku run python src/circus/manage.py send_password_links --app via-translation-portal > send_password_links_vtp-prod.log
+
+heroku run python src/circus/manage.py loaddata from data.json --app via-translation-portal
+
+
+
+-------------------------------
+** DESTRUCTIVE **
+heroku run python src/circus/manage.py create_lookups --app via-translation-portal
+-------------------------------
+
+heroku run python src/circus/manage.py collectstatic --dry-run --noinput --app via-translation-portal
+
+via-translation-portal :: pink
+postgres://ua0bon38e3s8v8:p3rjcqr5tjbb4c9eole5v7jcsvb@ec2-75-101-166-204.compute-1.amazonaws.com:5752/deuubb9kpeca72
+
+heroku restart web.1 --app via-translation-portal
+heroku restart web.2 --app via-translation-portal
+heroku restart worker.1 --app via-translation-portal
+
+heroku logs --app via-translation-portal
+
+heroku ps --app via-translation-portal
+
+
+heroku labs:enable log-runtime-metrics --app via-translation-portal
+
+
+======================================================================================================================================
+======================================================================================================================================
+-- POSTGRESQL
+======================================================================================================================================
+======================================================================================================================================
+
+Use the Heroku CLI to access your logs from the command line: heroku logs --tail --ps postgres --app via-translation-portal
+
+
+via-translation-portal :: red
+https://data.heroku.com/datastore/5f7db02c-f296-428f-9bd9-8bb03f623a89
+
+Connection Settings
+
+Host			ec2-54-243-196-214.compute-1.amazonaws.com
+Database		d1ulg5ecikgv31
+User			ueuctlip8cbnl0
+Port			5492
+Password		p45dn5gnm6lqh93ecdbersfqsv4
+Psql			heroku pg:psql --app via-translation-portal red
+URL				postgres://ueuctlip8cbnl0:p45dn5gnm6lqh93ecdbersfqsv4@ec2-54-243-196-214.compute-1.amazonaws.com:5492/d1ulg5ecikgv31
+
+
+Statistics
+Plan			Standard 0
+Status			Available
+Data Size		6.4 MB
+Tables			0
+PG Version		9.3.4
+Created			2014-08-15T00:45:00Z
+Rollback		earliest from 2014-08-15 00:46 UTC
+Maintenance		not required
+
+
+DATABASE_URL			postgres://ueuctlip8cbnl0:p45dn5gnm6lqh93ecdbersfqsv4@ec2-54-243-196-214.compute-1.amazonaws.com:5492/d1ulg5ecikgv31
+
+------------------------------------
+
+via-translation-portal :: blue
+https://data.heroku.com/datastore/194ab7f1-cbd2-4193-8839-fdee9bc56557
+
+HEROKU_POSTGRESQL_BLUE_URL
+Host: ec2-34-193-73-107.compute-1.amazonaws.com
+Database: d233m4qpvs2rcs
+User: u6qoenjdtok0fe
+Port: 5432
+Password: p68cmfpsmme3qi44k7spvsnb6mk
+URI: postgres://u6qoenjdtok0fe:p68cmfpsmme3qi44k7spvsnb6mk@ec2-34-193-73-107.compute-1.amazonaws.com:5432/d233m4qpvs2rcs
+Heroku CLI: heroku pg:psql HEROKU_POSTGRESQL_BLUE_URL --app via-translation-portal
+
+set maintenance windowv : Sunday 14:30 t 18:30 UTC
+
+------------------------------------
+
+https://devcenter.heroku.com/articles/upgrading-heroku-postgres-databases
+
+Commands:
+
+heroku addons:add pgbackups --app via-translation-portal
+
+
+$50
+heroku addons:add heroku-postgresql:standard-0 --app via-translation-portal
+
+
+heroku pg:diagnose --app via-translation-portal
+heroku pg:info --app via-translation-portal
+
+
+===========================================
+-- Maintenance
+===========================================
+
+heroku pg:wait --app via-translation-portal
+heroku maintenance:on --app via-translation-portal
+
+-- heroku ps:scale worker=0 --app via-translation-portal
+heroku ps:scale web=0 --app via-translation-portal
+
+heroku pg:backups capture --app via-translation-portal
+heroku pg:backups info --app via-translation-portal
+
+heroku pg:copy DATABASE_URL HEROKU_POSTGRESQL_BLUE_URL --app via-translation-portal
+heroku pg:promote HEROKU_POSTGRESQL_BLUE_URL --app via-translation-portal
+
+-- heroku ps:scale worker=1 --app via-translation-portal
+heroku ps:scale web=1 --app via-translation-portal
+
+heroku maintenance:off --app via-translation-portal
+
+===========================================
+
+heroku config --app via-translation-portal
+heroku config:set AWS_BUCKET=vtp_prod --app via-translation-portal
+heroku config:get AWS_BUCKET --app via-translation-portal
+heroku config:unset AWS_BUCKET --app via-translation-portal
+
+heroku config:set RESPOND_BY_TIMEDELTA=18 --app via-translation-portal
+
+heroku config:set DEBUG_VTP=False --app via-translation-portal
+
+
+heroku config:set VIA_API_CALL_TIMEOUT_SECONDS=1800 --app via-translation-portal
+
+heroku config:set VIA_DVX_API_VERSION=1 --app via-translation-portal
+
+
+heroku config:set BASE_URL=https://translation.viadelivers.com --app via-translation-portal
+
+heroku config:set VIA_JAMS_INTEGRATION=True --app via-translation-portal
+heroku config:set VIA_JAMS_BASE_URL=http://webjamsapi.viadelivers.com --app via-translation-portal
+heroku config:set VIA_JAMS_BASE_URL=http://65.100.53.45 --app via-translation-portal
+heroku config:set VIA_JAMS_API_KEY=918704ec-4811-45b6-a169-16bae3df69a8 --app via-translation-portal
+
+heroku config:set VIA_JAMS_BASE_URL=https://webjams.viadelivers.com --app via-translation-portal
+
+heroku config:set VIA_PANAMA_VENDOR_JAMS_ID=453054985 --app via-translation-portal
+heroku config:set VIA_PANAMA_NO_AUTO_GENERATE_TEP_PO_JAMS=True --app via-translation-portal
+
+
+heroku config:set FROM_SERVER_EMAIL=system@viadelivers.com --app via-translation-portal
+heroku config:set FROM_EMAIL_ADDRESS=no-reply@viadelivers.com --app via-translation-portal
+heroku config:set VIA_SUPPORT_EMAIL=vtp.support@viadelivers.com --app via-translation-portal
+heroku config:set VIA_TSG_GROUP_EMAIL_ALIAS=TSG@viadelivers.com --app via-translation-portal
+heroku config:set VIA_PM_GROUP_EMAIL_ALIAS=TranslationCoordinators@viadelivers.com --app via-translation-portal
+heroku config:set VIA_SALES_GROUP_EMAIL_ALIAS=sales_management@viadelivers.com --app via-translation-portal
+heroku config:set VIA_ESTIMATES_EMAIL_ALIAS=estimates@viadelivers.com --app via-translation-portal
+
+heroku config:set VIA_DVX_API_KEY=918704ec-4811-45b6-a169-16bae3df69a8 --app via-translation-portal
+
+heroku config:set VIA_DVX_BASE_URL=http://teamserver.viadelivers.com/dvx --app via-translation-portal
+heroku config:set VIA_DVX_BASE_URL=http://teamserver.viadelivers.com/dvx_vtp_prod --app via-translation-portal
+
+heroku config:get VIA_API_DVX_TEAMSERVER_USE_TM --app via-translation-portal
+
+heroku config:set VIA_API_DVX_TEAMSERVER_USE_TM=True --app via-translation-portal
+
+heroku config:set LINKS_USE_HTTPS=True --app via-translation-portal
+
+heroku config:set PAYFLOW_LIVE_MODE=True --app via-translation-portal
+
+heroku config:set GUNICORN_WORKERS=3 --app via-translation-portal
+
+
+heroku stack:set cedar-14 --app via-translation-portal
+heroku config:set MALLOC_ARENA_MAX=2 --app via-translation-portal
+
+
+===========================================
+-- SALESFORCE Enablement - Production
+===========================================
+heroku config:set SALESFORCE_ENABLED=false --app via-translation-portal
+heroku config:set SALESFORCE_CONSUMER_KEY=3MVG99OxTyEMCQ3izmVmr8lf1Yc9YZYTlLqVwvZe2OBQmmqTB7e1h.GoGl9.UGm1HNbLFXG5Y7.LYBBv276LS --app via-translation-portal
+heroku config:set SALESFORCE_CONSUMER_SECRET=6632986701963295144 --app via-translation-portal
+heroku config:set SALESFORCE_USER=kbruner@viadelivers.com --app via-translation-portal
+heroku config:set SALESFORCE_PASSWORD=265j2!ZHz7NVSJIHuETM8TlzvICC2zRFGR2uR --app via-translation-portal
+
+heroku config:get SALESFORCE_ENABLED --app via-translation-portal
+heroku config:get SALESFORCE_CONSUMER_KEY --app via-translation-portal
+heroku config:get SALESFORCE_CONSUMER_SECRET --app via-translation-portal
+heroku config:get SALESFORCE_USER --app via-translation-portal
+heroku config:get SALESFORCE_PASSWORD --app via-translation-portal
+
+
+
+
+*** RESETTING SOUTH *** DO NOT RUN UNLESS ABSOLUTELY SURE ***
+*** IGNORE TRANSACTION ERRORS ***
+heroku run python src/circus/manage.py sqlclear south --app via-translation-portal | psql -h ec2-107-21-106-181.compute-1.amazonaws.com -d de1b3f8i4dbea3 -U owgnqihhyxrbyn -p 5432
+heroku run python src/circus/manage.py sqlall south --app via-translation-portal | psql -h ec2-107-21-106-181.compute-1.amazonaws.com -d de1b3f8i4dbea3 -U owgnqihhyxrbyn -p 5432
+heroku run python src/circus/manage.py migrate --fake --app via-translation-portal
+
+
+heroku run python src\circus\manage.py migrate tasks --fake --delete-ghost-migrations  --app via-translation-portal
+
+
+
+
+https://devcenter.heroku.com/articles/ssl-endpoint
+==========================================================
+heroku certs:add PEM KEY --app via-translation-portal
+heroku certs --app via-translation-portal
+
+heroku certs:add server.crt server.key --app via-translation-portal
+heroku certs:info --app via-translation-portal
+
+https://kyoto-7483.herokussl.com/
+
+==========================================================
+heroku pgbackups:restore HEROKU_POSTGRESQL_SILVER -a via-translation-portal 'heroku pgbackups:postgres://owgnqihhyxrbyn:3ePOGdpw6QuHdKBASqpINARs0l@ec2-107-21-106-181.compute-1.amazonaws.com:5432/de1b3f8i4dbea3 -a circus-dev'
+
+
+heroku config:set DATABASE_URL=postgres://qswwvkbxxuwyjg:tLWXvz5kC4j1sx-4hJ1umgNacV@ec2-184-73-162-34.compute-1.amazonaws.com:5432/dc0rpp6su3s1i3 --app via-translation-portal
+
+heroku restart web.1 --app via-translation-portal
+
+
+======================================================================================================================================
+======================================================================================================================================
+-- HEROKU VTP-PROD-EU
+======================================================================================================================================
+======================================================================================================================================
+
+
+heroku fork --region eu --app vtp-eu
+
+
+heroku run python src/circus/manage.py syncdb --app vtp-eu
+heroku run python src/circus/manage.py migrate --app vtp-eu
+
+heroku run python src/circus/manage.py migrate --fake projects 0019_merge_20161102_1727 --app vtp-eu
+heroku run python src/circus/manage.py migrate projects 0020_rebuild_projectquote_price_data --app vtp-eu
+
+
+heroku run python src/circus/manage.py collectstatic --dry-run --noinput --app vtp-eu
+heroku run python src/circus/manage.py collectstatic --noinput --app vtp-eu
+
+
+heroku config --app vtp-eu
+heroku config:set BASE_URL=http://translation-dev.viadelivers.com --app vtp-eu
+
+heroku config:set AWS_BUCKET=vtp-prod-eu --app vtp-eu
+heroku config:get AWS_BUCKET --app vtp-eu
+heroku config:unset AWS_BUCKET --app vtp-eu
+
+
+heroku config:set RESPOND_BY_TIMEDELTA=18 --app vtp-eu
+
+heroku config:set VIA_JAMS_INTEGRATION=True --app vtp-eu
+
+
+heroku config:set BASE_URL=https://translation-eu.viadelivers.com --app vtp-eu
+
+
+heroku config:set DEBUG_VTP=False --app vtp-eu
+
+
+heroku config:set VIA_JAMS_INTEGRATION=True --app vtp-eu
+heroku config:set VIA_JAMS_BASE_URL=http://65.100.53.45 --app vtp-eu
+heroku config:set VIA_JAMS_API_KEY=918704ec-4811-45b6-a169-16bae3df69a8 --app vtp-eu
+
+
+heroku config:set VIA_API_CALL_TIMEOUT_SECONDS=1800 --app vtp-eu
+
+heroku config:set VIA_DVX_API_VERSION=2 --app vtp-eu
+
+
+heroku config:set VIA_PANAMA_VENDOR_JAMS_ID=453054985 --app vtp-eu
+heroku config:set VIA_PANAMA_NO_AUTO_GENERATE_TEP_PO_JAMS=True --app vtp-eu
+
+
+heroku config:set FROM_SERVER_EMAIL=system@viadelivers.com --app vtp-eu
+heroku config:set FROM_EMAIL_ADDRESS=no-reply@viadelivers.com --app vtp-eu
+heroku config:set VIA_SUPPORT_EMAIL=vtp.support@viadelivers.com --app vtp-eu
+heroku config:set VIA_TSG_GROUP_EMAIL_ALIAS=TSG@viadelivers.com --app vtp-eu
+heroku config:set VIA_PM_GROUP_EMAIL_ALIAS=TranslationCoordinators@viadelivers.com --app vtp-eu
+heroku config:set VIA_SALES_GROUP_EMAIL_ALIAS=sales_management@viadelivers.com --app vtp-eu
+heroku config:set VIA_ESTIMATES_EMAIL_ALIAS=estimates@viadelivers.com --app vtp-eu
+
+
+
+
+SSL Endpoint
+https://devcenter.heroku.com/articles/ssl-endpoint
+
+heroku certs:add vtp-eu-server-self.crt vtp-eu-server.key --app vtp-eu
+
+heroku certs --app vtp-eu
+heroku certs:info --app vtp-eu
+
+heroku domains:add translation-eu.viadelivers.com --app vtp-eu
+
+
+heroku stack:set cedar-14 --app vtp-eu
+heroku config:set MALLOC_ARENA_MAX=2 --app vtp-eu
+
+heroku run python src/circus/manage.py loaddata from data.json --app vtp-eu
+
+=====================================
+Upgrade with pg:copy 
+=====================================
+
+heroku addons:create heroku-postgresql:hobby-basic --app vtp-eu
+
+heroku pg:wait --app vtp-eu
+
+heroku maintenance:on --app vtp-eu
+
+heroku ps:scale web=0 --app vtp-eu
+
+heroku pg:copy DATABASE_URL HEROKU_POSTGRESQL_RED_URL --app vtp-eu
+
+heroku pg:promote HEROKU_POSTGRESQL_RED_URL --app vtp-eu
+
+heroku ps:scale web=1 --app vtp-eu
+
+heroku maintenance:off --app vtp-eu
+
+--------------------------------------------------------------------------
+HEROKU_POSTGRESQL_RED_URL
+--------------------------------------------------------------------------
+https://data.heroku.com/datastore/39f5039b-acfe-49e7-82ea-ac49a3dd7d7a
+SERVICE 	heroku-postgresql 
+PLAN 		hobby-basic
+BILLING APP vtp-eu
+
+Host:		ec2-54-75-232-46.eu-west-1.compute.amazonaws.com
+Database:	d7u2kcpb86l01q
+User:		aeexecmwusktah
+Port:		5432
+Password:	u8F0ubAmU7X8AePcdzUff9d2vr
+URI: 		postgres://aeexecmwusktah:u8F0ubAmU7X8AePcdzUff9d2vr@ec2-54-75-232-46.eu-west-1.compute.amazonaws.com:5432/d7u2kcpb86l01q
+Heroku CLI:	heroku pg:psql DATABASE_URL --app vtp-eu
+
+
+======================================================================================================================================
+======================================================================================================================================
+-- HEROKU CIRCUS-DEV
+======================================================================================================================================
+======================================================================================================================================
+
+
+git push circus-dev master
+
+heroku labs:enable user-env-compile --app circus-dev
+
+heroku run python src/circus/manage.py syncdb --app circus-dev
+heroku run python src/circus/manage.py migrate --app circus-dev
+
+heroku run python src/circus/manage.py create_pricing_default_tep --app circus-dev
+heroku run python src/circus/manage.py create_pricing_default_non_translation --app circus-dev
+
+heroku run python src/circus/manage.py create_job_task_and_po "45385T14" --app circus-dev
+
+heroku run python src/circus/manage.py create_vendors_etl --app circus-dev > create_vendors_etl_circus-dev.log
+heroku run python src/circus/manage.py create_vendors_pricing_etl --app circus-dev > create_vendors_pricing_etl_circus-dev.log
+heroku run python src/circus/manage.py create_vendors_navex_pricing_etl --app via-translation-portal > create_vendors_navex_pricing_etl_circus-dev.log
+heroku run python src/circus/manage.py create_vendors_preferred_order_etl --app circus-dev > create_vendors_preferred_order_etl_circus-dev.log
+
+heroku run python src/circus/manage.py create_clients_etl --app circus-dev > create_clients_etl_circus-dev.log
+heroku run python src/circus/manage.py create_clients_emaildomains_etl --app circus-dev > create_clients_emaildomains_etl_circus-dev.log
+heroku run python src/circus/manage.py create_clients_pricing_etl --app circus-dev > create_clients_pricing_etl_circus-dev.log
+heroku run python src/circus/manage.py create_clients_contacts_etl --app circus-dev > create_clients_contacts_etl_circus-dev.log
+
+heroku run python src/circus/manage.py loaddata from data.json --app circus-dev
+
+
+
+heroku labs:enable log-runtime-metrics --app circus-dev
+
+-------------------------------
+** DESTRUCTIVE **
+heroku run python src/circus/manage.py create_lookups --app circus-dev
+-------------------------------
+
+
+heroku run python manage.py collectstatic --noinput
+
+heroku run python src/circus/manage.py collectstatic --dry-run --noinput --app circus-dev
+
+heroku config --app circus-dev
+heroku config:set AWS_BUCKET=circus_dev --app circus-dev
+heroku config:set RESPOND_BY_TIMEDELTA=18 --app circus-dev
+
+heroku config:set VIA_JAMS_INTEGRATION=True --app circus-dev
+heroku config:set VIA_DVX_API_KEY=918704ec-4811-45b6-a169-16bae3df69a8 --app circus-dev
+
+heroku config:set VIA_DVX_BASE_URL=http://teamserver.viadelivers.com/dvx_ts_dev --app circus-dev
+heroku config:set VIA_DVX_BASE_URL=http://teamserver.viadelivers.com/dvx --app circus-dev
+heroku config:set VIA_DVX_BASE_URL=http://teamserver.viadelivers.com/dvx_vtp_prod --app circus-dev
+
+heroku config:set VIA_API_DVX_TEAMSERVER_USE_TM=True --app circus-dev
+
+heroku config:set VIA_API_CALL_TIMEOUT_SECONDS=1000 --app circus-dev
+
+
+heroku run python src/circus/manage.py migrate services --fake --app circus-dev
+
+
+heroku run python src/circus/manage.py migrate --app circus-dev
+heroku run python src/circus/manage.py migrate --fake-initial --app circus-dev
+heroku run python src/circus/manage.py migrate accounts --fake --app circus-dev
+
+
+
+heroku run pip install django-celery --app circus-dev
+heroku run pip install celery --upgrade --app circus-dev
+
+
+
+
+heroku restart worker.1 --app circus-dev
+
+heroku logs --app circus-dev
+
+heroku ps --app circus-dev
+
+
+heroku python src/circus/manage.py do_notifications --app circus-dev
+
+heroku config --app circus-dev
+heroku config:set BASE_URL=http://translation-dev.viadelivers.com --app circus-dev
+
+heroku config:set GUNICORN_WORKERS=3 --app circus-dev
+
+heroku config:set VIA_JAMS_BASE_URL=http://webjamstest.viadelivers.com --app circus-dev
+heroku config:set VIA_JAMS_BASE_URL=http://webjamsapitest.viadelivers.com --app circus-dev
+heroku config:set VIA_JAMS_API_KEY=918704ec-4811-45b6-a169-16bae3df69a8 --app circus-dev
+
+
+heroku config:set FROM_SERVER_EMAIL=system@viadelivers.com --app circus-dev
+heroku config:set FROM_EMAIL_ADDRESS=no-reply@viadelivers.com --app circus-dev
+heroku config:set VIA_SUPPORT_EMAIL=vtp.support@viadelivers.com --app circus-dev
+heroku config:set VIA_TSG_GROUP_EMAIL_ALIAS=TSG_test@viadelivers.com --app circus-dev
+heroku config:set VIA_PM_GROUP_EMAIL_ALIAS=TranslationCoordinators_test@viadelivers.com --app circus-dev
+heroku config:set VIA_SALES_GROUP_EMAIL_ALIAS=sales_management_test@viadelivers.com --app circus-dev
+heroku config:set VIA_ESTIMATES_EMAIL_ALIAS=estimates_test@viadelivers.com --app circus-dev
+
+heroku config:set VIA_DVX_API_VERSION=1 --app circus-dev  
+
+
+
+heroku config:set VIA_API_CALL_TIMEOUT_SECONDS=600 --app circus-dev
+
+heroku config:set VIA_PANAMA_VENDOR_JAMS_ID=453054985 --app circus-dev
+heroku config:set VIA_PANAMA_NO_AUTO_GENERATE_TEP_PO_JAMS=True --app circus-dev
+
+
+BASE_URL	http://localhost:8000
+
+
+LINKS_USE_HTTPS
+BASE_URL
+
+
+
+VIA_DVX_API_KEY
+VIA_DVX_BASE_URL
+
+VIA_JAMS_INTEGRATION
+VIA_JAMS_API_KEY
+VIA_JAMS_BASE_URL
+
+
+VIA_API_JAMS_WEBAPITEST
+VIA_API_JAMS_VS_DEBUG
+
+VIA_API_DVX_TEAMSERVER_USE_TM
+VIA_API_DVX_TEAMSERVER_USE_MT
+
+VIA_API_DVX_TEAMSERVER_DVX_TS_DEV
+VIA_API_DVX_TEAMSERVER_VS_DEBUG
+
+# Local
+DEBUG_DB_SQL_DEBUG
+
+
+
+# DO NOT USE ON CIRCUS-DEV as defaults to False
+# heroku config:set LINKS_USE_HTTPS= --app circus-dev
+
+
+*** RESETTING SOUTH *** DO NOT RUN UNLESS ABSOLUTELY SURE ***
+*** IGNORE TRANSACTION ERRORS ***
+heroku run python src/circus/manage.py sqlclear south --app circus-dev | psql -h ec2-107-21-106-181.compute-1.amazonaws.com -d de1b3f8i4dbea3 -U owgnqihhyxrbyn -p 5432
+heroku run python src/circus/manage.py sqlall south --app circus-dev | psql -h ec2-107-21-106-181.compute-1.amazonaws.com -d de1b3f8i4dbea3 -U owgnqihhyxrbyn -p 5432
+heroku run python src/circus/manage.py migrate --fake --app circus-dev
+
+
+ | psql -d circus -U django_login
+
+
+python manage.py schemamigration projects --auto
+python manage.py migrate 
+
+
+
+======================================================================================================================================
+======================================================================================================================================
+-- POSTGRESQL
+======================================================================================================================================
+======================================================================================================================================
+
+
+
+
+circus-dev :: bronze
+https://postgres.heroku.com/databases/circus-dev-bronze
+
+Connection Settings
+
+Host		ec2-54-83-204-244.compute-1.amazonaws.com
+Database	df6p21jeo664l8
+User		fkuwcnkdzxlgcs
+Port		5432
+Password	Vbd-yHTy038PBq1bB4cwJ6mAfM
+Psql		heroku pg:psql --app circus-dev bronze
+URL			postgres://fkuwcnkdzxlgcs:Vbd-yHTy038PBq1bB4cwJ6mAfM@ec2-54-83-204-244.compute-1.amazonaws.com:5432/df6p21jeo664l8
+
+Plan		Hobby-basic ($9)
+Status		Available
+Data Size	6.4 MB
+Tables		0
+PG Version	9.3.4
+Created		2014-08-14T18:39:00Z
+Rollback	Unsupported
+
+
+DATABASE_URL			postgres://fkuwcnkdzxlgcs:Vbd-yHTy038PBq1bB4cwJ6mAfM@ec2-54-83-204-244.compute-1.amazonaws.com:5432/df6p21jeo664l8
+
+-----------------------------------------
+Connection Settings: circus-dev :: mauve :: 20160106
+
+Host: ec2-54-197-230-161.compute-1.amazonaws.com
+Database: d5tpg84kp8p4q2
+User: bmfvdhmegyakid
+Port: 5432
+Password: Hide Zv3QOsj2cVBrENx9B8X9z1m2dk
+Psql: heroku pg:psql --app circus-dev HEROKU_POSTGRESQL_MAUVE
+URL: postgres://bmfvdhmegyakid:Zv3QOsj2cVBrENx9B8X9z1m2dk@ec2-54-197-230-161.compute-1.amazonaws.com:5432/d5tpg84kp8p4q2
+------------------------------------
+
+-----------------------------------------
+Connection Settings: circus-dev :: teal :: 20161126
+postgres://eyogsmbsmynccp:s4ZKDPwlKjOxoedScLznRbrJx7@ec2-23-21-76-49.compute-1.amazonaws.com:5432/dbndeov3s87vm0
+
+Host: ec2-23-21-76-49.compute-1.amazonaws.com
+Database: dbndeov3s87vm0
+User: eyogsmbsmynccp
+Port: 5432
+Password: s4ZKDPwlKjOxoedScLznRbrJx7
+URI: postgres://eyogsmbsmynccp:s4ZKDPwlKjOxoedScLznRbrJx7@ec2-23-21-76-49.compute-1.amazonaws.com:5432/dbndeov3s87vm0
+Heroku CLI:  heroku pg:psql DATABASE_URL --app circus-dev
+-----------------------------------------
+
+
+
+https://devcenter.heroku.com/articles/upgrading-heroku-postgres-databases
+http://stackoverflow.com/questions/14077145/upgrading-to-postgres-on-heroku
+https://devcenter.heroku.com/articles/heroku-postgres-backups
+
+https://github.com/hgmnz/heroku-pgupgrade
+
+
+Commands:
+
+heroku addons:add pgbackups	--app circus-dev
+
+
+Free
+heroku addons:add heroku-postgresql:hobby-dev --app circus-dev
+circus-dev :: red
+
+$9
+heroku addons:add heroku-postgresql:hobby-basic --app circus-dev
+circus-dev :: bronze
+
+
+heroku addons:create heroku-postgresql:hobby-basic --version=9.5 --app circus-dev
+
+
+
+
+=====================================
+Upgrade with pg:copy 
+=====================================
+
+heroku pg:wait --app circus-dev
+
+heroku maintenance:on --app circus-dev
+
+heroku ps:scale web=0 --app circus-dev
+
+heroku pg:copy DATABASE_URL HEROKU_POSTGRESQL_MAUVE --app circus-dev
+
+heroku pg:promote HEROKU_POSTGRESQL_MAUVE --app circus-dev
+
+heroku ps:scale web=1 --app circus-dev
+
+heroku maintenance:off --app circus-dev
+
+=====================================
+
+
+heroku pg:diagnose --app circus-dev
+
+heroku pg:info --app circus-dev
+
+
+heroku stack:set cedar-14 --app circus-dev
+heroku config:set MALLOC_ARENA_MAX=2 --app circus-dev
+
+
+======================================================================================================================================
+======================================================================================================================================
+-- Heroku Scheduler
+======================================================================================================================================
+======================================================================================================================================
+
+
+Scheduled Jobs
+
+https://heroku-scheduler.herokuapp.com/dashboard
+
+TASK						 							DYNO SIZE 	FREQUENCY 	LAST RUN 			NEXT RUN
+$ python python src/circus/manage.py do_notifications   1x  		Hourly  	Sep 05 23:51 UTC  	Sep 06 02:50 UTC
+$ python src/circus/manage.py cleanup					1x			Daily		Sep 05 05:30 UTC 	Sep 06 05:30 UTC
+
+
+======================================================================================================================================
+======================================================================================================================================
+-- Data Warehouse
+======================================================================================================================================
+======================================================================================================================================
+Dyno Type	Sleeps	Professional Features	Memory (RAM)	CPU Share	Dedicated	Compute
+free		yes	no			512MB		1x		no		1x-4x
+hobby		no	no			512MB		1x		no		1x-4x
+standard-1x	no	yes			512MB		1x		no		1x-4x
+standard-2x	no	yes			1024MB		2x		no		4x-8x
+performance-m	no	yes			2.5GB		100%		yes		11x
+performance-l	no	yes			14GB		100%		yes		46x
+--------------------
+
+heroku run python src/circus/manage.py clean_dwh_reports --app circus-dev
+heroku run python src/circus/manage.py refresh_dwh_reports --app circus-dev
+
+heroku run python src/circus/manage.py clean_dwh_reports --app via-translation-portal --size=performance-m
+heroku run python src/circus/manage.py refresh_dwh_reports --app via-translation-portal --size=performance-m
+
+heroku run python src/circus/manage.py clean_dwh_reports --app vtp-eu
+heroku run python src/circus/manage.py refresh_dwh_reports --app vtp-eu
+
+heroku run python src/circus/manage.py clean_dwh_reports --app vtp-walmart-us
+heroku run python src/circus/manage.py refresh_dwh_reports --app vtp-walmart-us
+
+heroku run python src/circus/manage.py clean_dwh_reports --app vtp-walmart-eu
+heroku run python src/circus/manage.py refresh_dwh_reports --app vtp-walmart-eu
+
+
+
+======================================================================================================================================
+======================================================================================================================================
+-- SOUTH
+======================================================================================================================================
+======================================================================================================================================
+
+
+python src/circus/manage.py migrate --list
+
+python src/circus/manage.py schemamigration services --auto
+
+python src/circus/manage.py datamigration services populate_vendor_types
+
+python src/circus/manage.py migrate

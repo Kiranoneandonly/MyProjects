@@ -1,0 +1,82 @@
+{% load i18n %}
+
+<h2 class="dashHead"><i class="fa fa-cog"></i> {% trans "Jobs" %}</h2>
+<div class="dashWidget getStartedWidget noPadding">
+    <ul class="stat-boxes">
+        <li>
+            <div class="right peity_bar_queued">
+                <a href="{% url 'client_project_status_list' 'queued' %}" class="peity_bar_queued">
+                <strong>{{ status.queued }}</strong>
+                {% trans "Queued" %}
+                </a>
+            </div>
+        </li>
+        <li>
+            <div class="right peity_bar_created">
+                <a href="{% url 'client_project_status_list' 'inestimate' %}" class="peity_bar_inestimate">
+                <strong>{{ status.inestimate }}</strong>
+                {% blocktrans %}In&nbsp;Estimate{% endblocktrans %}
+                </a>
+            </div>
+        </li>
+        <li>
+            <div class="right peity_bar_estimated">
+                <a href="{% url 'client_project_status_list' 'inapproval' %}" class="peity_bar_estimated">
+                <strong>{{ status.inapproval }}</strong>
+                {% blocktrans %}In&nbsp;Approval{% endblocktrans %}
+                </a>
+            </div>
+        </li>
+        <li>
+            <div class="right peity_bar_estimated">
+                <a href="{% url 'client_project_status_list' 'estimated' %}" class="peity_bar_estimated">
+                <strong>{{ status.estimated }}</strong>
+                {% trans "Estimated" %}
+                </a>
+            </div>
+        </li>
+        <li>
+            <div class="right peity_bar_active">
+                <a href="{% url 'client_project_status_list' 'active' %}" class="peity_bar_active">
+                <strong>{{ status.active }}</strong>
+                {% trans "Active" %}
+                </a>
+            </div>
+        </li>
+        <li>
+            <div class="right peity_bar_overdue">
+                <a href="{% url 'client_project_status_list' 'overdue' %}" class="peity_bar_overdue">
+                <strong>{{ status.overdue }}</strong>
+                {% trans "Overdue" %}
+                </a>
+            </div>
+        </li>
+        <li>
+            <div class="right peity_bar_delivered">
+                <a href="{% url 'client_project_status_list' 'delivered' %}" class="peity_bar_delivered">
+                <strong>{{ status.delivered }}</strong>
+                {% trans "Delivered" %}
+                </a>
+            </div>
+        </li>
+        <li>
+            <div class="right peity_bar_completed">
+                <a href="{% url 'client_project_status_list' 'completed' %}" class="peity_bar_completed">
+                <strong>{{ status.completed }}</strong>
+                {% trans "Completed" %}
+                </a>
+            </div>
+        </li>
+    </ul>
+    <div>
+        <a class="btn btn-inverse pull-right" href="{% url 'client_project_list' %}"><i class="fa fa-cog fa-white"></i> {% trans "All Jobs" %}</a>
+    </div>
+    <div>
+        <a class="btn btn-inverse pull-right" style="margin-right: 10px" href="{% url 'client_project_status_list' 'myjobs' %}"><i class="fa fa-heart"></i> {% trans "My Jobs" %}</a>
+    </div>
+    {% if secure_hierarchy %}
+        <div>
+            <a class="btn btn-inverse pull-right" style="margin-right: 10px" href="{% url 'requested_job_access' %}"><i class="fa fa-cog fa-white"></i> {% trans "Requested Jobs" %}</a>
+        </div>
+    {% endif %}
+</div>

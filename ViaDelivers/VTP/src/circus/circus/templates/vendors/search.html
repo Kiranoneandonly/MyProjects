@@ -1,0 +1,107 @@
+{% extends "vendors/theme_base.html" %}
+{% load i18n %}
+{% load humanize %}
+{% load currency_filter %}
+
+{% block content_header %}
+{% endblock %}
+
+{% block title %}{% trans "Job Search" %} | "{{ search_query }}" | VTP{% endblock %}
+
+{% block content_breadcrumb %}
+    <div class="breadcrumb">
+        <span>
+            <i class="fa fa-home"></i>
+            <a href="{% url 'vendor_dashboard' %}">{% trans "Home" %}</a>
+        </span>
+        <span class="divider"><i class="fa fa-chevron-right"></i></span>
+        <span class="active">
+            {% trans "Tasks" %}
+        </span>
+        <span class="divider"><i class="fa fa-chevron-right"></i></span>
+        <span class="active">
+            {% trans "Search" %}
+        </span>
+        {{ block.super }}
+    </div>
+{% endblock %}
+
+{% block content %}
+    <div class="row-fluid page-title">
+        <div class="span3">
+            <h1>Task Search &nbsp;&nbsp; "{{ search_query }}"</h1>
+        </div>
+    </div>
+    <div class="table-list unit-border">
+        <div class="row-fluid table-list-header table-list-item">
+            <div class="span2">
+                <i class="fa fa-briefcase"></i>
+                {% trans "Job" %}
+            </div>
+            <div class="span2">
+                <i class="fa fa-cog"></i>
+                {% trans "Service" %}
+            </div>
+            <div class="span2">
+                <i class="fa fa-flask"></i>
+                {% trans "Quantity" %}
+            </div>
+            <div class="span2">
+                <i class="fa fa-globe"></i>
+                {% trans "Source" %}
+            </div>
+            <div class="span2">
+                <i class="fa fa-crosshairs"></i>
+                {% trans "Target" %}
+            </div>
+            <div class="span2">
+                <i class="fa fa-clock-o"></i>
+                {% trans "Due" %}
+            </div>
+        </div>
+        {% for task in tasks %}
+            <div class="row-fluid task table-list-item" id="task{{task.id}}">
+                <div class="span2">
+                    <i class="fa fa-briefcase"></i>
+                    <a href="{% url 'vendor_task_detail' task.id %}">
+                        {{ task.project.job_number }}</a>
+                    </a>
+                </div>
+                <div class="span2">
+                    <i class="fa fa-cog"></i>
+                    {{ task.service.service_type }}
+                </div>
+                <div class="span2">
+                    <i class="fa fa-flask"></i>
+                    {{ task.quantity|floatformat:-2|intcomma }}
+                    {{ task.service.unit_of_measure }}
+                </div>
+                <div class="span2">
+                    <i class="fa fa-globe"></i>
+                    {{ task.service.source }}
+                </div>
+                <div class="span2">
+                    <i class="fa fa-crosshairs"></i>
+                    {{ task.service.target }}
+                </div>
+                <div class="span2">
+                    <i class="fa fa-clock-o"></i>
+                    {% if task.is_complete %}
+                        <span class="label label-completed">{{ task.completed_timestamp }}</span>
+                    {% else %}
+                        <span class="label label-{{ task.time_left_status }}">{{ task.due|naturaltime }}</span>
+                    {% endif %}
+                </div>
+            </div>
+        {% empty %}
+            <div class="row-fluid">
+                <div class="span10">
+                    {% trans "No Tasks" %}
+                </div>
+            </div>
+        {% endfor %}
+        <div class="back-to-top">
+        <a href="#content-header">{% trans "Back To Top" %}</a>
+        </div>
+    </div>
+{% endblock %}

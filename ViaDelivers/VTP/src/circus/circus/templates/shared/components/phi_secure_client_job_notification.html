@@ -1,0 +1,13 @@
+{% load i18n %}
+
+<div class="row-fluid">
+    <div class="span12">
+    <h4 class="alert alert-danger alert-display-always">
+        <i class="fa fa-user-md" title="{% trans "PHI Secure Job" %}"></i>
+        {% blocktrans %}PHI secure job{% endblocktrans %}
+        {% if phi_for_non_phi_secure_client %}
+            : !!! <i>This client does not have a BAA assigned</i> !!!
+        {% endif %}
+    </h4>
+    </div>
+</div>

@@ -1,0 +1,124 @@
+{% extends "vendors/theme_base.html" %}
+{% load i18n %}
+{% load humanize %}
+{% load bootstrap_pagination %}
+{% load currency_filter %}
+{% load comments_exist %}
+
+{% block content_header %}
+{% endblock %}
+
+{% block content_breadcrumb %}
+    <div class="breadcrumb">
+        <span>
+            <i class="fa fa-home"></i>
+            <a href="{% url 'vendor_dashboard' %}">{% trans "Home" %}</a>
+        </span>
+        <span class="divider"><i class="fa fa-chevron-right"></i></span>
+        <span class="active">
+            {% trans "Tasks" %}
+        </span>
+        <span class="divider"><i class="fa fa-chevron-right"></i></span>
+        <span class="active">
+            {{ current_status_name }}
+        </span>
+        {{ block.super }}
+    </div>
+{% endblock %}
+
+{% block content %}
+    <ul class="vendor-nav clearfix">
+        {% include 'vendors/_task_status_links.html' %}
+    </ul>
+    <div class="table-list unit-border">
+        <div class="row-fluid table-list-header table-list-item">
+            <div class="span1">
+                <i class="fa fa-briefcase" title="{% trans "Job" %}"></i>
+            </div>
+            {% if can_access_phi_secure_job %}
+            <div class="span1">
+                <i class="fa fa-user-md" title="{% trans "PHI Secure Jobs" %}"></i>
+            </div>
+            {%  endif %}
+            <div class="span1">
+                <i class="fa fa-comments-o" title="{% trans "Messages" %}"></i>
+            </div>
+            <div class="span2">
+                <i class="fa fa-cog" title="{% trans "Service" %}"></i>
+            </div>
+            <div class="span2">
+                <i class="fa fa-flask" title="{% trans "Quantity" %}"></i>
+            </div>
+            <div class="span2">
+                <i class="fa fa-globe" title="{% trans "Source" %}"></i>
+            </div>
+            <div class="span2">
+                <i class="fa fa-crosshairs" title="{% trans "Target" %}"></i>
+            </div>
+            <div class="span2">
+                <i class="fa fa-clock-o" title="{% trans "Due" %}"></i>
+            </div>
+        </div>
+        {% for task in tasks_status %}
+            <div class="row-fluid task table-list-item" id="task{{task.id}}">
+                <div class="span1">
+                    <i class="fa fa-briefcase"></i>
+                    <a href="{% url 'vendor_task_detail' task.id %}">
+                        {{ task.project.job_number }}</a>
+                </div>
+                {% if can_access_phi_secure_job %}
+                <div class="span1">
+                    {% if task.project.is_phi_secure_job %}
+                            <i class="fa fa-user-md" title="PHI Secure Job" style="display:inline-block"></i>
+                    {% endif %}
+                </div>
+                {% endif %}
+                <div class="span1">
+                    {% vendor_comments_exist task.project.id as comments %}
+                    {% if comments %}
+                        <i class="fa fa-briefcase"></i>
+                        <a href="{% url 'vendor_task_detail' task.id %}" >
+                            <i class="fa fa-comments-o" title="Job Messages" style="display:inline-block"></i>  </a>
+                    {% endif %}
+                </div>
+                <div class="span2">
+                    <i class="fa fa-cog"></i>
+                    {{ task.service.service_type }}
+                </div>
+                <div class="span2">
+                    <i class="fa fa-flask"></i>
+                    {{ task.quantity|floatformat:-2|intcomma }}
+                    {{ task.service.unit_of_measure }}
+                </div>
+                <div class="span2">
+                    <i class="fa fa-globe"></i>
+                    {{ task.service.source }}
+                </div>
+                <div class="span2">
+                    <i class="fa fa-crosshairs"></i>
+                    {{ task.service.target }}
+                </div>
+                <div class="span2">
+                    <i class="fa fa-clock-o"></i>
+                    {% if task.is_complete %}
+                        <span class="label label-completed">{{ task.completed_timestamp }}</span>
+                    {% else %}
+                        <span class="label label-{{ task.time_left_status }}">{{ task.due|naturaltime }}</span>
+                    {% endif %}
+                </div>
+            </div>
+        {% empty %}
+            <div class="row-fluid">
+                <div class="span10">
+                    {% trans "No Tasks" %}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+    <div class="pagination pagination-centered">
+    {% bootstrap_paginate tasks_status range=10 centered="true" %}
+    </div>
+{% endblock %}
+{% block script %}
+{% endblock %}

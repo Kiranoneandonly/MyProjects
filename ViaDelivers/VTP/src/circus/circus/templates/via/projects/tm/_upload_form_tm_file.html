@@ -1,0 +1,10 @@
+{% load bootstrap %}
+{% load i18n %}
+{% load humanize %}
+
+<div id="tm-upload-{{ trans_kit.id }}" class="delivery-form">
+        <h3>{% trans "Upload Tm file" %}</h3>
+        <p></p>
+        <p>{% trans "Please upload Tm file " %} {{ trans_kit.tm_update_file_name }}</p>
+        {{ trans_kit.via_tm_file_upload_form.as_form_html }}
+</div>

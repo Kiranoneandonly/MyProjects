@@ -1,0 +1,21 @@
+{% extends "shared/external/theme_base.html" %}
+{% load i18n %}
+{% load bootstrap %}
+
+{% block title %}{% trans "Unknown Activation" %}{% endblock %}
+
+{% block css %}{% endblock %}
+{% block search_menu %}{% endblock %}
+{% block login_menu %}{% endblock %}
+{% block content_breadcrumb %}{% endblock %}
+{% block navbar_menu %}{% endblock %}
+
+{% block content_header %}
+    <h1>{% blocktrans %}Could not find Activation{% endblocktrans %}</h1>
+{% endblock %}
+
+{% block content %}
+    <p>{% blocktrans %}The activation link you followed didn't match any accounts.{% endblocktrans %}</p>
+    <p>{% blocktrans %}Please contact <a href="{{ contactus_form }}" target="_blank">VIA</a> if you need assistance.{% endblocktrans %}</p>
+{% endblock %}
+

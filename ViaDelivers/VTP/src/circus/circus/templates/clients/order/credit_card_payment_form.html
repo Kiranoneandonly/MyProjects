@@ -1,0 +1,86 @@
+{% extends "shared/external/theme_base.html" %}
+{% load i18n %}
+{% load bootstrap %}
+{% load currency_filter %}
+
+{% block title %}{% trans "Pay with Credit Card" %}{% endblock %}
+
+{% block css %}
+    <!--suppress CheckImageSize -->
+    <link rel="stylesheet" href="{{ STATIC_URL }}clients/css/orders.css" type="text/css" media="all"/>
+{% endblock %}
+
+{% block content_breadcrumb %}
+    <div class="breadcrumb clearfix">
+        <span><i class="fa fa-home"></i></span>
+        <span><a href="{% url 'client_dashboard' %}">{% trans "Home" %}</a></span>
+        <span class="divider"><i class="fa fa-chevron-right"></i></span>
+        <span><a href="{% url 'client_quote' project.id %}">{% trans "Job:" %} {{ project.job_number }}</a></span>
+        <span class="divider"><i class="fa fa-chevron-right"></i></span>
+        <span class="active">{% blocktrans %}Pay with Credit Card{% endblocktrans %}</span>
+        {{ block.super }}
+    </div>
+{% endblock %}
+
+{% block content_header %}
+    <h3>{{ project.job_number }}<small> {{ project.name }}</small></h3>
+    <hr class="soften"/>
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="span12">
+                {% if already_paid %}
+                    <p>{% blocktrans %}There is already a credit card payment on record for this project.{% endblocktrans %}</p>
+                    <p>{% blocktrans %}Order ID{% endblocktrans %} <code class="pnref">{{ project.payment_details.cc_response_auth_code }}</code>.</p>
+                {% else %}
+                <form novalidate class="cc_form form-horizontal span6" method="post">
+                    {% csrf_token %}
+                    <p><i>{% blocktrans %}We accept American Express, Discover, MasterCard, and VISA.{% endblocktrans %}</i></p>
+                    <p>
+                        <img alt="amex" title="amex" id="amex" border="0" height="36" src="{{ STATIC_URL }}shared/img/amex.gif">
+                        <img alt="discover" title="discover" id="discover" border="0" height="36" src="{{ STATIC_URL }}shared/img/discover.gif">
+                        <img alt="mc" title="mc" id="mc" border="0" height="36" src="{{ STATIC_URL }}shared/img/mc.gif">
+                        <img alt="visa" title="visa" id="visa" border="0" height="36" src="{{ STATIC_URL }}shared/img/visa.gif">
+                    </p>
+
+                    {{ cc_form|bootstrap_horizontal }}
+
+                    <div class="form-group">
+                        {# col sizes copied from bootstrap-rendered form #}
+                        <span class="control-label price-label col-sm-2 col-lg-2">{% blocktrans %}Total Price{% endblocktrans %}</span>
+                        <div class="price col-sm-10 col-lg-10">
+                            {{ price|currency }}
+                        </div>
+                    </div>
+
+                    <input type="hidden" name="price" value="{{ price }}" />
+
+                    <div class="form-actions">
+                        <button type="submit" name="cancel" class="btn">
+                            {% blocktrans %}Return to Estimate{% endblocktrans %}
+                        </button>
+                        <button type="submit" name="charge"
+                                class="btn btn-primary disable_after_click"><i
+                                class="fa fa-credit-card"></i>
+                            {% blocktrans %}Charge Card{% endblocktrans %}
+                        </button>
+                    </div>
+
+                    <div>{% blocktrans %}PLEASE NOTE: Verisign credit card processing only supports the US-English character set. In order to ensure that your transaction is processed correctly, please refrain from using international characters in the above fields.{% endblocktrans %}</div>
+                    <br/>
+                    <div>{% url 'terms_via' as terms_url %}
+                        {% blocktrans %}I agree that by clicking on the Charge Card button, I have read and understood VIA's <a href="{{ terms_url }}" target="_blank">Terms and Conditions</a> and authorize VIA to process my order.{% endblocktrans %}</div>
+                </form>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <br/><br/><br/>
+{% endblock %}
+
+
+{% block script %}
+    <script type="text/javascript" src="{{ STATIC_URL }}shared/js/disable_after_click.js"></script>
+{% endblock %}

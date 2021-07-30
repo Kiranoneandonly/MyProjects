@@ -1,0 +1,171 @@
+{% extends "via/projects/detail/base.html" %}
+{% load bootstrap %}
+{% load i18n %}
+
+{% block content %}
+{% if can_access_secure_job %}
+    {% if can_edit_job and project.show_transitions_header_task %}
+        {% include 'via/projects/detail/_transitions_header.html' %}
+    {% endif %}
+    <div class="tabbable tabs-left"> <!-- Only required for left/right tabs -->
+        {% for target in project_target_locales.targets %}
+            {% if forloop.first %}
+            <ul class="nav nav-tabs">
+                <li class="active"><a href="#tasks" data-toggle="tab"><i class="fa fa-tasks"></i> <b>{% trans "Languages" %}</b></a></li>
+            {% endif %}
+                <li>
+                    <a href="#{{ target.id }}" data-toggle="tab">{{ target }}
+                    {% if target.is_workflow_all_completed %}
+                        <i class="fa fa-check-square" title="{% trans "Completed" %}"></i>
+                    {% elif target.has_issues  %}
+                        <i class="fa fa-exclamation-triangle" title="{% trans "Warnings" %}"></i>
+                    {% elif target.has_started  %}
+                        <i class="fa fa-bolt" title="{% trans "Active" %}"></i>
+                    {% elif target.has_not_started  %}
+                        <i class="fa fa-magic" title="{% trans "Need to Start Workflow" %}"></i>
+                    {% else %}
+                        {# nada #}
+                    {% endif %}
+                    </a>
+                </li>
+            {% if forloop.last %}
+                <li>
+                    <a class="btn-inverse" href="{% url 'via_job_detail_tasks_view'  project.id 0 %}"><i class="fa fa-tasks"></i> {% trans "Group by Tasks" %}</a>
+                </li>
+            </ul>
+            {% endif %}
+        {% empty %}
+            <li class="list-box">
+                <p>{% trans "No Tasks" %}</p>
+            </li>
+        {% endfor %}
+
+        {% for target in project_target_locales.targets %}
+            {% if forloop.first %}
+            <div class="tab-content">
+                <div class="tab-pane active" id="tasks">
+                    <div class="row-fluid widget-row">
+                        <div class="span3">
+                            <div class="row-fluid">
+                                <!--Job Tasks Counts-->
+                                <div class="dashWidget noPadding">
+                                    <div class="table-list unit-border table-hover">
+                                        <div class="row-fluid table-list-header">
+                                            <div class="span10">
+                                                <i class="fa fa-tasks" title="{% trans "Status" %}"></i>
+                                            </div>
+                                            <div class="span2">
+                                                <i class="fa fa-tachometer" title="{% trans "Count" %}"></i>
+                                            </div>
+                                        </div>
+                                        {% for status, status_detail in my_tasks.statuses.iteritems %}
+                                            <div class="row-fluid" style="font-size: 15px;">
+                                                <div class="span10">
+                                                    <i class="{{ status_detail.icon }}"></i><b title="{{ status_detail.description }}">{{ status_detail.name }} {% trans "Tasks" %}</b>
+                                                </div>
+                                                <div class="span2" style="font-size: 20px;">
+                                                    {{ status_detail.tasks.count }}
+                                                </div>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                    <div>
+                                        <hr class="soften" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="span9">
+                            <div class="row-fluid">
+                                <div class="dashWidget noPadding">
+                                    {% if project_target_locales.targets|length > 1 %}
+                                        <div class="row-fluid">
+                                            <form novalidate action="" method="get">
+                                                <label style="display: inline;font-size: 20px;margin-left: 33px">Language:</label>
+                                                  <select id="target" name="target">
+                                                      <option value="0">--</option>
+                                                      {% for target in project_target_locales.targets %}
+                                                          <option value="{{ target.id }}" {% if target.id == target_selected_id %} selected{% endif %}>{{ target }}</option>
+                                                      {% endfor %}
+                                                  </select>
+                                                <button type="submt" id="Go" class="btn btn-inverse">{% blocktrans %}Go{% endblocktrans %}</button>
+                                                <a href="{% url 'via_job_detail_tasks' project.id %}"><i class="fa fa-times-circle-o" title="{% trans "Clear Language Filter" %}"></i></a>
+                                            </form>
+                                        </div>
+                                    {% endif %}
+                                    <div class="row-fluid" style="border-top: 0px">
+                                        {% include "via/calendar_view.html" %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+                <div class="tab-pane" id="{{ target.id }}">
+                    {% for task in target.tasks %}
+                        {% if task.service.service_type.workflow %}
+                            {% include "via/projects/tasks/_task_block.html" %}
+                        {% endif %}
+                    {% empty %}
+                        <li class="list-box">
+                            <p>{% trans "No Tasks" %}</p>
+                        </li>
+                    {% endfor %}
+                </div>
+            {% if forloop.last %}
+            </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+    <br/><br/>
+{% endif %}
+{% endblock %}
+
+{% block script %}
+    <script src="{{ STATIC_URL }}shared/js/jquery.lightbox_me.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}via/js/transitions_header.js"></script>
+    <script src="{{ STATIC_URL }}shared/js/bootstrap-rating-input.js"></script>
+
+    {{ block.super }}
+    <script>
+        $(document).ready(function () {
+            $('.cancel-task-btn').click(function(e) {
+                var task_id = $(this).attr('id').split('-').pop();
+                $('#cancel-task-' + task_id).lightbox_me({
+                    centered: true,
+                    onLoad: function() {
+                        //
+                    }
+                });
+                e.preventDefault();
+            });
+            $('.reassign-task-btn').click(function(e) {
+                var task_id = $(this).attr('id').split('-').pop();
+                $('#reassign-task-' + task_id).lightbox_me({
+                    centered: true,
+                    onLoad: function() {
+                        //
+                    }
+                });
+                e.preventDefault();
+            });
+            $('.dismiss-lightbox').click(function(e) {
+                $(this).parent().trigger('close');
+            });
+            $('input.rating').each(function(){
+            	$(this).on('change',function(){
+            		var formd = $(this.form);
+            		$.post('{{ request.path }}', formd.serialize(), function(data){
+            		if($.parseJSON(data).message=='Saved'){
+            			$('<span class="task_rating_message label label-success ">{% trans "Saved" %}</span>' ).insertBefore( formd.children().find('.rating') ).fadeOut(1000,function(){ $(this).remove(); });
+            		}else{
+            			$('<span class="task_rating_message label label-danger ">{% trans "Error" %}</span>' ).insertBefore( formd.children().find('.rating') ).fadeOut(1000,function(){ $(this).remove(); });
+            		}
+			       });
+            	});
+            });
+        });
+    </script>
+{% endblock %}

@@ -1,0 +1,32 @@
+{% extends "via/theme_base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "File Analysis" %}{% endblock %}
+
+{% block content_header %}
+{% endblock %}
+
+{% block content %}
+    <div class="row-fluid">
+        <div class="span4 offset4">
+            <p>{% trans "File:" %} {{ analysis.asset.name }}</p>
+            <p>{% trans "Source locale:" %} {{ analysis.source_locale }}</p>
+            <p>{% trans "Target locale:" %} {{ analysis.target_locale }}</p>
+            <p>{% trans "Page count:" %} {{ analysis.page_count }}</p>
+            <p>{% trans "Image count:" %} {{ analysis.image_count }}</p>
+            <br/>
+            <p>{% trans "Guaranteed:" %} {{ analysis.guaranteed }}</p>
+            <p>{% trans "Exact:" %} {{ analysis.exact }}</p>
+            <p>{% trans "Duplicate:" %} {{ analysis.duplicate }}</p>
+            <p>{% trans "Fuzzy (95-99):" %} {{ analysis.fuzzy9599 }}</p>
+            <p>{% trans "Fuzzy (85-94):" %} {{ analysis.fuzzy8594 }}</p>
+            <p>{% trans "Fuzzy (75-84):" %} {{ analysis.fuzzy7584 }}</p>
+            <p>{% trans "Fuzzy (50-74):" %} {{ analysis.fuzzy5074 }}</p>
+            <p>{% trans "No match:" %} {{ analysis.no_match }}</p>
+            <br/>
+            <p>{% trans "Note:" %} {{ analysis.message }}</p>
+            <a href="{% url 'via_job_detail_estimate' analysis.asset.kit.project.id %}" class="btn">{% trans "Done" %}</a>
+        </div>
+    </div>
+    <br/>
+{% endblock %}

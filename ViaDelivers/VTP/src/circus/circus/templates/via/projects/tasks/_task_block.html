@@ -1,0 +1,493 @@
+{% load i18n %}
+{% load humanize %}
+{% load get_item %}
+
+<li class="list-box task-status-{{ task.display_status }}">
+    <div class="row-fluid">
+        {% if task.is_subtask %}
+        <div class="span2 offset1">
+            <div class="task-service-info-sub">
+        {% else %}
+        <div class="span3">
+            <div class="task-service-info">
+        {% endif %}
+            {% if task.billable %}
+                <i class="fa fa-tag" title="{% trans "billable" %}"></i>
+            {% else %}
+                <i class="fa fa-ban" title="{% trans "not billable" %}"></i>
+            {% endif %}
+            {% if can_edit_job and task.is_final_approval_ready %}
+                <a href="{% url 'via_approve_task' task.id %}" class="btn btn-success">{% blocktrans %}Make Delivery{% endblocktrans %}</a>
+            {% endif %}
+                <a href="{% url 'projects_tasks_edit' task.id %}">
+                {{ task.service.service_type }}
+                {% if task.project.internal_via_project %}
+                    {% if task.actual_hours %}
+                        : {{ task.actual_hours|floatformat:-2|intcomma }} {{ task.service.unit_of_measure }}
+                    {% else %}
+                        : {{ task.quantity|floatformat:-2|intcomma }} {{ task.service.unit_of_measure }}
+                    {% endif %}
+                {% else %}
+                    {% if task.quantity %}
+                        : {{ task.quantity|floatformat:-2|intcomma }} {{ task.service.unit_of_measure }}
+                    {% endif %}
+                {% endif %}
+                </a>
+                {% if can_edit_job and task.is_final_approval_ready %}
+                    <a href="{% url 'via_approve_task' task.id %}" class="btn btn-success"><i class="fa fa-truck"></i> {% blocktrans %}Make Delivery{% endblocktrans %}</a>
+                {% endif %}
+            </div>
+            <div>
+                {% if task.is_complete %}
+                    <i class="fa fa-flag-checkered" title="{% trans "Completed Task" %}"></i>
+                {% elif task.is_pending %}
+                   <i class="fa fa-bell" title="{% trans "Pending Task" %}"></i>
+                {% elif task.is_upcoming %}
+                    <i class="fa fa-clock-o" title="{% trans "Upcoming Task" %}"></i>
+                {% elif task.is_overdue %}
+                    <i class="fa fa-frown-o" title="{% trans "Overdue Task" %}"></i>
+                {% elif task.is_active %}
+                    <i class="fa fa-bolt" title="{% trans "Active Task" %}"></i>
+                {% elif task.is_created %}
+                    <i class="fa fa-bell" title="{% trans "Created Task" %}"></i>
+                {% elif task.is_canceled_status %}
+                    <i class="fa fa-ban" title="{% trans "Canceled Task" %}"></i>
+                {% endif %}
+
+                {{ task.service.source }} {% trans "to" %} {{ task.service.target }}
+            </div>
+            <div>
+                {% if task.project.is_express_speed %}
+                    <i class="fa fa-rocket" title="Express"></i> {{ task.express_days }}
+                {% else %}
+                    <i class="fa fa-truck" title="Standard"></i> {{ task.standard_days }}
+                {% endif %}
+            </div>
+        {% if task.is_translation_task_parent %}
+            <div class="row-fluid">
+                <form action="{% url 'via_job_detail_tasks' task.project.id %}" method="post">
+                {% csrf_token %}
+                <input id="ptask-id" name="task-id" type="hidden" value="{{ task.id }}">
+                {#  Agency mode and Freelancer mode buttons based on Translation task  #}
+                {% if task.has_sub_tasks %}
+                    {% if task.is_complete %}
+                        <i class="fa fa-cube"></i> {% blocktrans %}Freelancer Mode{% endblocktrans %}
+                    {% else %}
+                        <input id="delete-sub-tasks" name="delete-sub-tasks" type="hidden" value="{{ task.id }}">
+                        <button type="button" class="btn btn-warning confirm_submit" title="{% blocktrans %}Convert to Agency Mode{% endblocktrans %}"><i class="fa fa-cube"></i> {% blocktrans %}Freelancer Mode{% endblocktrans %}</button>
+                    {% endif %}
+                {% else %}
+                    {% if task.is_complete %}
+                        <i class="fa fa-cubes"></i> {% blocktrans %}Agency Mode{% endblocktrans %}
+                    {% else %}
+                        <input id="parent-task-id" name="parent-task-id" type="hidden" value="{{ task.id }}">
+                        <button type="button" class="btn btn-info confirm_submit" title="{% blocktrans %}Convert to Freelancer Mode{% endblocktrans %}"><i class="fa fa-cubes"></i> {% blocktrans %}Agency Mode{% endblocktrans %}</button>
+                    {% endif %}
+                {% endif %}
+                </form>
+            </div>
+        {% endif %}
+        </div>
+        <div class="span2 assignee-info">
+            <div>
+                {% trans "Assigned:" %}
+                {% if not task.assigned_to %}
+                    <i class="fa fa-exclamation-triangle"></i> {% trans "None" %}
+                {% else %}
+                    {% if task.assigned_to.get_absolute_url %}
+                        <a href="{{ task.assigned_to.get_absolute_url }}" title="{{ task.assigned_to }}" target="_blank">{{ task.assigned_to|truncatechars:25 }}</a>
+                    {% else %}
+                        {{ task.assigned_to|truncatechars:20  }}
+                    {% endif %}
+                    (<a href="mailto:{{ task.assigned_to.contact_mail }}" target="_blank">{% trans "contact" %}</a>)
+                {% endif %}
+            </div>
+            <div class="secondary-assignee-info">
+                {% if task.is_complete %}
+                    <i class="fa fa-check"></i> {% trans "Complete" %}
+                {% elif task.is_accepted %}
+                    <i class="fa fa-check"></i> {% trans "Accepted" %}
+                    {{ task.accept }}
+                {% else %}
+                    {% if task.project.show_start_workflow %}
+                        <i class="fa fa-exclamation-triangle"></i> {% trans "Workflow not started" %}
+                    {% elif task.is_complete_canceled %}
+                        <!-- complete / canceled -->
+                    {% elif task.response_is_late %}
+                       <i class="fa fa-exclamation-triangle"></i> {% trans "Response is overdue" %}
+                    {% else %}
+                        <i class="fa fa-clock-o"></i> {% trans "Waiting for acceptance" %}
+                    {% endif %}
+
+                    <span class="label label-{{ task.response_left_status }}"> {{ task.respond_by|naturaltime }}</span>
+                {% endif %}
+            </div>
+            <div class="secondary-assignee-info">
+                {% if task.po %}
+                    {% blocktrans %}PO #:{% endblocktrans %} <a href="{% url 'projects_tasks_edit' task.id %}">{{ task.po.number  }}</a>
+                    <a href="{% url 'finance_vendor_po' task.po.id %}" target="_blank"><i class="icon-download"></i></a>
+                {% endif %}
+            </div>
+            {% if task.actual_hours and task.project.delay_job_po %}
+                    {% blocktrans %}Actual Hours:{% endblocktrans %} {{ task.actual_hours  }}
+            {% endif %}
+        </div>
+        <div class="span3 task-date">
+            <div class="task-date-scheduled">
+                <div class="task-date-header row-fluid">
+                    <div class="span6">{% trans "SCHED START" %}</div>
+                    <div class="span5 offset1">{% trans "SCHED END" %}</div>
+                </div>
+                <div class="task-date-body row-fluid">
+                    <div class="span6">
+                        {{ task.scheduled_start_timestamp|date:"M d Y" }} {{ task.scheduled_start_timestamp|time:"H:i" }}
+                    </div>
+                    <div class="span5 offset1">
+                        {{ task.due|date:"M d Y" }} {{ task.due|time:"H:i" }}
+                    </div>
+                </div>
+            </div>
+            {% if task.started_timestamp %}
+            <div class="task-date-actual">
+                <div class="task-date-header row-fluid">
+                    <div class="span6">{% trans "ACTUAL START" %}</div>
+                    <div class="span5 offset1">{% trans "ACTUAL END" %}</div>
+                </div>
+                <div class="task-date-body row-fluid">
+                    <div class="span6">
+                        {{ task.started_timestamp|date:"M d Y" }} {{ task.started_timestamp|time:"H:i" }}
+                    </div>
+                    <div class="span5 offset1">
+                        {{ task.completed_timestamp|date:"M d Y" }} {{ task.completed_timestamp|time:"H:i" }}
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+        <div class="span3">
+            <div class="row-fluid">
+                <div class="span6">
+                    {% if not task.completed_timestamp %}
+                        <span class="label label-{{ task.time_left_status }}">{{ task.due|naturaltime }}</span>
+                    {% else %}
+                        <span class="label label-completed">{{ task.completed_timestamp }}</span>
+                    {% endif %}
+                </div>
+                {% if task.is_complete and task.is_billable %}
+                <div class="span6">
+                     <div class="row-fluid">
+                         <div class="span12">
+                            <b>{% trans "Rating:" %}</b><br>
+                            <form action="" id="task_rating_form" class="task_rating_form" method="post">
+                                {% csrf_token %}
+                                <input class="rating hidden" data-active-icon="fa-star" data-icon-lib="fa"
+                                       data-inactive-icon="fa-star-o" data-max="5" data-min="1"
+                                       id="id_rating" name="rating" type="number" value={{ task.rating|default_if_none:"0" }}>
+                                <input type="hidden" name="TaskId" class="rating_task_id"
+                                       data-rating="{{ task.rating }}" value="{{ task.id }}"/>
+                                <input type="hidden" name="task_rating_form" value="1"/>
+                            </form>
+                            <!--<div class=" ratingalert label-success">
+                            </div>-->
+                        </div>
+
+                     </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% if can_edit_job %}
+    <div class="row-fluid">
+        {% if task.is_translation %}
+            {% with trans_kit=task.trans_kit %}
+                <hr class="clear"/>
+                <div class="row-fluid">
+                    {% if task.is_subtask %}
+                        <div class="span2 offset1">
+                    {% else %}
+                        <div class="span3">
+                    {% endif %}
+                    <b>{% trans "Input:" %}</b>
+                    {% if task.notes %}
+                        <a href="#modal_input_{{task.id}}"  class="" style="display:inline-block" data-toggle="modal"><h4 style="margin:0px" ><i class="fa fa-comments-o"  title="{% trans "Task Instructions" %}"></i></h4></a>
+                            <div id="modal_input_{{task.id}}" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+							  <div class="modal-header">
+							    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+							    <h3 id="myModalLabel">Task Instructions</h3>
+							  </div>
+							  <div class="modal-body">
+							    {{task.notes|safe}}
+							  </div>
+							</div>
+                    {% endif %}
+                    </div>
+                    <div class="span4"><b>{% trans "Output:" %}</b>
+                    {% if task.vendor_notes %}
+                        <a href="#modal{{task.id}}"  class="" style="display:inline-block" data-toggle="modal"><h4 style="margin:0px" ><i class="fa fa-comments-o"  title="{% trans "Supplier Delivery Notes" %}"></i></h4></a>
+                            <div id="modal{{task.id}}" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+							  <div class="modal-header">
+							    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+							    <h3 id="myModalLabel">Supplier Delivery Notes</h3>
+							  </div>
+							  <div class="modal-body">
+							    <pre>{{task.vendor_notes}}</pre>
+							  </div>
+							</div>
+                    {% endif %}
+                    </div>
+                    <div class="span2"><b>{% trans "Support:" %}</b></div>
+                    <div class="span2"><b>{% trans "Reference:" %}</b></div>
+                </div>
+                <div class="row-fluid">
+                    {% if task.is_subtask %}
+                        <div class="span2 offset1">
+                    {% else %}
+                        <div class="span3">
+                    {% endif %}
+                        {% if trans_kit.input_file %}
+                            <a href="{% url 'download_tasklocaletranslationkit_in_file' task.id trans_kit.id %}" title="{{ trans_kit.input_file_name  }}">{{ trans_kit.input_file_name |truncatechars:30 }} <i class="fa fa-download"></i></a>
+                        {% elif task.project.kit.pretranslating_or_prepping %}
+                            <div class="row-fluid">
+                                <p><i class="fa fa-refresh fa-spin"></i> {% trans "Refreshing Loc Kit" %}</p>
+                            </div>
+                            <br/>
+                        {% else %}
+                            {% blocktrans %}Not Available{% endblocktrans %}
+                        {% endif %}
+                    </div>
+                    <div class="span4">
+                        {% if trans_kit.output_file %}
+                            <a href="{% url 'download_tasklocaletranslationkit_out_file' task.id trans_kit.id %}" title="{{ trans_kit.output_file_name  }}">{{ trans_kit.output_file_name |truncatechars:30 }} <i class="fa fa-download"></i></a>
+                        {% else %}
+                            {% blocktrans %}Not Available{% endblocktrans %}
+                        {% endif %}
+                    </div>
+                    <div class="span2">
+                        {% if trans_kit.support_file %}
+                            <a href="{% url 'download_tasklocaletranslationkit_sup_file' task.id trans_kit.id %}" title="{{ trans_kit.support_file_name }}">{{ trans_kit.support_file_name|truncatechars:20 }} <i class="fa fa-life-ring"></i></a>
+                        {% else %}
+                            {% blocktrans %}Not Available{% endblocktrans %}
+                        {% endif %}
+                    </div>
+                    <div class="span2">
+                        {% if task.reference_file %}
+                            <a href="{{ task.reference_file.url }}" title="{{ task.reference_file }}">{{ task.reference_file_name|truncatechars:20 }} <i class="fa fa-download"></i></a>
+                        {% else %}
+                            {% blocktrans %}Not Available{% endblocktrans %}
+                        {% endif %}
+                    </div>
+                </div>
+            {%  endwith %}
+        {% elif task.localized_assets.count or task.reference_file %}
+            <hr class="clear"/>
+            <div class="row-fluid">
+                <div class="span8">
+                    <!-- input/output files -->
+                    {% if task.localized_assets.count > 0 %}
+                        <div class="row-fluid">
+                            <div class="span6"><b>{% trans "Input:" %}</b>
+                                {% if task.notes %}
+                                    <a href="#modal_input_{{task.id}}"  class="" style="display:inline-block" data-toggle="modal"><h4 style="margin:0px" ><i class="fa fa-comments-o"  title="{% trans "Task Instructions" %}"></i></h4></a>
+                                        <div id="modal_input_{{task.id}}" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                                          <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+                                            <h3 id="myModalLabel">Task Instructions</h3>
+                                          </div>
+                                          <div class="modal-body">
+                                            {{task.notes|safe}}
+                                          </div>
+                                        </div>
+                                {% endif %}
+                            </div>
+                            <div class="span6"><b>{% trans "Output:" %}</b>
+                            <div class="span4"><b>{% trans "Source:" %}</b></div>
+                            <div class="span4"><b>{% trans "Input:" %}</b></div>
+                            <div class="span4"><b>{% trans "Output:" %}</b>
+                                {% if task.vendor_notes %}
+                                    <a href="#modal{{task.id}}"  class="" style="display:inline-block" data-toggle="modal"><h4 style="margin:0px" ><i class="fa fa-comments-o"  title="{% trans "Supplier Delivery Notes" %}"></i></h4></a>
+                                    <div id="modal{{task.id}}" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                                      <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+                                        <h3 id="myModalLabel">Supplier Delivery Notes</h3>
+                                      </div>
+                                      <div class="modal-body">
+                                        <pre>{{task.vendor_notes}}</pre>
+                                      </div>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% endif %}
+                    {% for la in task.localized_assets.all %}
+                        <div class="row-fluid">
+                            <div class="span4">
+                                <div class="row-fluid">
+                                    <div class="span12">
+                                        {% if la.source_asset %}
+                                            <a href="{% url 'download_asset' task.project.id  la.source_asset.id %}" title="{{ la.source_asset.orig_name }}">{{ la.source_asset.orig_name|truncatechars:50 }} <i class="fa fa-download"></i></a>
+                                        {% else %}
+                                            {% blocktrans %}--{% endblocktrans %}
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span4">
+                                <div class="row-fluid">
+                                    <div class="span12">
+                                        {% if la.input_file %}
+                                        <a href="{% url 'download_tasklocalizedasset_in_file' task.id la.id %}" title="{{ la.input_file_name }}">
+                                            {{ la.input_file_name|truncatechars:40 }} <i class="fa fa-download"></i>
+                                        </a>
+                                        {% else %}
+                                        {% blocktrans %}--{% endblocktrans %}
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span4">
+                                {% if la.output_file %}
+                                    <div class="row-fluid">
+                                        {% if task.is_final_approval %}
+                                        <div class="span1">
+                                            {% if la.via_approved %}
+                                                <i class="fa fa-thumbs-up text-success" title="{% trans "Approved" %}"></i>
+                                            {% else %}
+                                                <i class="fa fa-thumbs-down text-warning" title="{% trans "Unapproved" %}"></i>
+                                            {% endif %}
+                                        </div>
+                                        {% endif %}
+                                        <div class="span11">
+                                            <a href="{% url 'download_tasklocalizedasset_out_file' task.id la.id %}" title="{{ la.output_file_name }}">
+                                                {{ la.output_file_name|truncatechars:40 }} <i class="fa fa-download"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                {% else %}
+                                    {% blocktrans %}--{% endblocktrans %}
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% endfor %}
+                    {% if task.localized_assets.all|length > 1 %}
+                    <div class="row-fluid">
+                        <div class="span4">
+                            <a class="btn btn-primary" href="{% url 'project_source_files_zip' task.project.id %}">
+                                <i class="fa fa-download"></i>
+                                {% blocktrans %}Download All{% endblocktrans %}
+                            </a>
+                        </div>
+                        <div class="span4">
+                            <a class="btn btn-primary" href=
+                                    "{% url 'task_input_files_zip' task.id %}">
+                                <i class="fa fa-download"></i>
+                                {% blocktrans %}Download All{% endblocktrans %}
+                            </a>
+                        </div>
+                        {% if task.all_tla_files_ready %}
+                        <div class="span4">
+                            <a class="btn btn-primary" href=
+                               "{% url 'task_output_files_zip' task.id %}">
+                                <i class="fa fa-download"></i>
+                                {% blocktrans %}Download All{% endblocktrans %}
+                            </a>
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="span2"><!-- Support file -->
+                    <div class="row-fluid">
+                        <div class="span3"><b>{% trans "Support:" %}</b></div>
+                    </div>
+                    <div class="row-fluid">
+                        {% with task.localized_assets.all|first as la %}
+                            {% if la.support_file %}
+                                <a href="{% url 'download_tasklocalizedasset_sup_file' task.id la.id %}" title="{{ la.support_file_name }}">{{ la.support_file_name|truncatechars:20 }} <i class="fa fa-download"></i></a>
+                            {% else %}
+                                {% blocktrans %}Not Available{% endblocktrans %}
+                            {% endif %}
+                        {% endwith %}
+                    </div>
+                </div>
+                <div class="span2"><!-- reference file -->
+                    <div class="row-fluid">
+                        <div class="span3"><b>{% trans "Reference:" %}</b></div>
+                    </div>
+                    <div class="row-fluid">
+                        {% if task.reference_file %}
+                            <a href="{{ task.reference_file.url }}" title="{{ task.reference_file_name }}">{{ task.reference_file_name|truncatechars:20 }} <i class="fa fa-download"></i></a>
+                        {% else %}
+                            {% blocktrans %}Not Available{% endblocktrans %}
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+    {% endif %}
+{#    {% if task.is_translation_task_child %}#}
+{#    <hr class="clear"/>#}
+{#    <form action="" method="post">#}
+{#    {% csrf_token %}#}
+{#    <input id="ptask-id" name="task-id" type="hidden" value="{{ task.id }}">#}
+{##}
+    {#  Agency mode and Freelancer mode buttons based on Translation task  #}
+{#    {% if task.has_sub_tasks %}#}
+{#        <input id="delete-sub-tasks" name="delete-sub-tasks" type="hidden" value="{{ task.id }}">#}
+{#        <button type="button" class="btn btn-primary confirm_submit">{% blocktrans %}Agency Mode{% endblocktrans %}</button>#}
+{#    {% else %}#}
+{#        <input id="parent-task-id" name="parent-task-id" type="hidden" value="{{ task.id }}">#}
+{#        <button type="button" class="btn btn-primary confirm_submit">{% blocktrans %}Freelancer Mode{% endblocktrans %}</button>#}
+{#    {% endif %}#}
+{#    </form>#}
+{#    &nbsp;#}
+{#    <div>#}
+{#    <span class="sum"><a href="#modal" class="sub-tasks-{{ task.id }}" data-toggle="modal" data-id="{{ task.id }}" ><i class="fa fa-plus"  title="{% trans "Add sub-tasks" %}"></i> {% trans "Add sub-tasks" %}</a></span>#}
+{#    <div id="modal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">#}
+{#        <div class="modal-header">#}
+{#            <h3 id="myModalLabel">{% blocktrans %}Add Sub-tasks{% endblocktrans %}</h3>#}
+{#        </div>#}
+{#        <div class="modal-body">#}
+{#            <form action="" method="post">#}
+{#                {% csrf_token %}#}
+{#                <input id="task-id" name="task-id" type="hidden">#}
+{#                <select name="sub-tasks" id="sub-tasks" class="multiselect" multiple="multiple">#}
+{#                </select>#}
+{#                <div><input type="submit"></div>#}
+{#            </form>#}
+{#        </div>#}
+{#        <div class="modal-footer">#}
+{#            <div class="row-fluid">#}
+{#                <div class="span2">#}
+{#                    <button class="btn" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times"></i> {% trans "Close" %}</button>#}
+{#                </div>#}
+{#            </div>#}
+{#        </div>#}
+{#    </div>#}
+{#    </div>#}
+{#    {% endif %}#}
+</li>
+
+{% block script %}
+    <script type="text/javascript">
+        $(document).ready(function(){
+            $(".sub-tasks-"+{{ task.id }}).click(function(){
+                $("#task-id").val($(this).data('id'));
+                $('#modal').appendTo(".job-content");
+
+                {% get_sub_services task.service.service_type.id task.service.service_type.category_id as sub_services %}
+
+                {% for id, task in sub_services.items %}
+                    var option = document.createElement("option");
+                    option.text = "{{ task }}";
+                    option.value = "{{ id }}";
+                    var select = document.getElementById("sub-tasks");
+                    select.appendChild(option);
+                {% endfor %}
+
+            });
+        });
+
+    </script>
+{% endblock %}

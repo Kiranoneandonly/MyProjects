@@ -1,0 +1,43 @@
+{% load i18n %}
+<div class="row-fluid">
+    <div class="span4">
+        {% if file_pair.input.file %}
+            <a class="download_file_check" href="{{ file_pair.input.url }}"
+               title="{{ file_pair.input.name }}">
+                {{ file_pair.input.name|truncatechars:50 }} <i class="fa fa-download"></i>
+            </a>
+            <input type="hidden" id="analysis_code" value="{{ task.project.kit.analysis_code }}" />
+        {% else %}
+            {% trans "--" %}
+        {% endif %}
+        {% if task.is_active_accepted and task.is_translation_subtask and not from_subtasks_details %}
+            {% include "vendors/_upload_input_form.html" %}
+        {% endif %}
+    </div>
+    <div class="span4">
+        {% if file_pair.output.file %}
+            <a class="download_file_check" href="{{ file_pair.output.url }}"
+               title="{{ file_pair.output.name }}">
+                {{ file_pair.output.name|truncatechars:50 }}  <i class="fa fa-download"></i>
+            </a>
+        {% else %}
+            {% trans "--" %}
+        {% endif %}
+        {% if task.is_active_accepted and not from_subtasks_details %}
+            {% include "vendors/_upload_form.html" %}
+        {% endif %}
+    </div>
+    <div class="span4">
+    {% if file_pair.support.file %}
+        <a class="download_file_check" href="{{ file_pair.support.url }}"
+           title="{{ file_pair.support.name }}">
+            {{ file_pair.support.name|truncatechars:50 }}  <i class="fa fa-download"></i>
+        </a>
+    {% else %}
+        {% trans "--" %}
+    {% endif %}
+    {% if task.is_active_accepted and not from_subtasks_details %}
+        {% include "vendors/_upload_support_files_form.html" %}
+    {% endif %}
+    </div>
+</div>
